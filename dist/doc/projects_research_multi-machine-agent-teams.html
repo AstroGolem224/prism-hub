@@ -1,0 +1,925 @@
+<!DOCTYPE html><html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Multi-Machine Agent Teams // PRISM Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --bg-void: #06060b;
+    --bg-base: #0a0a14;
+    --bg-surface: #111122;
+    --bg-elevated: #1a1a2e;
+    --neon-cyan: #00f0ff;
+    --neon-magenta: #ff00aa;
+    --neon-violet: #8b5cf6;
+    --neon-green: #39ff14;
+    --neon-amber: #ffb800;
+    --text-primary: #e0e0f0;
+    --text-secondary: #8888aa;
+    --text-muted: #555570;
+    --glass-bg: rgba(17, 17, 34, 0.6);
+    --glass-border: rgba(0, 240, 255, 0.08);
+    --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.3);
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Orbitron', var(--font-sans);
+    --sidebar-collapsed: 64px;
+    --sidebar-expanded: 260px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-void); }
+::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+* { scrollbar-width: thin; scrollbar-color: var(--bg-elevated) var(--bg-void); }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-void);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 15px;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+        radial-gradient(ellipse at 15% 50%, rgba(0, 240, 255, 0.035) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 90%, rgba(255, 0, 170, 0.02) 0%, transparent 50%);
+    z-index: 0; pointer-events: none;
+}
+body::after {
+    content: ''; position: fixed; inset: 0;
+    background: linear-gradient(rgba(0,240,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.015) 1px, transparent 1px);
+    background-size: 80px 80px; pointer-events: none; z-index: 0;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: var(--sidebar-collapsed);
+    background: var(--bg-surface);
+    border-right: 1px solid var(--glass-border);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden; z-index: 100;
+    display: flex; flex-direction: column;
+}
+.sidebar:hover { width: var(--sidebar-expanded); }
+.sidebar-logo {
+    padding: 18px 16px; border-bottom: 1px solid var(--glass-border);
+    white-space: nowrap; display: flex; align-items: center; gap: 12px; min-height: 64px;
+}
+.sidebar-logo .logo-icon { font-size: 1.6rem; flex-shrink: 0; width: 30px; text-align: center; filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.5)); }
+.sidebar-logo .logo-text { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--neon-cyan); letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 0 20px rgba(0, 240, 255, 0.4); opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .logo-text { opacity: 1; }
+.sidebar-avatar { padding: 12px 16px; text-align: center; opacity: 0; transition: opacity 0.3s 0.15s; }
+.sidebar:hover .sidebar-avatar { opacity: 1; }
+.sidebar-avatar img { width: 80px; height: 80px; border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 0 20px rgba(0, 240, 255, 0.15); }
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 4px 0; }
+.nav-section {
+    padding: 14px 20px 4px; font-family: var(--font-mono); font-size: 0.58em; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted);
+    white-space: nowrap; opacity: 0; transition: opacity 0.2s 0.1s;
+}
+.sidebar:hover .nav-section { opacity: 1; }
+.nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 20px; color: var(--text-secondary); text-decoration: none;
+    font-family: var(--font-mono); font-size: 0.8em; letter-spacing: 0.03em;
+    white-space: nowrap; border-left: 3px solid transparent; transition: all 0.2s ease;
+}
+.nav-item:hover { color: var(--neon-cyan); background: rgba(0, 240, 255, 0.04); border-left-color: var(--neon-cyan); }
+.nav-item.active { color: var(--neon-cyan); background: rgba(0, 240, 255, 0.07); border-left-color: var(--neon-cyan); }
+.nav-item .icon { width: 24px; flex-shrink: 0; text-align: center; font-size: 1.1em; }
+.nav-item .label { opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .nav-item .label { opacity: 1; }
+.sidebar-footer {
+    padding: 14px 20px; border-top: 1px solid var(--glass-border);
+    font-family: var(--font-mono); font-size: 0.65em; color: var(--text-muted);
+    white-space: nowrap; display: flex; align-items: center; gap: 8px;
+}
+.status-dot { width: 6px; height: 6px; background: var(--neon-green); border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 8px rgba(57, 255, 20, 0.5); animation: pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.sidebar-footer .footer-text { opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .footer-text { opacity: 1; }
+
+/* Main */
+.main {
+    margin-left: var(--sidebar-collapsed); padding: 2.5rem 3rem;
+    position: relative; z-index: 1; min-height: 100vh;
+    transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: calc(100vw - var(--sidebar-collapsed));
+}
+.sidebar:hover ~ .main { margin-left: var(--sidebar-expanded); max-width: calc(100vw - var(--sidebar-expanded)); }
+
+.hero-banner { width: 100%; height: 160px; border-radius: 14px; overflow: hidden; margin-bottom: 2rem; position: relative; border: 1px solid var(--glass-border); }
+.hero-banner img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) saturate(1.3); }
+.hero-banner .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(255,0,170,0.1)); mix-blend-mode: overlay; }
+.hero-banner .hero-text { position: absolute; bottom: 20px; left: 24px; }
+.hero-banner .hero-text h1 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 0.06em; text-shadow: 0 0 30px rgba(0, 240, 255, 0.4); }
+.hero-banner .hero-text p { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); }
+
+.page-title { font-family: var(--font-display); font-size: 2rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neon-cyan); text-shadow: 0 0 30px rgba(0, 240, 255, 0.25); margin-bottom: 0.3rem; }
+.page-subtitle { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 2.5rem; }
+
+h2 { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin: 2.5rem 0 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); }
+h3 { font-size: 1.05rem; color: var(--neon-cyan); margin: 1.5rem 0 0.5rem; }
+a { color: var(--neon-cyan); text-decoration: none; transition: all 0.15s; }
+a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
+
+.card {
+    background: var(--glass-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: 12px;
+    padding: 0.9rem 1.2rem; margin: 0.4rem 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card:hover { transform: translateY(-2px); border-color: rgba(0, 240, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
+.card a { display: flex; justify-content: space-between; align-items: center; color: var(--text-primary); font-weight: 500; font-size: 0.95rem; }
+.card a:hover { text-decoration: none; }
+.card .meta { color: var(--text-muted); font-size: 0.7rem; font-family: var(--font-mono); }
+.category { margin-bottom: 1rem; }
+
+.doc-viewer {
+    background: var(--glass-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: 14px; padding: 2.5rem;
+    font-size: 15px; line-height: 1.8;
+}
+.doc-viewer h1 { font-family: var(--font-display); font-size: 1.6rem; color: var(--neon-cyan); margin: 0 0 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.8rem; }
+.doc-viewer h2 { font-size: 1.2rem; color: var(--neon-cyan); text-transform: none; letter-spacing: normal; font-family: var(--font-sans); font-weight: 600; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.4rem; margin: 2rem 0 0.8rem; }
+.doc-viewer h3 { font-size: 1.05rem; color: var(--neon-violet); margin: 1.5rem 0 0.5rem; }
+.doc-viewer h4 { font-size: 0.95rem; color: var(--neon-amber); margin: 1.2rem 0 0.4rem; }
+.doc-viewer p { margin: 0.6rem 0; }
+.doc-viewer code { background: rgba(0, 240, 255, 0.08); padding: 2px 7px; border-radius: 5px; color: var(--neon-cyan); font-size: 0.88em; font-family: var(--font-mono); }
+.doc-viewer pre { background: rgba(0, 0, 0, 0.5); padding: 1.25rem; border-radius: 10px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--glass-border); }
+.doc-viewer pre code { background: none; padding: 0; color: var(--neon-green); display: block; }
+.doc-viewer ul, .doc-viewer ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+.doc-viewer li { margin: 0.3rem 0; }
+.doc-viewer li::marker { color: var(--neon-cyan); }
+.doc-viewer blockquote { border-left: 3px solid var(--neon-violet); padding: 0.5rem 1rem; margin: 1rem 0; background: rgba(139, 92, 246, 0.05); border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+.doc-viewer hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent); margin: 2rem 0; }
+.doc-viewer table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+.doc-viewer th, .doc-viewer td { padding: 0.6rem 1rem; border: 1px solid var(--glass-border); text-align: left; }
+.doc-viewer th { background: rgba(0, 240, 255, 0.06); color: var(--neon-cyan); font-family: var(--font-mono); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+.doc-viewer img { max-width: 100%; border-radius: 8px; }
+.doc-viewer strong { color: var(--text-primary); }
+
+.breadcrumb { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.8rem; font-family: var(--font-mono); }
+.breadcrumb a { color: var(--neon-cyan); }
+.breadcrumb .sep { margin: 0 0.5rem; opacity: 0.3; }
+
+.badge { display: inline-flex; align-items: center; padding: 2px 10px; font-family: var(--font-mono); font-size: 0.7em; text-transform: uppercase; border-radius: 4px; border: 1px solid; }
+.badge-cyan { color: var(--neon-cyan); border-color: rgba(0, 240, 255, 0.3); background: rgba(0, 240, 255, 0.08); }
+.badge-green { color: var(--neon-green); border-color: rgba(57, 255, 20, 0.3); background: rgba(57, 255, 20, 0.08); }
+.badge-red { color: #f87171; border-color: rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.08); }
+
+.footer { margin-top: 3rem; padding-top: 1.5rem; text-align: center; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); }
+.footer .line { height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent); margin-bottom: 1.5rem; }
+
+/* Hamburger (mobile) */
+.hamburger {
+    display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--bg-surface); border: 1px solid var(--glass-border);
+    cursor: pointer; align-items: center; justify-content: center;
+    backdrop-filter: blur(12px); box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.hamburger span { display: block; width: 20px; height: 2px; background: var(--neon-cyan); border-radius: 1px; transition: all 0.3s; position: relative; }
+.hamburger span::before, .hamburger span::after { content: ''; position: absolute; left: 0; width: 20px; height: 2px; background: var(--neon-cyan); border-radius: 1px; transition: all 0.3s; }
+.hamburger span::before { top: -6px; }
+.hamburger span::after { top: 6px; }
+.hamburger.open span { background: transparent; }
+.hamburger.open span::before { top: 0; transform: rotate(45deg); }
+.hamburger.open span::after { top: 0; transform: rotate(-45deg); }
+.sidebar-backdrop { display: none; position: fixed; inset: 0; z-index: 99; background: rgba(6,6,11,0.7); }
+.sidebar-backdrop.visible { display: block; }
+
+@media (max-width: 768px) {
+    .hamburger { display: flex; }
+    .sidebar { width: 280px !important; transform: translateX(-100%); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); z-index: 150; }
+    .sidebar.mobile-open { transform: translateX(0); }
+    .sidebar.mobile-open .logo-text, .sidebar.mobile-open .sidebar-avatar,
+    .sidebar.mobile-open .nav-section, .sidebar.mobile-open .nav-item .label,
+    .sidebar.mobile-open .footer-text { opacity: 1 !important; }
+    .sidebar:hover { width: 280px !important; }
+    .main { margin-left: 0 !important; max-width: 100vw !important; padding: 1rem !important; padding-top: 64px !important; }
+    .sidebar:hover ~ .main { margin-left: 0 !important; max-width: 100vw !important; }
+    .hero-banner { height: 110px; border-radius: 10px; }
+    .hero-banner .hero-text h1 { font-size: 1.2rem; }
+    .hero-banner .hero-text p { font-size: 0.7rem; }
+    .page-title { font-size: 1.4rem; }
+    .doc-viewer { padding: 1.2rem; font-size: 14px; }
+    .doc-viewer pre { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .doc-viewer table { display: block; overflow-x: auto; }
+    .card a { min-height: 44px; }
+    .nav-item { min-height: 44px; padding: 10px 20px; }
+    .search-bar input { font-size: 16px; }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head><body>
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <span class="logo-icon">🔮</span>
+        <span class="logo-text">PRISM</span>
+    </div>
+    <div class="sidebar-avatar">
+        <img src="static/avatar.png" alt="PRISM" onerror="this.style.display='none'">
+    </div>
+    <nav class="sidebar-nav"><div class="nav-section">Navigation</div>
+<a href="index.html" class="nav-item active"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
+<a href="news.html" class="nav-item"><span class="icon">📰</span><span class="label">AI News</span></a>
+<div class="nav-section">🎮 Meat Machine Cycle</div>
+<a href="doc/projects_mmc_docs_gdd-v2.2.html" class="nav-item"><span class="icon">📄</span><span class="label">GDD v2.2 (aktuell)</span></a>
+<a href="doc/projects_mmc_docs_sprint-plan.html" class="nav-item"><span class="icon">📄</span><span class="label">Sprint Plan</span></a>
+<a href="doc/projects_mmc_docs_architecture.html" class="nav-item"><span class="icon">📄</span><span class="label">Architektur</span></a>
+<a href="doc/projects_mmc_docs_roadmap.html" class="nav-item"><span class="icon">📄</span><span class="label">Roadmap</span></a>
+<a href="doc/MMC_meat-machine-cycle_PROJECT_STRUCTURE.html" class="nav-item"><span class="icon">📄</span><span class="label">Projekt-Struktur</span></a>
+<div class="nav-section">🔬 Research</div>
+<a href="doc/projects_research_blender-ai-pipeline.html" class="nav-item"><span class="icon">📄</span><span class="label">Blender AI Pipeline</span></a>
+<a href="doc/projects_research_gamedev-engines-ai.html" class="nav-item"><span class="icon">📄</span><span class="label">Gamedev Engines & AI</span></a>
+<a href="doc/projects_research_multi-machine-agent-teams.html" class="nav-item"><span class="icon">📄</span><span class="label">Multi-Machine Agent Teams</span></a>
+<a href="doc/projects_research_n8n-workflow-automation.html" class="nav-item"><span class="icon">📄</span><span class="label">n8n Workflow Automation</span></a>
+</nav>
+    <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        <span class="footer-text">PRISM Hub // Public</span>
+    </div>
+</aside>
+<button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
+<main class="main">
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span>multi-machine-agent-teams.md</div>
+    <div class="doc-viewer" id="doc-content"></div>
+    <script>
+    const raw = `# Multi-Machine AI Agent Teams — Research & Anleitung
+
+> **Ziel:** Agenten auf verschiedenen Maschinen koordinieren — Framework-Vergleich, Protokolle, Step-by-Step Setup.
+> **Stand:** Februar 2026 | **Autor:** PRISM
+
+---
+
+## Inhaltsverzeichnis
+
+1. [Überblick & Problemstellung](#1-überblick--problemstellung)
+2. [Framework-Vergleich](#2-framework-vergleich)
+3. [Kommunikationsprotokolle: MCP vs A2A](#3-kommunikationsprotokolle-mcp-vs-a2a)
+4. [CrewAI Deep Dive](#4-crewai-deep-dive)
+5. [AutoGen Deep Dive (Distributed Runtime)](#5-autogen-deep-dive-distributed-runtime)
+6. [LangGraph & Weitere](#6-langgraph--weitere)
+7. [Step-by-Step: Multi-Machine Setup](#7-step-by-step-multi-machine-setup)
+8. [Prozessablauf-Diagramm](#8-prozessablauf-diagramm)
+9. [Relevanz für unser Setup (PRISM/OpenClaw)](#9-relevanz-für-unser-setup-prismopenclaw)
+10. [Empfehlung](#10-empfehlung)
+
+---
+
+## 1. Überblick & Problemstellung
+
+**Das Problem:** Du hast mehrere Maschinen (Mac Mini, Laptop, Cloud-Server, Raspberry Pi) und willst AI-Agenten darauf verteilt laufen lassen — jeder Agent mit einer Spezialisierung (Researcher, Coder, Designer, Reviewer). Die Agenten sollen:
+
+- Sich gegenseitig finden (Discovery)
+- Aufgaben delegieren und Ergebnisse austauschen
+- Unabhängig voneinander skalieren
+- Sicher kommunizieren (Auth, Verschlüsselung)
+
+**Zwei Ebenen:**
+1. **Framework-Ebene:** Wie definiere ich Agenten, Rollen, Tasks? → CrewAI, AutoGen, LangGraph
+2. **Protokoll-Ebene:** Wie kommunizieren Agenten maschinenübergreifend? → A2A, MCP, gRPC, HTTP
+
+---
+
+## 2. Framework-Vergleich
+
+| Feature | **CrewAI** | **AutoGen** (MS) | **LangGraph** | **MetaGPT** | **OpenAI Swarm** |
+|---------|-----------|------------------|---------------|-------------|-----------------|
+| **Multi-Agent** | ✅ Crews + Flows | ✅ AgentChat + Core | ✅ Graph-basiert | ✅ SOP-Teams | ✅ Handoffs |
+| **Multi-Machine nativ** | ❌ Single-Process | ✅ gRPC Runtime | ❌ Cloud-only (LangSmith) | ❌ Single-Process | ❌ Single-Process |
+| **Distributed Runtime** | Nein (workaround: A2A/HTTP) | **Ja** (GrpcWorkerAgentRuntime) | Via LangSmith Deployment | Nein | Nein |
+| **Orchestrierung** | Sequential/Hierarchical/Consensus | Topic-based Pub/Sub | Graph (Nodes + Edges) | SOP-Pipeline | Function Routing |
+| **MCP Support** | Ja (Tools) | Ja (McpWorkbench) | Ja (via LangChain) | Begrenzt | Nein |
+| **A2A Support** | Via Integration | Via Integration | Via Integration | Nein | Nein |
+| **Sprache** | Python | Python, .NET, C++ | Python, JS | Python | Python |
+| **Lizenz** | MIT | MIT | MIT | MIT | MIT |
+| **Production-Ready** | ✅ Enterprise fokussiert | ⚠️ Experimental (distributed) | ✅ (mit LangSmith) | ⚠️ Research-nah | ❌ Experimental |
+| **Learning Curve** | 🟢 Niedrig | 🟡 Mittel | 🟡 Mittel | 🔴 Hoch | 🟢 Niedrig |
+| **Community (GitHub ⭐)** | ~25k | ~40k | ~15k | ~48k | ~20k |
+| **Kosten** | Open Source (Enterprise Plan optional) | Open Source | Open Source + LangSmith ($) | Open Source | Open Source |
+
+### Fazit Vergleich
+
+- **Multi-Machine nativ:** Nur **AutoGen** hat ein echtes Distributed Runtime mit gRPC
+- **Einfachster Einstieg:** **CrewAI** — aber Single-Process, Multi-Machine nur via Workaround
+- **Production-Grade:** **LangGraph** mit LangSmith Deployment — aber Cloud-abhängig
+- **Protokoll-Lösung:** **A2A** (Google) als Framework-agnostischer Standard für Agent-zu-Agent
+
+---
+
+## 3. Kommunikationsprotokolle: MCP vs A2A
+
+### MCP (Model Context Protocol) — Anthropic
+
+**Was es ist:** Ein Standard, um AI-Anwendungen mit externen Systemen (Tools, Datenquellen) zu verbinden.
+
+**Analogie:** USB-C für AI — ein Agent steckt sich an Datenquellen und Tools an.
+
+**Architektur:**
+\`\`\`
+AI Application (Host)
+    └── MCP Client
+           └── MCP Server (Tool/Datenquelle)
+\`\`\`
+
+**Kernkonzepte:**
+- **Resources:** Daten, die der Agent lesen kann (Dateien, DB-Einträge)
+- **Tools:** Aktionen, die der Agent ausführen kann (API-Calls, Berechnungen)
+- **Prompts:** Vorgefertigte Prompt-Templates
+
+**Wichtig für Multi-Machine:**
+- MCP verbindet Agenten mit **Tools**, nicht Agenten mit **Agenten**
+- Ein Agent auf Maschine A kann via MCP auf Tools auf Maschine B zugreifen
+- Aber: Kein nativer Agent-zu-Agent Dialog
+
+### A2A (Agent-to-Agent Protocol) — Google
+
+**Was es ist:** Ein offener Standard für Kommunikation zwischen **opaken** Agenten-Systemen.
+
+**Analogie:** HTTP für Agenten — jeder Agent ist ein Server, der Anfragen entgegennimmt.
+
+**Architektur:**
+\`\`\`
+Agent A (Client)  ←→  Agent B (Server)
+    │                      │
+    └── Agent Card ←───────┘  (Discovery)
+\`\`\`
+
+**Kernkonzepte:**
+- **Agent Card:** JSON-Dokument mit Capabilities, Endpoint, Auth-Info
+- **Tasks:** Stateful Arbeitseinheiten mit Lifecycle (submitted → working → completed)
+- **Messages:** Kommunikation zwischen Client und Server (user/agent Rollen)
+- **Parts:** Kleinste Inhaltseinheit (Text, Dateien, strukturierte Daten)
+- **Artifacts:** Outputs eines Tasks (generierte Dokumente, Bilder, etc.)
+
+**Transport:** JSON-RPC 2.0 über HTTP(S), gRPC, oder REST
+
+**Interaktionsmodi:**
+- Synchron (Request/Response)
+- Streaming (SSE — Server-Sent Events)
+- Asynchron (Push Notifications via Webhook)
+
+**SDKs:** Python, Go, JS, Java, .NET
+
+### MCP vs A2A — Zusammenfassung
+
+| | **MCP** | **A2A** |
+|---|---------|---------|
+| **Zweck** | Agent ↔ Tool | Agent ↔ Agent |
+| **Wer spricht** | Ein Agent nutzt ein Tool | Zwei Agenten kollaborieren |
+| **Opazität** | Tool-Implementierung ist transparent | Agenten sind Black Boxes |
+| **Task Management** | Nein | Ja (Lifecycle, Status) |
+| **Discovery** | Manuell konfiguriert | Agent Cards (automatisch) |
+| **Multi-Machine** | Ja (Remote MCP Server) | **Ja (designt dafür)** |
+
+**Fazit:** MCP und A2A sind **komplementär**, nicht konkurrierend:
+- **MCP** = wie ein Agent Tools benutzt (vertikal)
+- **A2A** = wie Agenten miteinander reden (horizontal)
+
+---
+
+## 4. CrewAI Deep Dive
+
+### Architektur
+
+\`\`\`
+Flow (Orchestrator)
+  ├── Step 1: Python-Logic
+  ├── Step 2: Crew A kickoff
+  │     ├── Agent: Researcher (role, goal, backstory)
+  │     ├── Agent: Writer
+  │     └── Tasks: research_task → write_task
+  └── Step 3: Ergebnis verarbeiten
+\`\`\`
+
+### Installation
+
+\`\`\`bash
+pip install crewai
+crewai create crew my_crew
+cd my_crew
+\`\`\`
+
+### Multi-Machine mit CrewAI?
+
+**Nativ:** ❌ CrewAI ist Single-Process. Alle Agenten laufen im selben Python-Prozess.
+
+**Workarounds:**
+
+#### Option A: CrewAI + A2A Wrapper
+Jeden CrewAI-Agenten als A2A-Server wrappen:
+
+\`\`\`python
+# machine_a/server.py — Researcher Agent
+from crewai import Agent, Task, Crew
+from a2a.server import A2AServer
+
+researcher = Agent(
+    role="Senior Researcher",
+    goal="Find comprehensive info on {topic}",
+    backstory="Experienced research specialist...",
+    llm="anthropic/claude-sonnet-4"
+)
+
+def handle_task(a2a_task):
+    crew = Crew(
+        agents=[researcher],
+        tasks=[Task(
+            description=a2a_task.message,
+            agent=researcher,
+            expected_output="Detailed research report"
+        )]
+    )
+    result = crew.kickoff()
+    return result.raw
+
+server = A2AServer(
+    name="Research Agent",
+    skills=["research", "analysis"],
+    handler=handle_task,
+    port=8080
+)
+server.start()
+\`\`\`
+
+\`\`\`python
+# machine_b/client.py — Orchestrator
+from a2a.client import A2AClient
+
+research_agent = A2AClient("http://machine-a:8080")
+card = research_agent.get_agent_card()
+
+# Task senden
+task = research_agent.send_message("Research AI agent frameworks 2026")
+print(task.result)
+\`\`\`
+
+#### Option B: CrewAI + HTTP API
+Einfacher: Jeden Crew als FastAPI-Service wrappen:
+
+\`\`\`python
+# machine_a/api.py
+from fastapi import FastAPI
+from crewai import Agent, Task, Crew
+
+app = FastAPI()
+
+@app.post("/research")
+async def research(topic: str):
+    crew = Crew(agents=[...], tasks=[...])
+    return {"result": crew.kickoff().raw}
+\`\`\`
+
+### Bewertung CrewAI für Multi-Machine
+
+| Pro | Contra |
+|-----|--------|
+| Einfachstes Agent-Design (YAML-Config) | Kein nativer Distributed Mode |
+| Große Community, viele Beispiele | Workaround nötig (A2A/HTTP) |
+| Flows für Orchestrierung | Extra Infrastruktur-Code |
+
+---
+
+## 5. AutoGen Deep Dive (Distributed Runtime)
+
+### Der einzige mit nativem Multi-Machine Support
+
+AutoGen hat ein **experimentelles** Distributed Runtime basierend auf **gRPC**:
+
+\`\`\`
+┌─────────────────────────────────────────┐
+│          Host Service (gRPC)            │
+│         localhost:50051                  │
+│  ┌─────────┐  ┌─────────┐             │
+│  │ Registry│  │ Router  │              │
+│  └─────────┘  └─────────┘             │
+└──────┬──────────────┬──────────────────┘
+       │              │
+  ┌────┴────┐    ┌────┴────┐
+  │Worker 1 │    │Worker 2 │
+  │(Mac Mini)│    │(Laptop) │
+  │Agent:    │    │Agent:   │
+  │Researcher│    │Coder   │
+  └─────────┘    └─────────┘
+\`\`\`
+
+### Installation
+
+\`\`\`bash
+pip install "autogen-agentchat" "autogen-ext[openai,grpc]"
+\`\`\`
+
+### Code: Distributed Setup
+
+**Host Service (Maschine 1 — Orchestrator):**
+
+\`\`\`python
+# host.py — Läuft auf dem Mac Mini
+from autogen_ext.runtimes.grpc import GrpcWorkerAgentRuntimeHost
+
+host = GrpcWorkerAgentRuntimeHost(address="0.0.0.0:50051")
+host.start()
+
+# Blockiert bis SIGTERM
+import asyncio
+asyncio.run(host.stop_when_signal())
+\`\`\`
+
+**Worker 1 (Maschine 2 — Researcher):**
+
+\`\`\`python
+# worker_researcher.py — Läuft auf Laptop
+import asyncio
+from dataclasses import dataclass
+from autogen_core import (
+    DefaultTopicId, MessageContext, RoutedAgent,
+    default_subscription, message_handler
+)
+from autogen_ext.runtimes.grpc import GrpcWorkerAgentRuntime
+
+@dataclass
+class ResearchRequest:
+    topic: str
+
+@dataclass
+class ResearchResult:
+    content: str
+
+@default_subscription
+class ResearcherAgent(RoutedAgent):
+    def __init__(self):
+        super().__init__("Researcher")
+
+    @message_handler
+    async def handle(self, msg: ResearchRequest, ctx: MessageContext) -> None:
+        # Hier: LLM-Call für Research
+        result = f"Research results for: {msg.topic}"
+        await self.publish_message(
+            ResearchResult(content=result),
+            DefaultTopicId()
+        )
+
+async def main():
+    runtime = GrpcWorkerAgentRuntime(host_address="mac-mini.local:50051")
+    await runtime.start()
+    await ResearcherAgent.register(runtime, "researcher", lambda: ResearcherAgent())
+    await runtime.stop_when_signal()
+
+asyncio.run(main())
+\`\`\`
+
+**Worker 2 (Maschine 3 — Coder):**
+
+\`\`\`python
+# worker_coder.py — Läuft auf Cloud-Server
+import asyncio
+from autogen_core import (
+    DefaultTopicId, MessageContext, RoutedAgent,
+    default_subscription, message_handler
+)
+from autogen_ext.runtimes.grpc import GrpcWorkerAgentRuntime
+
+@default_subscription
+class CoderAgent(RoutedAgent):
+    def __init__(self):
+        super().__init__("Coder")
+
+    @message_handler
+    async def handle(self, msg: ResearchResult, ctx: MessageContext) -> None:
+        # Research-Ergebnis empfangen, Code generieren
+        code = f"# Generated based on: {msg.content[:50]}..."
+        print(f"Coder generated: {code}")
+
+async def main():
+    runtime = GrpcWorkerAgentRuntime(host_address="mac-mini.local:50051")
+    await runtime.start()
+    await CoderAgent.register(runtime, "coder", lambda: CoderAgent())
+    await runtime.stop_when_signal()
+
+asyncio.run(main())
+\`\`\`
+
+### Starten
+
+\`\`\`bash
+# Maschine 1 (Mac Mini)
+python host.py
+
+# Maschine 2 (Laptop)
+python worker_researcher.py
+
+# Maschine 3 (Cloud)
+python worker_coder.py
+\`\`\`
+
+### Bewertung AutoGen Distributed
+
+| Pro | Contra |
+|-----|--------|
+| **Einziger** nativer Multi-Machine Support | ⚠️ Experimentell — Breaking Changes erwartet |
+| gRPC = schnell, typisiert, cross-language | Message Types müssen Protobuf sein |
+| Topic-based Pub/Sub = flexibel | Mehr Boilerplate als CrewAI |
+| Microsoft-backed | Weniger intuitive Agent-Definition |
+
+---
+
+## 6. LangGraph & Weitere
+
+### LangGraph
+
+- **Stärke:** Graph-basierte Orchestrierung, Durable Execution, Human-in-the-Loop
+- **Multi-Machine:** Nur via **LangSmith Deployment** (Cloud-Service, kostenpflichtig)
+- **Lokal verteilt:** Nicht vorgesehen — designed für zentrale Deployment-Plattform
+
+### MetaGPT
+
+- **Stärke:** Simuliert komplette Software-Company (PM → Architect → Engineer)
+- **Multi-Machine:** ❌ Nicht unterstützt
+- **Nutzen:** Gut für "eine Crew auf einer Maschine", nicht für verteilte Systeme
+
+### OpenAI Swarm
+
+- **Stärke:** Minimalistisch, Handoff-Pattern
+- **Multi-Machine:** ❌ Experimentell, Single-Process
+- **Status:** Eher Referenz-Implementierung als Production Framework
+
+---
+
+## 7. Step-by-Step: Multi-Machine Setup
+
+### Szenario: 3-Maschinen Gamedev-Team
+
+| Maschine | Rolle | Agent | Aufgabe |
+|----------|-------|-------|---------|
+| **Mac Mini** (192.168.137.148) | Orchestrator + Tech Lead | PRISM | Koordination, Coding, Git |
+| **Laptop** (mobil) | Creative Lead | ADy | Design, Art Direction, Lore |
+| **Cloud/VPS** | Researcher | Scout | Web Research, Docs, Trends |
+
+### Ansatz A: A2A Protocol (Framework-agnostisch)
+
+Dies ist der zukunftssicherste Ansatz — funktioniert mit jedem Framework.
+
+#### Schritt 1: A2A SDK installieren (alle Maschinen)
+
+\`\`\`bash
+pip install a2a-sdk
+\`\`\`
+
+#### Schritt 2: Agent Cards definieren
+
+\`\`\`json
+// Mac Mini — prism-agent-card.json
+{
+  "name": "PRISM",
+  "description": "Tech Lead & Orchestrator for MMC game development",
+  "url": "http://192.168.137.148:9000/a2a",
+  "version": "1.0.0",
+  "skills": [
+    {"id": "coding", "name": "Godot Coding", "description": "Write and review GDScript"},
+    {"id": "architecture", "name": "Architecture", "description": "System design and planning"},
+    {"id": "git", "name": "Git Operations", "description": "Commits, branches, merges"}
+  ],
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false
+  },
+  "authentication": {
+    "schemes": ["bearer"]
+  }
+}
+\`\`\`
+
+#### Schritt 3: A2A Server implementieren (jede Maschine)
+
+\`\`\`python
+# Jede Maschine — a2a_agent.py
+from a2a import A2AServer, AgentCard, Task, Message
+
+class GamedevAgent(A2AServer):
+    def __init__(self, card_path, handler_fn):
+        card = AgentCard.from_file(card_path)
+        super().__init__(card)
+        self.handler = handler_fn
+
+    async def on_message(self, message: Message) -> Task:
+        result = await self.handler(message)
+        return Task(status="completed", artifacts=[result])
+
+# Start
+agent = GamedevAgent("agent-card.json", my_handler)
+agent.serve(host="0.0.0.0", port=9000)
+\`\`\`
+
+#### Schritt 4: Orchestrator (Mac Mini)
+
+\`\`\`python
+# orchestrator.py
+from a2a import A2AClient
+
+# Discovery: Agents finden
+prism = A2AClient("http://localhost:9000/a2a")
+ady = A2AClient("http://laptop.local:9000/a2a")
+scout = A2AClient("http://vps.example.com:9000/a2a")
+
+# Workflow
+async def develop_feature(feature_desc):
+    # 1. Scout researched
+    research = await scout.send_message(
+        f"Research best practices for: {feature_desc}"
+    )
+
+    # 2. ADy designed
+    design = await ady.send_message(
+        f"Create design spec based on research:\\n{research.result}"
+    )
+
+    # 3. PRISM implements
+    code = await prism.send_message(
+        f"Implement in Godot based on design:\\n{design.result}"
+    )
+
+    return code
+\`\`\`
+
+#### Schritt 5: Netzwerk & Security
+
+\`\`\`bash
+# Firewall: Nur Port 9000 öffnen für A2A
+ufw allow 9000/tcp
+
+# TLS: Let's Encrypt für öffentliche Agents
+certbot certonly --standalone -d agent.example.com
+
+# Für LAN: WireGuard VPN zwischen Maschinen
+wg-quick up wg0
+
+# Auth: Bearer Token in Agent Card
+export A2A_AUTH_TOKEN="your-secret-token"
+\`\`\`
+
+### Ansatz B: AutoGen gRPC (wenn nur Python)
+
+Siehe [Section 5](#5-autogen-deep-dive-distributed-runtime) — Host auf Mac Mini, Workers auf anderen Maschinen.
+
+### Ansatz C: Hybrid (Pragmatisch)
+
+Für unser aktuelles Setup am realistischsten:
+
+\`\`\`
+Mac Mini (PRISM/OpenClaw)
+    ├── OpenClaw Nodes (verbundene Geräte)
+    ├── CrewAI lokal (für Single-Machine Crews)
+    └── A2A/HTTP für externe Agents
+\`\`\`
+
+---
+
+## 8. Prozessablauf-Diagramm
+
+### Multi-Machine Agent Workflow
+
+\`\`\`mermaid
+sequenceDiagram
+    participant User as 👤 Druid
+    participant Orch as 🔮 PRISM (Mac Mini)
+    participant Scout as 🔍 Scout (Cloud)
+    participant ADy as 🎨 ADy (Laptop)
+
+    User->>Orch: "Neues Feature: Boss-System für MMC"
+
+    Orch->>Scout: A2A: Research Boss-Mechanics in Roguelites
+    activate Scout
+    Scout-->>Orch: Research Report (Patterns, Beispiele)
+    deactivate Scout
+
+    Orch->>ADy: A2A: Design Boss basierend auf Research
+    activate ADy
+    ADy-->>Orch: Boss Design Doc (Mechanik, Balancing, Art)
+    deactivate ADy
+
+    Orch->>Orch: Implementierung in Godot (GDScript)
+    Orch->>Orch: Git commit & push
+
+    Orch->>User: ✅ Feature implementiert, PR ready
+\`\`\`
+
+### Agent Discovery Flow
+
+\`\`\`mermaid
+graph LR
+    A[Agent startet] --> B[Publiziert Agent Card]
+    B --> C[Registry/Discovery Service]
+    D[Orchestrator] --> C
+    C --> E[Agent Card zurück]
+    E --> F[Capabilities prüfen]
+    F --> G[Task senden via A2A]
+\`\`\`
+
+---
+
+## 9. Relevanz für unser Setup (PRISM/OpenClaw)
+
+### Was wir haben
+
+- **Mac Mini** — PRISM läuft via OpenClaw, Telegram-Anbindung
+- **ADy** — Zweiter Agent auf Telegram, aktuell aber kein separater Compute
+- **OpenClaw Nodes** — Kann Geräte pairen (Phones, andere Rechner)
+
+### Was OpenClaw schon kann
+
+OpenClaw hat bereits Multi-Machine Features:
+- **Nodes:** Gepaarte Geräte (run, invoke, camera, screen)
+- **Sessions:** Sub-Agents spawnen
+- **sessions_send:** Nachrichten zwischen Sessions
+
+### Was fehlt für echte Multi-Machine Agents
+
+1. **Eigener Compute pro Agent** — ADy bräuchte eigene Maschine/Container
+2. **Persistente Agent-Prozesse** — Agents die dauerhaft laufen (nicht nur Sessions)
+3. **Agent Discovery** — Automatisches Finden von Agent-Capabilities
+4. **Shared State** — Gemeinsamer Zugang zu Repos, Docs, Knowledge Base
+
+### Realistischer nächster Schritt
+
+\`\`\`
+Phase 1 (Jetzt):
+├── PRISM + ADy auf Mac Mini (OpenClaw Multi-Session)
+├── CrewAI für lokale Task-Crews
+└── Telegram als Kommunikationskanal
+
+Phase 2 (Nächster Monat):
+├── Zweite Maschine (Laptop/VPS) für Scout-Agent
+├── A2A Server auf beiden Maschinen
+└── Shared Git Repo für Zustand
+
+Phase 3 (Langfristig):
+├── Vollständiges A2A Setup
+├── Agent Registry für Discovery
+└── MCP für Tool-Sharing (Blender, Godot, ComfyUI)
+\`\`\`
+
+---
+
+## 10. Empfehlung
+
+### Für Clay Machine Games / MMC
+
+| Frage | Empfehlung |
+|-------|------------|
+| **Framework für Einzel-Maschine?** | **CrewAI** — einfachster Einstieg, YAML-Config, gut dokumentiert |
+| **Protokoll für Multi-Machine?** | **A2A** — zukunftssicher, Framework-agnostisch, Google+Linux Foundation backed |
+| **Wenn nur Python + experimentell OK?** | **AutoGen Distributed** — einziger nativer Multi-Machine Support |
+| **Tools teilen über Maschinen?** | **MCP** — Remote MCP Server für Blender, Godot etc. |
+| **Sofort starten?** | OpenClaw Sessions + CrewAI lokal, A2A später dazuschalten |
+
+### TL;DR
+
+1. **Kurzfristig:** CrewAI auf dem Mac Mini für lokale Agent-Teams (PRISM + ADy + Scout als Crew)
+2. **Mittelfristig:** A2A Protocol für echte Multi-Machine Kommunikation
+3. **MCP** für Tool-Sharing (Blender MCP Server, Godot Tools)
+4. **AutoGen** nur wenn wir wirklich low-level Distributed brauchen
+
+**A2A + MCP zusammen** ist die Killer-Combo:
+- MCP = Agenten bekommen Zugang zu Tools (vertikal)
+- A2A = Agenten reden miteinander (horizontal)
+
+---
+
+## Quellen & Links
+
+- [CrewAI Docs](https://docs.crewai.com)
+- [AutoGen Docs](https://microsoft.github.io/autogen/stable/)
+- [AutoGen Distributed Runtime](https://microsoft.github.io/autogen/stable/user-guide/core-user-guide/framework/distributed-agent-runtime.html)
+- [A2A Protocol](https://a2a-protocol.org) | [GitHub](https://github.com/a2aproject/A2A)
+- [A2A Specification](https://a2a-protocol.org/latest/specification/)
+- [MCP (Model Context Protocol)](https://modelcontextprotocol.io)
+- [LangGraph](https://github.com/langchain-ai/langgraph)
+- [MetaGPT](https://github.com/FoundationAgents/MetaGPT)
+- [DeepLearning.AI A2A Course](https://goo.gle/dlai-a2a)
+`;
+    document.getElementById('doc-content').innerHTML = marked.parse(raw);
+    </script></main>
+<script>
+function toggleMenu(){
+    document.querySelector('.sidebar').classList.toggle('mobile-open');
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('sidebar-backdrop').classList.toggle('visible');
+}
+function closeMenu(){
+    document.querySelector('.sidebar').classList.remove('mobile-open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('sidebar-backdrop').classList.remove('visible');
+}
+document.querySelectorAll('.sidebar .nav-item').forEach(a=>a.addEventListener('click',closeMenu));
+</script>
+</body></html>

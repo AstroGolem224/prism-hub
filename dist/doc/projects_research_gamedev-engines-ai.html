@@ -1,0 +1,711 @@
+<!DOCTYPE html><html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Gamedev Engines & AI // PRISM Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --bg-void: #06060b;
+    --bg-base: #0a0a14;
+    --bg-surface: #111122;
+    --bg-elevated: #1a1a2e;
+    --neon-cyan: #00f0ff;
+    --neon-magenta: #ff00aa;
+    --neon-violet: #8b5cf6;
+    --neon-green: #39ff14;
+    --neon-amber: #ffb800;
+    --text-primary: #e0e0f0;
+    --text-secondary: #8888aa;
+    --text-muted: #555570;
+    --glass-bg: rgba(17, 17, 34, 0.6);
+    --glass-border: rgba(0, 240, 255, 0.08);
+    --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.3);
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Orbitron', var(--font-sans);
+    --sidebar-collapsed: 64px;
+    --sidebar-expanded: 260px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-void); }
+::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+* { scrollbar-width: thin; scrollbar-color: var(--bg-elevated) var(--bg-void); }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-void);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 15px;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+        radial-gradient(ellipse at 15% 50%, rgba(0, 240, 255, 0.035) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 90%, rgba(255, 0, 170, 0.02) 0%, transparent 50%);
+    z-index: 0; pointer-events: none;
+}
+body::after {
+    content: ''; position: fixed; inset: 0;
+    background: linear-gradient(rgba(0,240,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.015) 1px, transparent 1px);
+    background-size: 80px 80px; pointer-events: none; z-index: 0;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: var(--sidebar-collapsed);
+    background: var(--bg-surface);
+    border-right: 1px solid var(--glass-border);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden; z-index: 100;
+    display: flex; flex-direction: column;
+}
+.sidebar:hover { width: var(--sidebar-expanded); }
+.sidebar-logo {
+    padding: 18px 16px; border-bottom: 1px solid var(--glass-border);
+    white-space: nowrap; display: flex; align-items: center; gap: 12px; min-height: 64px;
+}
+.sidebar-logo .logo-icon { font-size: 1.6rem; flex-shrink: 0; width: 30px; text-align: center; filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.5)); }
+.sidebar-logo .logo-text { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--neon-cyan); letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 0 20px rgba(0, 240, 255, 0.4); opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .logo-text { opacity: 1; }
+.sidebar-avatar { padding: 12px 16px; text-align: center; opacity: 0; transition: opacity 0.3s 0.15s; }
+.sidebar:hover .sidebar-avatar { opacity: 1; }
+.sidebar-avatar img { width: 80px; height: 80px; border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 0 20px rgba(0, 240, 255, 0.15); }
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 4px 0; }
+.nav-section {
+    padding: 14px 20px 4px; font-family: var(--font-mono); font-size: 0.58em; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted);
+    white-space: nowrap; opacity: 0; transition: opacity 0.2s 0.1s;
+}
+.sidebar:hover .nav-section { opacity: 1; }
+.nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 20px; color: var(--text-secondary); text-decoration: none;
+    font-family: var(--font-mono); font-size: 0.8em; letter-spacing: 0.03em;
+    white-space: nowrap; border-left: 3px solid transparent; transition: all 0.2s ease;
+}
+.nav-item:hover { color: var(--neon-cyan); background: rgba(0, 240, 255, 0.04); border-left-color: var(--neon-cyan); }
+.nav-item.active { color: var(--neon-cyan); background: rgba(0, 240, 255, 0.07); border-left-color: var(--neon-cyan); }
+.nav-item .icon { width: 24px; flex-shrink: 0; text-align: center; font-size: 1.1em; }
+.nav-item .label { opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .nav-item .label { opacity: 1; }
+.sidebar-footer {
+    padding: 14px 20px; border-top: 1px solid var(--glass-border);
+    font-family: var(--font-mono); font-size: 0.65em; color: var(--text-muted);
+    white-space: nowrap; display: flex; align-items: center; gap: 8px;
+}
+.status-dot { width: 6px; height: 6px; background: var(--neon-green); border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 8px rgba(57, 255, 20, 0.5); animation: pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.sidebar-footer .footer-text { opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .footer-text { opacity: 1; }
+
+/* Main */
+.main {
+    margin-left: var(--sidebar-collapsed); padding: 2.5rem 3rem;
+    position: relative; z-index: 1; min-height: 100vh;
+    transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: calc(100vw - var(--sidebar-collapsed));
+}
+.sidebar:hover ~ .main { margin-left: var(--sidebar-expanded); max-width: calc(100vw - var(--sidebar-expanded)); }
+
+.hero-banner { width: 100%; height: 160px; border-radius: 14px; overflow: hidden; margin-bottom: 2rem; position: relative; border: 1px solid var(--glass-border); }
+.hero-banner img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) saturate(1.3); }
+.hero-banner .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(255,0,170,0.1)); mix-blend-mode: overlay; }
+.hero-banner .hero-text { position: absolute; bottom: 20px; left: 24px; }
+.hero-banner .hero-text h1 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 0.06em; text-shadow: 0 0 30px rgba(0, 240, 255, 0.4); }
+.hero-banner .hero-text p { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); }
+
+.page-title { font-family: var(--font-display); font-size: 2rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neon-cyan); text-shadow: 0 0 30px rgba(0, 240, 255, 0.25); margin-bottom: 0.3rem; }
+.page-subtitle { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 2.5rem; }
+
+h2 { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin: 2.5rem 0 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); }
+h3 { font-size: 1.05rem; color: var(--neon-cyan); margin: 1.5rem 0 0.5rem; }
+a { color: var(--neon-cyan); text-decoration: none; transition: all 0.15s; }
+a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
+
+.card {
+    background: var(--glass-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: 12px;
+    padding: 0.9rem 1.2rem; margin: 0.4rem 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card:hover { transform: translateY(-2px); border-color: rgba(0, 240, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
+.card a { display: flex; justify-content: space-between; align-items: center; color: var(--text-primary); font-weight: 500; font-size: 0.95rem; }
+.card a:hover { text-decoration: none; }
+.card .meta { color: var(--text-muted); font-size: 0.7rem; font-family: var(--font-mono); }
+.category { margin-bottom: 1rem; }
+
+.doc-viewer {
+    background: var(--glass-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: 14px; padding: 2.5rem;
+    font-size: 15px; line-height: 1.8;
+}
+.doc-viewer h1 { font-family: var(--font-display); font-size: 1.6rem; color: var(--neon-cyan); margin: 0 0 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.8rem; }
+.doc-viewer h2 { font-size: 1.2rem; color: var(--neon-cyan); text-transform: none; letter-spacing: normal; font-family: var(--font-sans); font-weight: 600; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.4rem; margin: 2rem 0 0.8rem; }
+.doc-viewer h3 { font-size: 1.05rem; color: var(--neon-violet); margin: 1.5rem 0 0.5rem; }
+.doc-viewer h4 { font-size: 0.95rem; color: var(--neon-amber); margin: 1.2rem 0 0.4rem; }
+.doc-viewer p { margin: 0.6rem 0; }
+.doc-viewer code { background: rgba(0, 240, 255, 0.08); padding: 2px 7px; border-radius: 5px; color: var(--neon-cyan); font-size: 0.88em; font-family: var(--font-mono); }
+.doc-viewer pre { background: rgba(0, 0, 0, 0.5); padding: 1.25rem; border-radius: 10px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--glass-border); }
+.doc-viewer pre code { background: none; padding: 0; color: var(--neon-green); display: block; }
+.doc-viewer ul, .doc-viewer ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+.doc-viewer li { margin: 0.3rem 0; }
+.doc-viewer li::marker { color: var(--neon-cyan); }
+.doc-viewer blockquote { border-left: 3px solid var(--neon-violet); padding: 0.5rem 1rem; margin: 1rem 0; background: rgba(139, 92, 246, 0.05); border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+.doc-viewer hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent); margin: 2rem 0; }
+.doc-viewer table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+.doc-viewer th, .doc-viewer td { padding: 0.6rem 1rem; border: 1px solid var(--glass-border); text-align: left; }
+.doc-viewer th { background: rgba(0, 240, 255, 0.06); color: var(--neon-cyan); font-family: var(--font-mono); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+.doc-viewer img { max-width: 100%; border-radius: 8px; }
+.doc-viewer strong { color: var(--text-primary); }
+
+.breadcrumb { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.8rem; font-family: var(--font-mono); }
+.breadcrumb a { color: var(--neon-cyan); }
+.breadcrumb .sep { margin: 0 0.5rem; opacity: 0.3; }
+
+.badge { display: inline-flex; align-items: center; padding: 2px 10px; font-family: var(--font-mono); font-size: 0.7em; text-transform: uppercase; border-radius: 4px; border: 1px solid; }
+.badge-cyan { color: var(--neon-cyan); border-color: rgba(0, 240, 255, 0.3); background: rgba(0, 240, 255, 0.08); }
+.badge-green { color: var(--neon-green); border-color: rgba(57, 255, 20, 0.3); background: rgba(57, 255, 20, 0.08); }
+.badge-red { color: #f87171; border-color: rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.08); }
+
+.footer { margin-top: 3rem; padding-top: 1.5rem; text-align: center; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); }
+.footer .line { height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent); margin-bottom: 1.5rem; }
+
+/* Hamburger (mobile) */
+.hamburger {
+    display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--bg-surface); border: 1px solid var(--glass-border);
+    cursor: pointer; align-items: center; justify-content: center;
+    backdrop-filter: blur(12px); box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.hamburger span { display: block; width: 20px; height: 2px; background: var(--neon-cyan); border-radius: 1px; transition: all 0.3s; position: relative; }
+.hamburger span::before, .hamburger span::after { content: ''; position: absolute; left: 0; width: 20px; height: 2px; background: var(--neon-cyan); border-radius: 1px; transition: all 0.3s; }
+.hamburger span::before { top: -6px; }
+.hamburger span::after { top: 6px; }
+.hamburger.open span { background: transparent; }
+.hamburger.open span::before { top: 0; transform: rotate(45deg); }
+.hamburger.open span::after { top: 0; transform: rotate(-45deg); }
+.sidebar-backdrop { display: none; position: fixed; inset: 0; z-index: 99; background: rgba(6,6,11,0.7); }
+.sidebar-backdrop.visible { display: block; }
+
+@media (max-width: 768px) {
+    .hamburger { display: flex; }
+    .sidebar { width: 280px !important; transform: translateX(-100%); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); z-index: 150; }
+    .sidebar.mobile-open { transform: translateX(0); }
+    .sidebar.mobile-open .logo-text, .sidebar.mobile-open .sidebar-avatar,
+    .sidebar.mobile-open .nav-section, .sidebar.mobile-open .nav-item .label,
+    .sidebar.mobile-open .footer-text { opacity: 1 !important; }
+    .sidebar:hover { width: 280px !important; }
+    .main { margin-left: 0 !important; max-width: 100vw !important; padding: 1rem !important; padding-top: 64px !important; }
+    .sidebar:hover ~ .main { margin-left: 0 !important; max-width: 100vw !important; }
+    .hero-banner { height: 110px; border-radius: 10px; }
+    .hero-banner .hero-text h1 { font-size: 1.2rem; }
+    .hero-banner .hero-text p { font-size: 0.7rem; }
+    .page-title { font-size: 1.4rem; }
+    .doc-viewer { padding: 1.2rem; font-size: 14px; }
+    .doc-viewer pre { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .doc-viewer table { display: block; overflow-x: auto; }
+    .card a { min-height: 44px; }
+    .nav-item { min-height: 44px; padding: 10px 20px; }
+    .search-bar input { font-size: 16px; }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head><body>
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <span class="logo-icon">🔮</span>
+        <span class="logo-text">PRISM</span>
+    </div>
+    <div class="sidebar-avatar">
+        <img src="static/avatar.png" alt="PRISM" onerror="this.style.display='none'">
+    </div>
+    <nav class="sidebar-nav"><div class="nav-section">Navigation</div>
+<a href="index.html" class="nav-item active"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
+<a href="news.html" class="nav-item"><span class="icon">📰</span><span class="label">AI News</span></a>
+<div class="nav-section">🎮 Meat Machine Cycle</div>
+<a href="doc/projects_mmc_docs_gdd-v2.2.html" class="nav-item"><span class="icon">📄</span><span class="label">GDD v2.2 (aktuell)</span></a>
+<a href="doc/projects_mmc_docs_sprint-plan.html" class="nav-item"><span class="icon">📄</span><span class="label">Sprint Plan</span></a>
+<a href="doc/projects_mmc_docs_architecture.html" class="nav-item"><span class="icon">📄</span><span class="label">Architektur</span></a>
+<a href="doc/projects_mmc_docs_roadmap.html" class="nav-item"><span class="icon">📄</span><span class="label">Roadmap</span></a>
+<a href="doc/MMC_meat-machine-cycle_PROJECT_STRUCTURE.html" class="nav-item"><span class="icon">📄</span><span class="label">Projekt-Struktur</span></a>
+<div class="nav-section">🔬 Research</div>
+<a href="doc/projects_research_blender-ai-pipeline.html" class="nav-item"><span class="icon">📄</span><span class="label">Blender AI Pipeline</span></a>
+<a href="doc/projects_research_gamedev-engines-ai.html" class="nav-item"><span class="icon">📄</span><span class="label">Gamedev Engines & AI</span></a>
+<a href="doc/projects_research_multi-machine-agent-teams.html" class="nav-item"><span class="icon">📄</span><span class="label">Multi-Machine Agent Teams</span></a>
+<a href="doc/projects_research_n8n-workflow-automation.html" class="nav-item"><span class="icon">📄</span><span class="label">n8n Workflow Automation</span></a>
+</nav>
+    <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        <span class="footer-text">PRISM Hub // Public</span>
+    </div>
+</aside>
+<button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
+<main class="main">
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span>gamedev-engines-ai.md</div>
+    <div class="doc-viewer" id="doc-content"></div>
+    <script>
+    const raw = `# Game Engines & AI-gesteuerte Spieleentwicklung — Recherche-Bericht (Feb 2026)
+
+> **Zielgruppe:** Solo-Indie-Dev mit AI-First Ansatz, begrenztem Budget
+> **Fokus:** Praktisch, ehrlich, keine Marketing-Versprechen
+> **Stand:** Februar 2026
+
+---
+
+## Inhaltsverzeichnis
+
+1. [Game Engines im Überblick: AI-Steuerbarkeit](#1-game-engines-im-überblick)
+2. [Godot im Detail](#2-godot-im-detail)
+3. [AI-First Game Engines & Text-to-Game](#3-ai-first-game-engines)
+4. [Empfehlung: AI-gesteuerte Game-Dev Pipeline](#4-empfehlung)
+
+---
+
+## 1. Game Engines im Überblick
+
+### 1.1 Godot Engine
+
+| Aspekt | Details |
+|---|---|
+| **Sprache** | GDScript (Python-ähnlich), C#/.NET, C++, GDExtension |
+| **Kosten** | 100% kostenlos, MIT-Lizenz. Keine Revenue-Shares, keine Gebühren. Punkt. |
+| **AI-Tool-Support** | ⭐⭐⭐⭐ Sehr gut |
+| **LLM-Integration** | Gut — GDScript ist simpel genug, dass LLMs es zuverlässig generieren |
+| **Automatisierungsgrad** | Hoch — textbasierte Scene-Files (.tscn), CLI-Export, Headless-Modus |
+| **Community** | Explodiert seit 2023/Unity-Debakel. Sehr aktiv, hilfsbereit |
+
+**Warum Godot für AI ideal ist:**
+- **Textbasierte Projektdateien:** \`.tscn\` und \`.tres\` Dateien sind menschenlesbar (und damit LLM-lesbar). Ein AI-Agent kann Scenes direkt als Text generieren/editieren — ohne den Editor zu öffnen.
+- **GDScript ist simpel:** Wenig Boilerplate, Python-ähnliche Syntax. LLMs (Claude, GPT-4, Gemini) generieren GDScript mit hoher Zuverlässigkeit.
+- **Headless/CLI:** \`godot --headless --export-release\` funktioniert. CI/CD-Pipelines ohne GUI möglich.
+- **Keine Lock-in-Kosten:** MIT-Lizenz = komplett frei. Kein Risiko wie bei Unity's Preisänderungen.
+- **Kleine Binary:** Der Editor ist ~40MB. Schnell aufgesetzt, schnell iteriert.
+
+**AI-spezifische Plugins/Tools:**
+- **Noko** (GitHub: nthnn/noko) — Godot-Plugin für Ollama-Integration. Ermöglicht lokale LLM-NPCs direkt im Spiel.
+- **local-llm-npc** (code-forge-temple) — Gemma 3n Integration für interaktive NPCs in Godot (C#).
+- **godot-lsp-stdio-bridge** — LSP-Bridge für AI-Coding-Assistenten, damit Cursor/Copilot besser mit GDScript arbeiten.
+- **Cursor/Windsurf/Copilot:** Funktionieren mit GDScript, aber nicht perfekt. GDScript-Trainingsdaten sind kleiner als für C# oder Python.
+
+**Einschränkungen:**
+- 3D ist funktional, aber nicht auf Unreal-Niveau
+- Console-Export (Switch, PS5) braucht Third-Party-Portierungsfirmen (W4 Games bietet das an)
+- Weniger Asset-Store-Inhalte als Unity
+
+---
+
+### 1.2 Unity
+
+| Aspekt | Details |
+|---|---|
+| **Sprache** | C# |
+| **Kosten** | Personal: Kostenlos bis $200K Revenue. Pro: $2.040/Jahr. Kein Runtime-Fee mehr (nach Rücknahme 2024) |
+| **AI-Tool-Support** | ⭐⭐⭐⭐ Gut |
+| **LLM-Integration** | Sehr gut — C# ist extrem gut in LLM-Trainingsdaten vertreten |
+| **Automatisierungsgrad** | Mittel-Hoch — Binary Scene-Files, aber gute CLI/Scripting API |
+| **Community** | Riesig, aber seit 2023 Vertrauenskrise. Viele wandern zu Godot ab |
+
+**Unity AI Features (offiziell):**
+- **Unity Muse** (jetzt Teil von Unity 6+): AI-Assistent im Editor. Kann Texturen generieren, Code-Vorschläge machen, Sprites erstellen. Qualität: okay für Prototyping, nicht production-ready.
+- **Unity Sentis:** ML-Inference-Runtime direkt in Unity. Kann ONNX-Modelle ausführen — für In-Game-AI (nicht für Entwicklungs-AI).
+- **C# = LLM-Goldstandard:** Claude, GPT-4 und Co. können C# extrem gut. Mehr Stackoverflow-Antworten, mehr Trainingsdaten = bessere Codegen.
+
+**Warum trotzdem problematisch für AI-First:**
+- **Binary Scene-Files:** Unity-Scenes sind nicht sinnvoll von außen editierbar. Du brauchst den Editor.
+- **Bloat:** Unity-Projekte werden schnell groß und komplex. Viel Boilerplate.
+- **Vertrauensproblem:** Nach dem Runtime-Fee-Desaster 2023 ist das Vertrauen bei Indie-Devs nachhaltig beschädigt.
+- **Closed Source:** Du bist von Unity Technologies abhängig.
+
+**Ehrliche Einschätzung:** Unity hat die beste LLM-Codegen-Qualität (wegen C#), aber das Ökosystem ist für einen AI-First-Workflow weniger geeignet als Godot, weil die Projektstruktur nicht textbasiert ist.
+
+---
+
+### 1.3 Unreal Engine
+
+| Aspekt | Details |
+|---|---|
+| **Sprache** | C++, Blueprints (visuell) |
+| **Kosten** | Kostenlos bis $1M Revenue, dann 5% Royalties |
+| **AI-Tool-Support** | ⭐⭐ Begrenzt |
+| **LLM-Integration** | Schlecht für AI-Automatisierung |
+| **Automatisierungsgrad** | Niedrig — Blueprints sind visuell, C++ ist komplex |
+| **Community** | Riesig, aber AAA-fokussiert |
+
+**Das Problem mit Unreal + AI:**
+- **Blueprints:** Visuelle Scripting-Nodes. LLMs können Blueprints nicht direkt generieren — es sind binäre Assets, keine Textdateien.
+- **C++:** Ja, LLMs können C++ generieren. Aber Unreal-C++ ist ein eigenes Beast — UE-spezifische Makros (UCLASS, UPROPERTY, etc.), Build-System-Komplexität, lange Compile-Zeiten.
+- **Overkill für Indie:** Unreal ist für AAA-3D-Spiele gebaut. Für 2D-Roguelites? Kanone auf Spatzen.
+- **Riesige Projekte:** Ein leeres UE5-Projekt ist mehrere GB. Iteration ist langsam.
+
+**Wann Unreal Sinn macht:** Wenn du ein visuell beeindruckendes 3D-Spiel baust und ein Team hast. Für Solo-AI-First-Dev: Finger weg.
+
+---
+
+### 1.4 Weitere/Nischen-Engines
+
+#### Defold (Lua)
+- **Kosten:** Kostenlos (King/Activision-backed)
+- **AI-Eignung:** Mittel. Lua ist simpel, aber wenig LLM-Trainingsdaten.
+- **Nische:** Mobile 2D-Spiele
+- **Verdict:** Funktional, aber kleine Community. Godot ist besser.
+
+#### Pygame / Love2D (Python / Lua)
+- **AI-Eignung:** Exzellent für Prototyping! Python = beste LLM-Unterstützung überhaupt.
+- **Aber:** Keine echte Engine, eher Frameworks. Du baust alles selbst. Kein Editor, kein Scene-System.
+- **Verdict:** Gut für AI-generierte Game-Jams und Prototypen. Nicht für Release-Produkte.
+
+#### Phaser (JavaScript/TypeScript)
+- **AI-Eignung:** Gut — JS/TS sind top in LLM-Trainingsdaten.
+- **Aber:** Web-only (oder Electron-Wraps). Für Steam-Releases suboptimal.
+- **Nische:** Browser-Games, web-basierte Prototypen.
+
+#### LÖVE / Raylib
+- **Minimalistisch**, gut für Lernen, aber kein ernsthafter Konkurrent für Produktions-Engines.
+
+---
+
+## 2. Godot im Detail
+
+### 2.1 Warum gilt Godot als anfängerfreundlich?
+
+1. **Kleiner Editor (~40MB):** Download, entpacken, fertig. Kein Installer, kein Account, kein Login.
+2. **GDScript:** Python-ähnlich, minimaler Boilerplate. \`func _ready():\` statt \`public override void OnEnable() { base.OnEnable(); }\`.
+3. **Scene/Node-System:** Intuitiv. Alles ist ein Node, Nodes bilden Bäume, Bäume werden Scenes. Einfaches mentales Modell.
+4. **Alles integriert:** Physik, Animation, Tilemap, Partikel, UI — alles built-in. Kein Plugin-Hunting für Basics.
+5. **Gute Dokumentation:** Offizielle Docs sind solide, plus starke Community-Tutorials (GDQuest, Brackeys ist jetzt auch bei Godot).
+6. **Schnelle Iteration:** Play-Button → Spiel läuft in <2 Sekunden. Kein langer Build-Prozess.
+
+### 2.2 Godot vs Unity — Pros/Cons für Solo-Indie-Dev
+
+| Kriterium | Godot | Unity |
+|---|---|---|
+| **Preis** | ✅ Komplett kostenlos, MIT | ⚠️ Kostenlos bis $200K, dann teuer |
+| **2D-Engine** | ✅ Erstklassig, dedicated 2D-Pipeline | ⚠️ 2D ist "3D von oben", nicht nativ |
+| **3D-Engine** | ⚠️ Okay, verbessert sich, aber nicht AAA | ✅ Sehr gut |
+| **Lernkurve** | ✅ Flach, schnell produktiv | ⚠️ Steiler, mehr Konzepte zu lernen |
+| **AI-Codegen** | ✅ GDScript: gut generierbar | ✅✅ C#: exzellent generierbar |
+| **Projektstruktur** | ✅✅ Textbasiert, Git-freundlich | ❌ Binary Assets, Git-Probleme |
+| **Asset Store** | ⚠️ Kleiner, aber wachsend | ✅ Riesig |
+| **Console Export** | ⚠️ Über Drittanbieter (W4 Games) | ✅ Nativ |
+| **Steam Export** | ✅ Direkt, unkompliziert | ✅ Direkt |
+| **Editor-Größe** | ✅ ~40MB | ❌ ~10-15GB+ |
+| **Open Source** | ✅ MIT-Lizenz, vollständig | ❌ Proprietär |
+| **Stabilität** | ⚠️ Godot 4 hatte anfangs Bugs, jetzt stabil | ✅ Jahrelang gereift |
+| **Multiplayer** | ⚠️ Built-in, aber weniger mature | ✅ Netcode, Relay, etc. |
+
+**Bottom Line:** Für 2D-Indie-Games ist Godot die bessere Wahl. Für 3D-AAA-artige Projekte: Unity (oder Unreal). Für AI-First-Workflow: Godot gewinnt wegen textbasierter Dateien.
+
+### 2.3 Godot + AI: Plugins, LLM-Integration, Automatisierung
+
+**Code-Generierung mit LLMs:**
+- GDScript wird von Claude, GPT-4, Gemini gut unterstützt. Nicht so perfekt wie Python/C#, aber für die meisten Aufgaben ausreichend.
+- **Tipp:** In deinem System-Prompt die Godot-4-API-Referenz referenzieren. LLMs verwechseln gerne Godot 3 und 4 Syntax.
+- **Cursor + GDScript:** Funktioniert mit der godot-lsp-stdio-bridge. Nicht perfekt, aber brauchbar.
+
+**In-Game AI (NPCs etc.):**
+- **Noko Plugin:** Ollama-Anbindung direkt in Godot. Lokale LLMs für dynamische NPC-Dialoge.
+- **HTTP-Requests:** GDScript hat \`HTTPRequest\`-Node. API-Calls zu OpenAI/Anthropic/etc. trivial implementierbar.
+- **GDExtension:** Für Performance-kritische AI (z.B. lokale Inference) kannst du C/C++/Rust-Extensions laden.
+
+**Automatisierte Asset-Generierung:**
+- **Sprites/Textures:** Stable Diffusion / DALL-E → direkte Import als .png
+- **Tilemaps:** AI kann Tilemap-Daten als .tscn-Text generieren
+- **Sound:** ElevenLabs / Bark für SFX, Suno/Udio für Musik
+- **Level-Design:** Prozedurale Generation + LLM für Regelsets = machbar
+
+**Scene-Generierung per AI:**
+\`\`\`
+# Eine Godot .tscn Datei ist einfach Text:
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://player.gd" id="1"]
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+
+[node name="CollisionShape" type="CollisionShape2D" parent="."]
+\`\`\`
+→ Ein LLM kann das direkt generieren! Das ist Godots Killer-Feature für AI-Workflows.
+
+### 2.4 Godot für 2D Top-Down Roguelites
+
+**Eignung: ⭐⭐⭐⭐⭐ Exzellent**
+
+Godot hat alles was du brauchst:
+- **TileMapLayer** (Godot 4.3+): Perfekt für Top-Down-Maps mit Autotiling
+- **CharacterBody2D:** Für Spieler und Gegner mit eingebauter Physik
+- **NavigationAgent2D:** Pathfinding für Gegner
+- **AnimationPlayer + AnimatedSprite2D:** Für Charakter-Animationen
+- **Prozedurale Generation:** GDScript ist schnell genug für Dungeon-Generation
+- **Partikel-System:** GPU-Partikel für Effekte
+
+**Bewährte Godot-Roguelites:**
+- **Halls of Torment** — Top-Down Survivors-like, sehr erfolgreich auf Steam, gemacht mit Godot
+- **Brotato** — Godot, großer Erfolg
+- **Dome Keeper** — Godot
+
+Das Genre ist quasi Godots Heimspiel.
+
+### 2.5 GDScript vs C# in Godot
+
+| Kriterium | GDScript | C# (.NET) |
+|---|---|---|
+| **Lernkurve** | ✅ Sehr einfach | ⚠️ Steiler (OOP, Typsystem) |
+| **Performance** | Ausreichend für 2D | ✅ Schneller bei heavy computation |
+| **AI-Codegen** | ✅ Gut | ✅✅ Exzellent (mehr Trainingsdaten) |
+| **Engine-Integration** | ✅✅ Erstklassig, alle Tutorials | ⚠️ Gelegentlich Docs-Lücken |
+| **Tooling** | ⚠️ Godot-Editor only | ✅ VS Code, Rider, etc. |
+| **Community** | ✅ Größte Godot-Community | ⚠️ Kleiner, aber wachsend |
+| **Textbasiert** | ✅ .gd Dateien, simpel | ✅ .cs Dateien, standard |
+| **Zukunft** | ✅ Wird von Godot-Team gepflegt | ✅ .NET-Ökosystem ist riesig |
+
+**Empfehlung für AI-First:**
+- **GDScript** wenn du schnell iterieren willst und die Engine-Integration reibungslos sein soll.
+- **C#** wenn du maximale AI-Codegen-Qualität willst und schon C#-Erfahrung hast.
+- **Pragmatisch:** Starte mit GDScript. Wenn du merkst, dass LLMs zu viele GDScript-Fehler machen, wechsle auf C#. In Godot 4 kannst du beide Sprachen im selben Projekt mischen.
+
+### 2.6 Export zu Steam
+
+**Prozess:**
+1. **Steamworks-Account erstellen:** $100 einmalig pro Spiel (Steam Direct Fee)
+2. **Steamworks SDK:** Für Achievements, Leaderboards etc. → **GodotSteam** Plugin (Open Source, gut maintained)
+3. **Export in Godot:**
+   - Export-Presets für Windows, Linux, macOS anlegen
+   - \`Project → Export → Add Preset → Windows Desktop\`
+   - Oder CLI: \`godot --headless --export-release "Windows" build/game.exe\`
+4. **Upload zu Steam:** Über SteamPipe (Steamworks CLI-Tool) oder den Steam-Partner-Upload
+5. **Store Page:** Screenshots, Beschreibung, Tags etc. im Steamworks-Dashboard
+
+**Fallstricke:**
+- macOS-Export braucht Code-Signing (Apple Developer Account, $99/Jahr) — optional aber empfohlen
+- Steam Deck: Godot-Spiele laufen meistens out-of-the-box auf Linux/Steam Deck
+- GodotSteam muss als GDExtension eingebunden werden, nicht schwer aber ein Extra-Schritt
+
+**Automatisierbar?** Ja! Der gesamte Build+Upload-Prozess kann per CLI scripted werden. Perfekt für AI-gesteuerte Pipelines.
+
+---
+
+## 3. AI-First Game Engines & Text-to-Game
+
+### 3.1 Rosebud AI
+
+**Was ist es:** Browser-basierte Plattform zum "Vibe Coding" von Spielen. Du beschreibst dein Spiel in natürlicher Sprache, Rosebud generiert den Code.
+
+**Stand Feb 2026:**
+- Über 2 Millionen "vibe coded" Games erstellt
+- Unterstützt 2D und 3D
+- Multiplayer-Templates verfügbar
+- Nutzt Gemini als Backend
+
+**Ehrliche Einschätzung:**
+- ✅ Beeindruckend für Prototypen und Casual-Games
+- ✅ Keine Installation nötig, alles im Browser
+- ❌ Kein Export zu Steam möglich — Spiele laufen nur auf Rosebud's Plattform
+- ❌ Begrenzte Komplexität — für ein ernsthaftes Roguelite nicht geeignet
+- ❌ Vendor Lock-in: Dein Spiel lebt auf deren Plattform
+- **Verdict:** Spielzeug/Prototyping-Tool. Nicht für kommerzielle Releases.
+
+### 3.2 Weitere Text-to-Game / AI-First Plattformen
+
+#### Google GameNGen / Genie
+- Google Research hat Prototypen gezeigt die Spiele "frame by frame" per Neural Network generieren
+- **Stand:** Pure Forschung. Kein nutzbares Produkt.
+
+#### Scenario.gg
+- AI-generierte Game-Assets (Sprites, Textures, Concept Art)
+- Trainierbare Modelle für konsistenten Art-Style
+- **Nützlich als Tool**, aber keine Engine
+
+#### InWorld AI
+- AI-NPCs mit Persönlichkeit, Erinnerung, Emotionen
+- Integration in Unity/Unreal
+- **Nische:** NPC-Dialoge, nicht ganze Spiele
+
+#### Luma AI / Meshy / Tripo
+- 3D-Asset-Generierung aus Text/Bildern
+- Qualität wird besser, aber noch nicht Production-ready für die meisten Styles
+
+### 3.3 Wie weit ist "Prompte ein ganzes Spiel" realistisch?
+
+**Ehrliche Antwort (Feb 2026):**
+
+**Was funktioniert:**
+- ✅ Einfache Casual-Games (Flappy Bird, Pong, Snake) — ja, promptbar in Minuten
+- ✅ Game-Jam-Prototypen — brauchbar in Stunden
+- ✅ Einzelne Systeme (Inventar, Kampf, Pathfinding) — LLMs generieren das zuverlässig
+- ✅ Art Assets — Sprites, Tilesets via Stable Diffusion sind production-nutzbar
+- ✅ Musik/Sound — AI-generiert, Qualität ist akzeptabel bis gut
+
+**Was NICHT funktioniert:**
+- ❌ Ein komplettes, poliertes Roguelite mit 20h Content aus einem Prompt — vergiss es
+- ❌ Komplexe Gameplay-Loops die sich "gut anfühlen" — Game Feel braucht menschliches Tuning
+- ❌ Balancing — AI kann keine 50 Items balancen, das braucht Playtesting
+- ❌ Bug-freier Code über >5000 Zeilen — LLMs verlieren bei großen Codebases den Überblick
+
+**Realistisches Bild:**
+AI ist ein **10x Produktivitäts-Multiplikator**, kein **100x**. Du kannst als Solo-Dev mit AI in 3 Monaten schaffen, was früher 12 Monate gedauert hätte. Aber du brauchst immer noch Verständnis für Game Design, du musst AI-Output reviewen und korrigieren, und der letzte Feinschliff ist Handarbeit.
+
+**Die magische Zahl:** ~60-70% des Codes können von AI generiert werden. Die restlichen 30-40% sind Debugging, Integration, Tuning und die Stellen wo AI halluziniert.
+
+---
+
+## 4. Empfehlung: AI-gesteuerte Game-Dev Pipeline
+
+### 4.1 Beste Engine für AI-First Solo-Dev
+
+## 🏆 Godot 4 — Klarer Gewinner
+
+**Warum:**
+1. **Textbasierte Dateien** = AI kann Scenes, Resources und Code direkt generieren
+2. **Kostenlos** = Null Risiko, null Overhead
+3. **GDScript** = Simpel genug für zuverlässige AI-Codegen
+4. **2D erstklassig** = Perfekt für Roguelites
+5. **CLI/Headless** = Automatisierte Builds möglich
+6. **Open Source** = Kein Vendor Lock-in, Community-Plugins
+7. **Erfolgreiche Roguelites** = Bewährte Engine für dein Genre
+
+### 4.2 Die ideale AI-First Toolchain
+
+\`\`\`
+┌─────────────────────────────────────────────────────┐
+│                    GAME DESIGN                       │
+│  Claude/GPT-4 → GDD, Mechanik-Design, Balancing    │
+│  Spreadsheets → Item/Enemy-Daten (AI-generiert)     │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│                    CODE                              │
+│  Cursor/Windsurf + Claude → GDScript/C# generieren  │
+│  Godot LSP Bridge → bessere Autocomplete            │
+│  Git → Versionskontrolle (textbasiert = clean diffs)│
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│                    ART                               │
+│  Stable Diffusion / DALL-E 3 → Sprites, Tilesets    │
+│  Aseprite → Pixel Art Cleanup (manuell)             │
+│  Scenario.gg → Konsistenter Art Style               │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│                    AUDIO                             │
+│  Suno/Udio → Musik                                  │
+│  ElevenLabs / Bark → SFX, Voice Lines              │
+│  Audacity → Cleanup                                 │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│                    ENGINE                            │
+│  Godot 4.x → Editor + Runtime                       │
+│  GodotSteam → Steam-Integration                     │
+│  Noko/HTTP → In-Game LLM (optional)                 │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│                BUILD & RELEASE                       │
+│  Godot CLI → Headless Export                         │
+│  SteamPipe → Upload zu Steam                        │
+│  GitHub Actions → CI/CD (optional)                   │
+└─────────────────────────────────────────────────────┘
+\`\`\`
+
+### 4.3 Konkrete Workflow-Empfehlung
+
+**Phase 1: Design (1-2 Wochen)**
+- Claude/GPT-4 nutzen um Game Design Document zu erstellen
+- Mechaniken, Items, Gegner-Typen, Progression — alles als strukturierte Daten (JSON/CSV)
+- AI generiert Balancing-Tabellen als Startpunkt
+
+**Phase 2: Prototyp (2-4 Wochen)**
+- Godot 4 + Cursor/Claude
+- Core Gameplay Loop implementieren: Bewegung, Kampf, ein Raum
+- AI generiert ~70% des Codes, du fixst und integrierst
+- Greybox-Art (farbige Rechtecke) — erstmal Gameplay
+
+**Phase 3: Content & Art (4-8 Wochen)**
+- Stable Diffusion für Art Style finden + Sprites generieren
+- AI-generierte Tilesets → manuelles Cleanup in Aseprite
+- Level-Generation per Code (AI-geschrieben)
+- Items, Gegner, Bosse — Daten aus Phase 1, Code von AI
+
+**Phase 4: Polish (2-4 Wochen)**
+- Game Feel tuning — das ist der Teil den AI NICHT kann
+- Screen Shake, Hitstop, Partikel-Effekte, Sound-Feedback
+- Playtesting (selbst + Friends/Family/Discord)
+- Bug-Fixing (AI hilft beim Debuggen, aber du musst die Bugs finden)
+
+**Phase 5: Release (1-2 Wochen)**
+- Steam-Page einrichten
+- GodotSteam für Achievements
+- Export + Upload via CLI
+- Marketing: AI-generierte Trailer-Skripte, Store-Texte
+
+### 4.4 Budget-Übersicht
+
+| Posten | Kosten |
+|---|---|
+| Godot Engine | 0€ |
+| Steam Direct Fee | ~93€ ($100) |
+| Claude Pro / ChatGPT Plus | ~20€/Monat |
+| Cursor Pro | ~20€/Monat |
+| Stable Diffusion (lokal) | 0€ (wenn GPU vorhanden) |
+| Aseprite | 18€ (einmalig, Steam) |
+| Suno/Udio (Musik) | 0-10€/Monat |
+| Apple Developer (macOS) | 92€/Jahr (optional) |
+| **Gesamt (Minimum)** | **~150-200€ + ~40€/Monat** |
+
+### 4.5 Risiken & Realitätscheck
+
+⚠️ **AI-generierter Code hat Bugs.** Immer. Reviewe alles.
+
+⚠️ **Art-Konsistenz ist schwer.** AI-generierte Sprites sehen einzeln gut aus, aber passen stilistisch oft nicht zusammen. Plan für manuelles Cleanup ein.
+
+⚠️ **GDScript-Trainingsdaten sind begrenzter** als Python/C#. Erwarte mehr Halluzinationen bei Engine-spezifischen APIs. Halte die Godot-Docs offen.
+
+⚠️ **"Vibe Coding" skaliert nicht.** Für die ersten 2000 Zeilen ist es magisch. Ab 5000+ Zeilen musst du verstehen was der Code tut, sonst versinkst du in Bugs.
+
+⚠️ **Urheberrecht:** AI-generierte Assets befinden sich in einer rechtlichen Grauzone. Für kommerzielle Releases empfiehlt sich Dokumentation des Erstellungsprozesses und Modifikation der AI-Outputs.
+
+---
+
+## Fazit
+
+**Für einen Solo-Indie-Dev der ein 2D Top-Down Roguelite mit AI-First Ansatz bauen will, ist Godot 4 + GDScript + Claude/Cursor die optimale Kombination.** Die textbasierte Projektstruktur, die Kostenfreiheit, die bewährte 2D-Pipeline und die wachsende Community machen es zur besten Wahl.
+
+"Prompte ein ganzes Spiel" ist 2026 immer noch Science Fiction für alles über Casual-Game-Niveau. Aber "AI als 10x-Produktivitäts-Boost für einen kompetenten Solo-Dev" — das ist real und funktioniert heute.
+
+Die wichtigste Investition ist nicht das Tooling, sondern **dein Verständnis von Game Design und der Engine.** AI macht dich schneller, nicht klüger. Lerne Godot's Grundlagen (2-3 Wochen Tutorial), dann lass AI die Schreibarbeit übernehmen.
+
+---
+
+*Erstellt: 18. Februar 2026*
+*Quellen: Godot Docs, GitHub, Rosebud.ai, Unity.com, Community-Erfahrungen*
+`;
+    document.getElementById('doc-content').innerHTML = marked.parse(raw);
+    </script></main>
+<script>
+function toggleMenu(){
+    document.querySelector('.sidebar').classList.toggle('mobile-open');
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('sidebar-backdrop').classList.toggle('visible');
+}
+function closeMenu(){
+    document.querySelector('.sidebar').classList.remove('mobile-open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('sidebar-backdrop').classList.remove('visible');
+}
+document.querySelectorAll('.sidebar .nav-item').forEach(a=>a.addEventListener('click',closeMenu));
+</script>
+</body></html>

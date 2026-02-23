@@ -1,0 +1,5 @@
+# Don't ignore dist — Cloudflare Pages needs it
+# (or we let CF run build.py — but simpler to commit dist/)
+__pycache__/
+*.pyc
+.DS_Store

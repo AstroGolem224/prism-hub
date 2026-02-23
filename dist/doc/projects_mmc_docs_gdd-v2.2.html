@@ -1,0 +1,2464 @@
+<!DOCTYPE html><html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GDD v2.2 (aktuell) // PRISM Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --bg-void: #06060b;
+    --bg-base: #0a0a14;
+    --bg-surface: #111122;
+    --bg-elevated: #1a1a2e;
+    --neon-cyan: #00f0ff;
+    --neon-magenta: #ff00aa;
+    --neon-violet: #8b5cf6;
+    --neon-green: #39ff14;
+    --neon-amber: #ffb800;
+    --text-primary: #e0e0f0;
+    --text-secondary: #8888aa;
+    --text-muted: #555570;
+    --glass-bg: rgba(17, 17, 34, 0.6);
+    --glass-border: rgba(0, 240, 255, 0.08);
+    --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.3);
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Orbitron', var(--font-sans);
+    --sidebar-collapsed: 64px;
+    --sidebar-expanded: 260px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-void); }
+::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+* { scrollbar-width: thin; scrollbar-color: var(--bg-elevated) var(--bg-void); }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-void);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 15px;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+        radial-gradient(ellipse at 15% 50%, rgba(0, 240, 255, 0.035) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 90%, rgba(255, 0, 170, 0.02) 0%, transparent 50%);
+    z-index: 0; pointer-events: none;
+}
+body::after {
+    content: ''; position: fixed; inset: 0;
+    background: linear-gradient(rgba(0,240,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.015) 1px, transparent 1px);
+    background-size: 80px 80px; pointer-events: none; z-index: 0;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: var(--sidebar-collapsed);
+    background: var(--bg-surface);
+    border-right: 1px solid var(--glass-border);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden; z-index: 100;
+    display: flex; flex-direction: column;
+}
+.sidebar:hover { width: var(--sidebar-expanded); }
+.sidebar-logo {
+    padding: 18px 16px; border-bottom: 1px solid var(--glass-border);
+    white-space: nowrap; display: flex; align-items: center; gap: 12px; min-height: 64px;
+}
+.sidebar-logo .logo-icon { font-size: 1.6rem; flex-shrink: 0; width: 30px; text-align: center; filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.5)); }
+.sidebar-logo .logo-text { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--neon-cyan); letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 0 20px rgba(0, 240, 255, 0.4); opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .logo-text { opacity: 1; }
+.sidebar-avatar { padding: 12px 16px; text-align: center; opacity: 0; transition: opacity 0.3s 0.15s; }
+.sidebar:hover .sidebar-avatar { opacity: 1; }
+.sidebar-avatar img { width: 80px; height: 80px; border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 0 20px rgba(0, 240, 255, 0.15); }
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 4px 0; }
+.nav-section {
+    padding: 14px 20px 4px; font-family: var(--font-mono); font-size: 0.58em; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted);
+    white-space: nowrap; opacity: 0; transition: opacity 0.2s 0.1s;
+}
+.sidebar:hover .nav-section { opacity: 1; }
+.nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 20px; color: var(--text-secondary); text-decoration: none;
+    font-family: var(--font-mono); font-size: 0.8em; letter-spacing: 0.03em;
+    white-space: nowrap; border-left: 3px solid transparent; transition: all 0.2s ease;
+}
+.nav-item:hover { color: var(--neon-cyan); background: rgba(0, 240, 255, 0.04); border-left-color: var(--neon-cyan); }
+.nav-item.active { color: var(--neon-cyan); background: rgba(0, 240, 255, 0.07); border-left-color: var(--neon-cyan); }
+.nav-item .icon { width: 24px; flex-shrink: 0; text-align: center; font-size: 1.1em; }
+.nav-item .label { opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .nav-item .label { opacity: 1; }
+.sidebar-footer {
+    padding: 14px 20px; border-top: 1px solid var(--glass-border);
+    font-family: var(--font-mono); font-size: 0.65em; color: var(--text-muted);
+    white-space: nowrap; display: flex; align-items: center; gap: 8px;
+}
+.status-dot { width: 6px; height: 6px; background: var(--neon-green); border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 8px rgba(57, 255, 20, 0.5); animation: pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.sidebar-footer .footer-text { opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .footer-text { opacity: 1; }
+
+/* Main */
+.main {
+    margin-left: var(--sidebar-collapsed); padding: 2.5rem 3rem;
+    position: relative; z-index: 1; min-height: 100vh;
+    transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: calc(100vw - var(--sidebar-collapsed));
+}
+.sidebar:hover ~ .main { margin-left: var(--sidebar-expanded); max-width: calc(100vw - var(--sidebar-expanded)); }
+
+.hero-banner { width: 100%; height: 160px; border-radius: 14px; overflow: hidden; margin-bottom: 2rem; position: relative; border: 1px solid var(--glass-border); }
+.hero-banner img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) saturate(1.3); }
+.hero-banner .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(255,0,170,0.1)); mix-blend-mode: overlay; }
+.hero-banner .hero-text { position: absolute; bottom: 20px; left: 24px; }
+.hero-banner .hero-text h1 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 0.06em; text-shadow: 0 0 30px rgba(0, 240, 255, 0.4); }
+.hero-banner .hero-text p { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); }
+
+.page-title { font-family: var(--font-display); font-size: 2rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neon-cyan); text-shadow: 0 0 30px rgba(0, 240, 255, 0.25); margin-bottom: 0.3rem; }
+.page-subtitle { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 2.5rem; }
+
+h2 { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin: 2.5rem 0 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); }
+h3 { font-size: 1.05rem; color: var(--neon-cyan); margin: 1.5rem 0 0.5rem; }
+a { color: var(--neon-cyan); text-decoration: none; transition: all 0.15s; }
+a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
+
+.card {
+    background: var(--glass-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: 12px;
+    padding: 0.9rem 1.2rem; margin: 0.4rem 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card:hover { transform: translateY(-2px); border-color: rgba(0, 240, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
+.card a { display: flex; justify-content: space-between; align-items: center; color: var(--text-primary); font-weight: 500; font-size: 0.95rem; }
+.card a:hover { text-decoration: none; }
+.card .meta { color: var(--text-muted); font-size: 0.7rem; font-family: var(--font-mono); }
+.category { margin-bottom: 1rem; }
+
+.doc-viewer {
+    background: var(--glass-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: 14px; padding: 2.5rem;
+    font-size: 15px; line-height: 1.8;
+}
+.doc-viewer h1 { font-family: var(--font-display); font-size: 1.6rem; color: var(--neon-cyan); margin: 0 0 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.8rem; }
+.doc-viewer h2 { font-size: 1.2rem; color: var(--neon-cyan); text-transform: none; letter-spacing: normal; font-family: var(--font-sans); font-weight: 600; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.4rem; margin: 2rem 0 0.8rem; }
+.doc-viewer h3 { font-size: 1.05rem; color: var(--neon-violet); margin: 1.5rem 0 0.5rem; }
+.doc-viewer h4 { font-size: 0.95rem; color: var(--neon-amber); margin: 1.2rem 0 0.4rem; }
+.doc-viewer p { margin: 0.6rem 0; }
+.doc-viewer code { background: rgba(0, 240, 255, 0.08); padding: 2px 7px; border-radius: 5px; color: var(--neon-cyan); font-size: 0.88em; font-family: var(--font-mono); }
+.doc-viewer pre { background: rgba(0, 0, 0, 0.5); padding: 1.25rem; border-radius: 10px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--glass-border); }
+.doc-viewer pre code { background: none; padding: 0; color: var(--neon-green); display: block; }
+.doc-viewer ul, .doc-viewer ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+.doc-viewer li { margin: 0.3rem 0; }
+.doc-viewer li::marker { color: var(--neon-cyan); }
+.doc-viewer blockquote { border-left: 3px solid var(--neon-violet); padding: 0.5rem 1rem; margin: 1rem 0; background: rgba(139, 92, 246, 0.05); border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+.doc-viewer hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent); margin: 2rem 0; }
+.doc-viewer table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+.doc-viewer th, .doc-viewer td { padding: 0.6rem 1rem; border: 1px solid var(--glass-border); text-align: left; }
+.doc-viewer th { background: rgba(0, 240, 255, 0.06); color: var(--neon-cyan); font-family: var(--font-mono); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+.doc-viewer img { max-width: 100%; border-radius: 8px; }
+.doc-viewer strong { color: var(--text-primary); }
+
+.breadcrumb { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.8rem; font-family: var(--font-mono); }
+.breadcrumb a { color: var(--neon-cyan); }
+.breadcrumb .sep { margin: 0 0.5rem; opacity: 0.3; }
+
+.badge { display: inline-flex; align-items: center; padding: 2px 10px; font-family: var(--font-mono); font-size: 0.7em; text-transform: uppercase; border-radius: 4px; border: 1px solid; }
+.badge-cyan { color: var(--neon-cyan); border-color: rgba(0, 240, 255, 0.3); background: rgba(0, 240, 255, 0.08); }
+.badge-green { color: var(--neon-green); border-color: rgba(57, 255, 20, 0.3); background: rgba(57, 255, 20, 0.08); }
+.badge-red { color: #f87171; border-color: rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.08); }
+
+.footer { margin-top: 3rem; padding-top: 1.5rem; text-align: center; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); }
+.footer .line { height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent); margin-bottom: 1.5rem; }
+
+/* Hamburger (mobile) */
+.hamburger {
+    display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--bg-surface); border: 1px solid var(--glass-border);
+    cursor: pointer; align-items: center; justify-content: center;
+    backdrop-filter: blur(12px); box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.hamburger span { display: block; width: 20px; height: 2px; background: var(--neon-cyan); border-radius: 1px; transition: all 0.3s; position: relative; }
+.hamburger span::before, .hamburger span::after { content: ''; position: absolute; left: 0; width: 20px; height: 2px; background: var(--neon-cyan); border-radius: 1px; transition: all 0.3s; }
+.hamburger span::before { top: -6px; }
+.hamburger span::after { top: 6px; }
+.hamburger.open span { background: transparent; }
+.hamburger.open span::before { top: 0; transform: rotate(45deg); }
+.hamburger.open span::after { top: 0; transform: rotate(-45deg); }
+.sidebar-backdrop { display: none; position: fixed; inset: 0; z-index: 99; background: rgba(6,6,11,0.7); }
+.sidebar-backdrop.visible { display: block; }
+
+@media (max-width: 768px) {
+    .hamburger { display: flex; }
+    .sidebar { width: 280px !important; transform: translateX(-100%); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); z-index: 150; }
+    .sidebar.mobile-open { transform: translateX(0); }
+    .sidebar.mobile-open .logo-text, .sidebar.mobile-open .sidebar-avatar,
+    .sidebar.mobile-open .nav-section, .sidebar.mobile-open .nav-item .label,
+    .sidebar.mobile-open .footer-text { opacity: 1 !important; }
+    .sidebar:hover { width: 280px !important; }
+    .main { margin-left: 0 !important; max-width: 100vw !important; padding: 1rem !important; padding-top: 64px !important; }
+    .sidebar:hover ~ .main { margin-left: 0 !important; max-width: 100vw !important; }
+    .hero-banner { height: 110px; border-radius: 10px; }
+    .hero-banner .hero-text h1 { font-size: 1.2rem; }
+    .hero-banner .hero-text p { font-size: 0.7rem; }
+    .page-title { font-size: 1.4rem; }
+    .doc-viewer { padding: 1.2rem; font-size: 14px; }
+    .doc-viewer pre { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .doc-viewer table { display: block; overflow-x: auto; }
+    .card a { min-height: 44px; }
+    .nav-item { min-height: 44px; padding: 10px 20px; }
+    .search-bar input { font-size: 16px; }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head><body>
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <span class="logo-icon">🔮</span>
+        <span class="logo-text">PRISM</span>
+    </div>
+    <div class="sidebar-avatar">
+        <img src="static/avatar.png" alt="PRISM" onerror="this.style.display='none'">
+    </div>
+    <nav class="sidebar-nav"><div class="nav-section">Navigation</div>
+<a href="index.html" class="nav-item active"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
+<a href="news.html" class="nav-item"><span class="icon">📰</span><span class="label">AI News</span></a>
+<div class="nav-section">🎮 Meat Machine Cycle</div>
+<a href="doc/projects_mmc_docs_gdd-v2.2.html" class="nav-item"><span class="icon">📄</span><span class="label">GDD v2.2 (aktuell)</span></a>
+<a href="doc/projects_mmc_docs_sprint-plan.html" class="nav-item"><span class="icon">📄</span><span class="label">Sprint Plan</span></a>
+<a href="doc/projects_mmc_docs_architecture.html" class="nav-item"><span class="icon">📄</span><span class="label">Architektur</span></a>
+<a href="doc/projects_mmc_docs_roadmap.html" class="nav-item"><span class="icon">📄</span><span class="label">Roadmap</span></a>
+<a href="doc/MMC_meat-machine-cycle_PROJECT_STRUCTURE.html" class="nav-item"><span class="icon">📄</span><span class="label">Projekt-Struktur</span></a>
+<div class="nav-section">🔬 Research</div>
+<a href="doc/projects_research_blender-ai-pipeline.html" class="nav-item"><span class="icon">📄</span><span class="label">Blender AI Pipeline</span></a>
+<a href="doc/projects_research_gamedev-engines-ai.html" class="nav-item"><span class="icon">📄</span><span class="label">Gamedev Engines & AI</span></a>
+<a href="doc/projects_research_multi-machine-agent-teams.html" class="nav-item"><span class="icon">📄</span><span class="label">Multi-Machine Agent Teams</span></a>
+<a href="doc/projects_research_n8n-workflow-automation.html" class="nav-item"><span class="icon">📄</span><span class="label">n8n Workflow Automation</span></a>
+</nav>
+    <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        <span class="footer-text">PRISM Hub // Public</span>
+    </div>
+</aside>
+<button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
+<main class="main">
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span>gdd-v2.2.md</div>
+    <div class="doc-viewer" id="doc-content"></div>
+    <script>
+    const raw = `# MEAT MACHINE CYCLE — Game Design Document
+
+> **Version:** 2.1  
+> **Stand:** 2026-02-19  
+> **Engine:** Godot 4.6 (GDScript)  
+> **Genre:** Satirischer Cyberpunk-Roguelite (Top-Down, 2D)  
+> **Plattform:** Steam (Windows / Linux / Mac)
+
+---
+
+## Inhaltsverzeichnis
+
+1. [Executive Summary](#1-executive-summary)
+2. [Game Pillars](#2-game-pillars)
+3. [Tone & Setting](#3-tone--setting)
+4. [Core Gameplay Loop](#4-core-gameplay-loop)
+5. [Combat System](#5-combat-system)
+6. [Waffen-System](#6-waffen-system)
+7. [Upgrade-System](#7-upgrade-system)
+8. [Characters](#8-characters)
+9. [Enemies](#9-enemies)
+10. [Boss Design](#10-boss-design)
+11. [Dungeon Generation](#11-dungeon-generation)
+12. [Meta-Progression](#12-meta-progression)
+13. [Event-Room-Katalog](#13-event-room-katalog)
+14. [UI/UX Design](#14-uiux-design)
+15. [Audio Design](#15-audio-design)
+16. [Technische Architektur (Godot 4.6)](#16-technische-architektur-godot-46)
+17. [MVP-Scope & Roadmap](#17-mvp-scope--roadmap)
+18. [Risiken & Mitigation](#18-risiken--mitigation)
+19. [Implementierungsstatus (MVP)](#19-implementierungsstatus-mvp)
+20. [Architektur-Erkenntnisse](#20-architektur-erkenntnisse)
+
+---
+
+## 1. Executive Summary
+
+### Elevator Pitch
+
+**Meat Machine Cycle** ist ein satirischer Cyberpunk-Roguelite mit Top-Down-Perspektive, 32×32 Pixel-Art und Twin-Stick-Steuerung. Du spielst eine "Meat Machine" — halb Mensch, halb Billig-Implantat — gefangen im endlosen Arbeitszyklus eines dystopischen Megakonzerns. Upgrade dich mit absurden Waffen aus Haushaltsgeräten, kämpfe dich durch prozedural generierte Büro-Dungeons, stirb, werde auf Firmenkredit reanimiert, und versuch es nochmal.
+
+> *"Upgrade. Die. Repeat. Mostly die."*
+
+### Unique Selling Points
+
+- **Corporate-Satire als Weltenbau**: Keine generische Cyberpunk-Dystopie, sondern deutsche Bürokratie-Hölle mit Mega-Corp-Wahnsinn. Jedes System im Spiel ist als Firmenprozess verkleidet.
+- **Absurde Waffen mit echtem Gameplay-Depth**: Toaster-Arm, Büro-Tacker, Kettensägen-Regenschirm — jede Waffe hat einzigartige Mechaniken und Synergien.
+- **Tiefes Upgrade-Synergie-System**: 5 Tag-Kategorien (FLESH, CHROME, NERVE, VOLT, GLITCH) mit Set-Boni, Stacking-Regeln und Diminishing Returns.
+- **One-More-Run-Compulsion**: Schnelle Runs (25–35 Min.), sofortige Meta-Belohnung bei Tod, ständig neue Unlocks.
+
+### Zielgruppe
+
+- Fans von: Hades, Enter the Gungeon, Vampire Survivors, The Binding of Isaac, Slay the Spire
+- Alter: 16–35
+- Humor-Affinität: Office Space, Idiocracy, deutsche Bürokratie-Satire
+- Plattform-Erwartung: Steam (Keyboard+Maus primär, Gamepad unterstützt)
+
+### Technische Eckdaten
+
+| Parameter | Wert |
+|-----------|------|
+| Engine | Godot 4.6 |
+| Sprache | GDScript |
+| Art-Style | 32×32 Pixel Art, Neon-Urban-Satire-Palette |
+| Perspektive | Top-Down |
+| Steuerung | WASD + Maus-Aim (Twin-Stick) |
+| Ziel-Framerate | 60 FPS |
+| Ziel-Runlänge | 25–35 Minuten (Full Clear) |
+| Ziel-Biome | 4 Biome à 10 Räume + Boss |
+
+---
+
+## 2. Game Pillars
+
+Jedes Feature, jede Mechanik und jede Design-Entscheidung muss mindestens einen dieser Pfeiler bedienen. Wenn ein Feature keinen Pfeiler stärkt, gehört es nicht ins Spiel.
+
+### Pfeiler 1: Corporate Absurdity
+
+Die Welt nimmt sich todernst. Der Humor entsteht daraus, dass *alles* — vom Tod bis zur Waffe — ein bürokratischer Firmenprozess ist. Kein Cringe-Humor, kein "LOL RANDOM". Stattdessen: trocken, deutsch, präzise absurd.
+
+### Pfeiler 2: Meaningful Choices
+
+Jede Entscheidung zählt. Upgrade-Auswahl, Pfad auf der Map, Event-Choices, Waffen-Wechsel — der Spieler muss ständig Trade-offs abwägen. Keine "offensichtlich besten" Optionen.
+
+### Pfeiler 3: One-More-Run-Compulsion
+
+Der Zyklus Tod → Belohnung → Neuer Run muss unter 90 Sekunden dauern. Jeder Tod fühlt sich wie Fortschritt an. Frühe Meta-Unlocks kommen schnell, späte verlangen Investition.
+
+### Pfeiler 4: Tight Combat Feel
+
+Responsives Gameplay mit Frame-genauen Hitboxen, sauberen I-Frames, befriedigenden Hits und klaren Feedback-Loops. Das Spiel muss sich *gut anfühlen*, bevor es lustig sein darf.
+
+### Pfeiler 5: Build Diversity
+
+Kein Run spielt sich gleich. Das Synergie-System belohnt Experimentieren und bestraft Tunnel-Vision. Jede Charakter-Upgrade-Kombination soll eine eigene Spielerfahrung erzeugen.
+
+---
+
+## 3. Tone & Setting
+
+### Die Welt: Neo-Regensburg, 2089
+
+Die Stadt wird von Mega-Konzernen regiert, die alles privatisiert haben — inklusive Organe, Gedanken und Mikrowellen. Jeder Bürger ist eine "Meat Machine" — halb Mensch, halb billiges Implantat vom Discounter.
+
+Der "Cycle" ist das tägliche Ritual: Aufstehen, Kämpfen, Sterben, von der Firma reanimiert werden (auf Kredit natürlich), und wieder von vorn. Dein Arbeitsvertrag endet erst, wenn du die Schulden abbezahlt hast. Spoiler: Das passiert nie.
+
+### Fraktionen
+
+| Fraktion | Rolle | Ästhetik |
+|----------|-------|----------|
+| **MeatCorp™** | Der Arbeitgeber. Betreibt den Cycle. | Corporate-Blau, sterile Büros, Motivationsposter |
+| **FleshTek Industries** | Konkurrenz. Liefert die Billig-Implantate. | Neon-Grün, organisch-technisch, Laborästhetik |
+| **Die Papierlosen** | Untergrund-Widerstand. Ex-Angestellte ohne Vertrag. | Rostbraun, DIY, Kabelsalat |
+| **Der Server** | Die KI hinter allem. Vielleicht. | Glitch-Ästhetik, digitale Artefakte |
+
+### Humor-Style
+
+- **Satirisch**: Mega-Corps, Konsumkritik, Bürokratie-Wahnsinn
+- **Absurd**: Waffen aus Haushaltsgeräten, Skills die keinen Sinn machen aber funktionieren
+- **Selbstironisch**: Das Spiel weiß, dass es ein Spiel ist. NPCs beschweren sich über RNG.
+- **Deutsch-trocken**: Formulare ausfüllen bevor man den Boss bekämpfen darf
+
+### Tone Bible — Schreibregeln
+
+1. Alles klingt wie ein Konzern-Memo. Upgrade-Beschreibungen = Produktbeschreibungen mit Kleingedrucktem.
+2. Die Welt nimmt sich ernst. Der Humor kommt daher, dass ALLES bürokratisch und corporate ist — selbst der Tod.
+3. Referenzen: Office Space, Idiocracy, Cyberpunk aber wenn alles billig wäre, deutsche Bürokratie.
+4. Kein Cringe-Humor. Trocken > Laut. Weniger "HAHA RANDOM", mehr "...wait, that's actually how it works."
+5. NPCs sprechen in Corporate-Speak. Gegner haben Mitarbeiter-Badges.
+
+### Beispiel-Flavor-Texte
+
+> *"Ihr Toaster-Arm-Upgrade wurde genehmigt. Bitte beachten Sie: Garantie erlischt bei Nutzung als Flammenwerfer. Oder als Toaster."*
+
+> *"Willkommen bei MeatCorp™. Ihr Leben gehört uns. Buchstäblich. Siehe Paragraph 47b."*
+
+> *"Antrag auf Schadenszufügung abgelehnt. Bitte versuchen Sie es in 3 Sekunden erneut."*
+
+> *"Ihre Kündigung wurde eingereicht. Bearbeitungszeit: 47 Jahre. Bis dahin: zurück an die Arbeit."*
+
+---
+
+## 4. Core Gameplay Loop
+
+### Design Intent
+
+Der Loop besteht aus drei verschachtelten Zyklen: dem **Moment-to-Moment** (Kampf), dem **Room-to-Room** (Run) und dem **Run-to-Run** (Meta). Jeder Zyklus hat eigene Belohnungen und Entscheidungen.
+
+### Flowchart
+
+\`\`\`mermaid
+flowchart TD
+    Start[Run Start] --> CharSelect[Character & Loadout wählen]
+    CharSelect --> Map[Map-Knoten wählen]
+    Map --> RoomType{Raum-Typ?}
+    
+    RoomType -->|Kampf| Combat[Gegner bekämpfen]
+    RoomType -->|Elite| Elite[Elite-Gegner bekämpfen]
+    RoomType -->|Shop| Shop[Items kaufen / verkaufen]
+    RoomType -->|Event| Event[Event-Entscheidung treffen]
+    RoomType -->|Ruhe| Rest[Heilen + Upgrade wählen]
+    RoomType -->|Boss| Boss[Boss-Kampf]
+    
+    Combat --> Reward[Reward: 1 aus 3 Upgrades]
+    Elite --> Reward
+    Shop --> Map
+    Event --> Map
+    Rest --> Map
+    Reward --> Map
+    
+    Boss --> BossResult{Überlebt?}
+    BossResult -->|Ja| NextBiome[Safe Zone → Nächstes Biom]
+    BossResult -->|Nein| Death[Tod]
+    NextBiome --> Map
+    
+    Death --> Stats[Run-Stats anzeigen]
+    Stats --> MeatCoins[MeatCoins™ erhalten]
+    MeatCoins --> Hub[Meta-Hub: Permanente Upgrades]
+    Hub --> Start
+    
+    Boss -->|Finaler Boss besiegt| Victory[Sieg!]
+    Victory --> Stats
+\`\`\`
+
+### Pacing-Ziele
+
+| Metrik | Zielwert |
+|--------|----------|
+| Voller Run (4 Biome, Sieg) | 25–35 Minuten |
+| Einzelnes Biom | 6–9 Minuten |
+| Kampf-Raum | 30–60 Sekunden |
+| Elite-Raum | 60–90 Sekunden |
+| Boss-Kampf | 90–150 Sekunden |
+| Shop-Besuch | 20–40 Sekunden |
+| Event-Raum | 15–30 Sekunden |
+| Ruhe-Raum | 10–15 Sekunden |
+| Tod → Nächster Run-Start | < 90 Sekunden |
+
+### Spannungskurve pro Biom
+
+\`\`\`
+Spannung
+  ▲
+  │     ╱╲      ╱╲╱╲
+  │   ╱╱  ╲   ╱╱    ╲
+  │  ╱     ╲ ╱       ╲──── Boss
+  │ ╱       ╲  Ruhe     
+  │╱  Kampf     
+  └──────────────────────► Raum
+  1  2  3  4  5  6  7  8  9  10
+\`\`\`
+
+- **Räume 1–3**: Aufstieg — zunehmend schwierigere Kämpfe
+- **Räume 4–5**: Atempause — Ruhe/Shop/Event unterbricht die Spannung
+- **Räume 6–8**: Eskalation — Elite-Encounter, harte Kämpfe, dichte Spawns
+- **Raum 9**: Pre-Boss-Peak — härtester regulärer Kampf im Biom
+- **Raum 10**: Boss — Klimax, dann Release (Loot-Shower, Übergang zum nächsten Biom)
+
+### Zwischen-Biom Safe Zone
+
+Nach jedem Boss betritt der Spieler eine **Safe Zone** (15–20 Sekunden):
+- Garantierter Shop (Scrap ausgeben)
+- 1 aus 3 Upgrades wählen (kostenlos)
+- Teilheilung (25% Max-HP)
+- Lore-Snippet / Dialog
+
+---
+
+## 5. Combat System
+
+### Design Intent
+
+Das Kampfsystem priorisiert **Reaktion und Positionierung** über Stat-Checks. Jeder Treffer — gegeben und erhalten — soll bewusst und spürbar sein. Das System ist einfach zu lernen (WASD + Maus), aber durch Waffen-Interaktionen, Status-Effekte und Enemy-Patterns tief.
+
+### Damage Pipeline
+
+\`\`\`mermaid
+flowchart LR
+    A[Base Damage] --> B["× Weapon Mult"]
+    B --> C["× Upgrade Mult"]
+    C --> D["- Flat Armor"]
+    D --> E{Armor Floor Check}
+    E -->|"Normal"| F["Mitigated Damage"]
+    E -->|"< 15% Raw"| G["15% Raw Damage"]
+    F --> H{Crit Roll}
+    G --> H
+    H -->|"Crit!"| I["× Crit Multiplier"]
+    H -->|"Normal"| J["× 1.0"]
+    I --> K["× Status Bonus"]
+    J --> K
+    K --> L["floor = Final Damage"]
+\`\`\`
+
+### Schadensformel
+
+\`\`\`
+raw_damage    = base_damage × weapon_mult × upgrade_mult
+mitigated     = max(raw_damage - flat_armor, raw_damage × 0.15)
+crit_roll     = randf() < crit_chance
+crit_mult     = crit_multiplier if crit_roll else 1.0
+status_bonus  = Summe aller aktiven Status-Schadensboni (additiv)
+final_damage  = floor(mitigated × crit_mult × (1.0 + status_bonus))
+\`\`\`
+
+Der \`max(..., raw_damage × 0.15)\` Floor stellt sicher, dass Armor niemals unter 15% des Rohschadens reduziert — verhindert das "Kitzel-Problem" bei Spät-Game-Gegnern.
+
+### Referenzwerte (Biom 1 Baseline)
+
+| Parameter | Startwert | Anmerkung |
+|-----------|-----------|-----------|
+| \`base_damage\` | 8–12 (pro Charakter) | Pro Hit, Primärwaffe |
+| \`weapon_mult\` | 1.0 (Starter) bis 2.5 (Legendary) | Waffen-Rarität skaliert |
+| \`upgrade_mult\` | 1.0 Basis + 0.10 pro Damage-Upgrade | 5 Upgrades = 1.5× |
+| \`flat_armor\` (Spieler) | 0–15 | Aus Gear/Upgrades |
+| \`flat_armor\` (Gegner) | 0–30 | Nur Tanks/Bosse |
+| \`crit_chance\` | 5%–25% (pro Charakter) | Hard Cap: 75% |
+| \`crit_multiplier\` | 1.5×–2.5× (pro Charakter) | Hard Cap: 4.0× |
+
+### Beispielrechnungen
+
+**Früher Hit (Biom 1, Raum 3):**
+- base=10, weapon=1.0, upgrades=1.1, armor=2, kein Crit, kein Status
+- raw = 10 × 1.0 × 1.1 = 11 → mitigated = max(11-2, 11×0.15) = 9 → **final = 9**
+
+**Später Crit mit Status (Biom 3, Raum 8):**
+- base=10, weapon=1.8, upgrades=1.5, armor=12, Crit(2.2×), Frozen(+0.30)
+- raw = 10 × 1.8 × 1.5 = 27 → mitigated = max(27-12, 27×0.15) = 15 → final = floor(15 × 2.2 × 1.3) = **42**
+
+### Status-Effekte
+
+| Status | Typ | Effekt | Dauer | Tick-Rate |
+|--------|-----|--------|-------|-----------|
+| **Toxic** (Gift) | DoT | 3 DPS | 5s | alle 0.5s |
+| **Burning** (Feuer) | DoT | 5 DPS | 3s | alle 0.5s |
+| **Frozen** (Eis) | Debuff | +30% eingehender Schaden | 3s | — |
+| **Overclocked** (Schock) | Debuff | +25% Schaden auf nächsten Hit, dann weg | 1 Hit | instant |
+| **Corrupted** (Glitch) | Debuff | +15%, stackt 3× (max +45%) | 4s/Stack | — |
+
+**DoT-Formel:**
+\`\`\`
+dot_tick = dot_base_dps × tick_interval × (1.0 + status_bonus_from_other_debuffs)
+\`\`\`
+
+### Hit/Hurtbox-System
+
+Collision Layer-Architektur:
+
+| Layer | Name | Genutzt von |
+|-------|------|-------------|
+| 1 | World | Wände, Hindernisse |
+| 2 | Player Body | Spieler CharacterBody2D |
+| 3 | Enemy Body | Gegner CharacterBody2D |
+| 4 | Player Hurtbox | Spieler Hurtbox (Area2D) |
+| 5 | Enemy Hurtbox | Gegner Hurtbox (Area2D) |
+| 6 | Player Hitbox | Spieler Waffe/Projektil (Area2D) |
+| 7 | Enemy Hitbox | Gegner Waffe/Projektil (Area2D) |
+
+- Player Hitboxes (Layer 6) **masken** Enemy Hurtboxes (Layer 5)
+- Enemy Hitboxes (Layer 7) **masken** Player Hurtboxes (Layer 4)
+
+### Invincibility Frames (I-Frames)
+
+| Trigger | I-Frame-Dauer | Visuelles Feedback |
+|---------|---------------|-------------------|
+| Schaden erhalten | 0.5s | Sprite blinkt weiß (3× Flash) |
+| Dash | 0.3s (während Dash) | Sprite wird halbtransparent |
+| Auto-Save Proc | 1.0s | Glitch-Shader + "SAVE LOADED" Text |
+
+### Knockback
+
+\`\`\`
+knockback_velocity = hit_direction.normalized() × knockback_force
+knockback_duration = 0.15s
+\`\`\`
+
+Knockback-Werte pro Waffe (siehe Sektion 6).
+
+---
+
+## 6. Waffen-System
+
+### Design Intent
+
+Jede Waffe hat eine einzigartige Identität — nicht nur in Zahlen, sondern in *wie sie sich anfühlt*. Waffen sind keine Stat-Sticks; sie verändern fundamental, wie der Spieler den Raum nutzt und Gegner approached.
+
+### Waffen-Übersicht
+
+#### Toaster Arm (Ranged — Projektil)
+
+> *"Ihr Toaster-Arm-Upgrade wurde genehmigt. Garantie erlischt bei Nutzung als Flammenwerfer. Oder als Toaster."*
+
+| Stat | Wert |
+|------|------|
+| Base Damage | 8 |
+| Fire Rate | 3.0 Schuss/s |
+| Range | 400 px |
+| Projectile Speed | 500 px/s |
+| Knockback | 80 |
+| Special | Charged Shot (1.5s Hold): Flammenwerfer-Modus — Kegel-AoE, 15 DPS für 2s, Burning anwenden |
+| DPS (Normal) | 24 |
+| DPS (Charged) | 30 (AoE) |
+
+#### Büro-Tacker (Ranged — Burst)
+
+> *"Heftklammer-Aktennotiz: Bei Headshots bitte Formular 12b ausfüllen."*
+
+| Stat | Wert |
+|------|------|
+| Base Damage | 5 pro Klammer |
+| Fire Rate | 1.5 Bursts/s (3 Klammern pro Burst) |
+| Range | 350 px |
+| Projectile Speed | 600 px/s |
+| Spread | 12° |
+| Knockback | 40 |
+| Special | Headshot (Obere Hälfte der Hurtbox): Gegner wird 1.5s an nächste Wand gepinnt (Stun) |
+| DPS (alle treffen) | 22.5 |
+
+#### Kettensägen-Regenschirm (Melee — Block/Attack)
+
+> *"Für den distinguierten Angestellten, der Stil und Zerstörung gleichermaßen schätzt."*
+
+| Stat | Wert |
+|------|------|
+| Base Damage | 18 pro Swing |
+| Attack Speed | 1.8 Swings/s |
+| Range | 60 px (Melee-Arc) |
+| Arc | 120° |
+| Knockback | 150 |
+| Special | Block (Rechtsklick): Projektile werden reflektiert (50% Damage zurück). Block hält 0.8s, 2s Cooldown |
+| DPS | 32.4 |
+
+#### Die Mikrowelle (AoE — Platzierbar)
+
+> *"HINWEIS: Nicht für Lebensmittel verwenden. Oder für Gegner. Eigentlich für gar nichts."*
+
+| Stat | Wert |
+|------|------|
+| Base Damage | 12 DPS (DoT) |
+| Deploy Time | 0.5s |
+| Duration | 4s |
+| AoE Radius | 80 px |
+| Cooldown | 6s |
+| Knockback | 0 |
+| Special | Gegner in der Zone: Slow (50% Speed) + Burning. Bei Explosion nach 4s: 30 Damage (AoE Burst) |
+| DPS (Effektiv) | ~18 (inkl. Burst, geteilt durch Cooldown) |
+
+#### Aktenkoffer des Schmerzes (Hybrid — Melee/Ranged)
+
+> *"Enthält: Quartalsbericht, Schmerzensschreie, und eine überraschende Menge Shuriken."*
+
+| Stat | Wert |
+|------|------|
+| Melee Damage | 15 pro Swing |
+| Melee Speed | 2.0 Swings/s |
+| Melee Range | 50 px |
+| Ranged Damage | 8 pro Papier-Shuriken |
+| Ranged Count | 5 Shuriken (Fächer) |
+| Ranged Spread | 45° |
+| Ranged Cooldown | 3s |
+| Knockback (Melee) | 120 |
+| Special | Modus-Wechsel (Rechtsklick): Toggle zwischen Melee und Ranged. Schneller Wechsel = Bonus-Schaden für 2s |
+| DPS (Melee) | 30 |
+| DPS (Ranged Burst) | ~13.3 (40 / 3s) |
+
+#### Staubsauger 3000 (Utility — Crowd Control)
+
+> *"Saugt Gegner an. Spuckt sie wieder aus. MeatCorp™ übernimmt keine Haftung für verschluckte Kollegen."*
+
+| Stat | Wert |
+|------|------|
+| Sog-Damage | 3 DPS (während Ansaugen) |
+| Sog-Range | 200 px (Kegel, 60°) |
+| Sog-Dauer | Max 2s |
+| Ausspuck-Damage | 20 + 50% der Max-HP des ausgespuckten Gegners (auf getroffene Gegner) |
+| Ausspuck-Speed | 800 px/s |
+| Cooldown | 4s nach Ausspucken |
+| Special | Kann kleine Gegner als Projektile auf andere Gegner feuern. Boss-Immun. |
+| DPS (Effektiv) | Variabel — abhängig von Crowd-Density |
+
+#### Kabel-Peitsche (Melee — Reichweite)
+
+> *"Endlich ein Nutzen für USB-C. Lateraler Transfer-Bonus nicht inbegriffen."*
+
+| Stat | Wert |
+|------|------|
+| Base Damage | 12 |
+| Attack Speed | 1.5 Swings/s |
+| Range | 140 px (Melee-Linie) |
+| Width | 20 px |
+| Knockback | 60 |
+| Pierce | Trifft alle Gegner in der Linie |
+| Special | Jeder 3. Hit: Overclocked-Status auf alle getroffenen Gegner (nächster Hit +25%) |
+| DPS (Single Target) | 18 |
+| DPS (3+ Gegner) | 54+ |
+
+### Waffen-Balance-Philosophie
+
+| Waffe | Primärrolle | Stärke | Schwäche |
+|-------|-------------|--------|----------|
+| Toaster Arm | Allround-Ranged | Konsistenter DPS, Charged für AoE | Niedrige Burst-Power |
+| Büro-Tacker | Burst/CC | Stun auf Headshot, gut gegen Einzelziele | Niedrige AoE |
+| Kettensägen-Regenschirm | Melee-Tank | Höchster Melee-DPS, Projektil-Block | Kurze Range, riskant |
+| Die Mikrowelle | Zone-Control | Area-Denial, starker Slow | Selbst-Immobil beim Deploy |
+| Aktenkoffer | Hybrid-Flex | Anpassungsfähig, Modus-Wechsel-Bonus | In keinem Modus "der Beste" |
+| Staubsauger 3000 | Crowd-Control | Einzigartiger CC, Gegner als Waffe | Nutzlos gegen Bosse, Einzelziele |
+| Kabel-Peitsche | Cleave/Multi | Pierce, Overclocked-Proc | Niedrige Single-Target-Power |
+
+---
+
+## 7. Upgrade-System
+
+### Design Intent
+
+Upgrades sind die Seele des Roguelite-Loops. Jeder Run wird durch die Kombination zufälliger Upgrades einzigartig. Das System belohnt sowohl gezielte Synergien als auch glückliche Zufallskombinationen.
+
+### Rarität und Drop-Wahrscheinlichkeiten
+
+| Rarität | Farbe | Stat-Multiplikator | Basis-Gewicht |
+|---------|-------|--------------------|---------------|
+| **Common** | Grau | 1.0× | 60% |
+| **Rare** | Blau | 1.4× | 25% |
+| **Epic** | Lila | 1.9× | 10% |
+| **Legendary** | Gold | 2.5× | 4% |
+| **Cursed** | Rot/Schwarz | 2.8× + Nachteil | 1% |
+
+### Drop-Raten nach Quelle
+
+| Quelle | Drop? | Common | Rare | Epic | Legendary | Cursed |
+|--------|-------|--------|------|------|-----------|--------|
+| Normaler Gegner | 15% Chance | 75% | 20% | 5% | 0% | 0% |
+| Elite-Gegner | 100% | 30% | 45% | 20% | 4% | 1% |
+| Mini-Boss | 100% (2 Items) | 0% | 40% | 40% | 15% | 5% |
+| Boss | 100% (3 Items) | 0% | 20% | 45% | 25% | 10% |
+| Truhe (Normal) | 100% | 50% | 35% | 12% | 3% | 0% |
+| Truhe (Verschlossen, 30 Scrap) | 100% | 10% | 40% | 35% | 12% | 3% |
+
+### Pity-System
+
+Nach jedem Nicht-Rare+-Drop aus garantierten Quellen steigt ein \`pity_counter\`:
+
+\`\`\`
+adjusted_rare_plus_chance = base_rare_plus_chance + (pity_counter × 0.05)
+\`\`\`
+
+| Pity Counter | Bonus | Effektive Rare+ Chance (Truhe) |
+|-------------|-------|-------------------------------|
+| 0 | +0% | 50% |
+| 3 | +15% | 65% |
+| 5 | +25% | 75% |
+| 8 | +40% | 90% |
+| 10 | **Garantiert Rare+** | 100% |
+
+Pity Reset bei jedem Rare+-Drop.
+
+### Synergie-Tags
+
+Jedes Upgrade gehört zu genau einer **Primär-Kategorie** und optional einer **Sekundär-Kategorie**:
+
+| Tag | Thema | Farbe |
+|-----|-------|-------|
+| **FLESH** | HP, Regen, Lifesteal, Thorns | Rot |
+| **CHROME** | Armor, Schilde, Schadens-Reduktion | Silber |
+| **NERVE** | Speed, Dodge, Attack Speed, Crit | Gelb |
+| **VOLT** | Elementar-Schaden, Status-Effekte, AoE | Cyan |
+| **GLITCH** | Zufall, Curses, High-Risk/Reward | Magenta |
+
+### Stacking-Regeln
+
+**Additives Stacking** (gleichnamige Upgrades):
+- Selbes Upgrade 2× = doppelter Bonus. +10% Damage + +10% Damage = +20%
+- Max 5 Stacks pro einzelnes Upgrade
+
+**Multiplikatives Stacking** (Cross-Category):
+- Verschiedene Kategorien multiplizieren sich
+- FLESH Lifesteal (5%) × NERVE Attack Speed (+30%) = mehr Heilung pro Sekunde
+
+**Diminishing Returns** (Soft Caps):
+
+| Stat | Soft Cap | Effekt über Cap |
+|------|----------|-----------------|
+| Crit Chance | 50% | Jeder Punkt über 50% gibt nur 0.5% statt 1% |
+| Attack Speed | +80% | Jeder Punkt über 80% gibt nur 0.33% |
+| Move Speed | +60% | Jeder Punkt über 60% gibt nur 0.5% |
+| Damage% | +150% | Jeder Punkt über 150% gibt nur 0.5% |
+| Armor | 40 | Jeder Punkt über 40 gibt nur 0.5 |
+
+### Synergie-Trigger
+
+3+ Upgrades desselben Tags = **Set-Bonus**:
+
+| Tag | 3er-Synergie | 5er-Synergie |
+|-----|-------------|-------------|
+| **FLESH** | Kills heilen 2 HP | Kill: 8% Chance auf Health-Orb |
+| **CHROME** | +10 Flat Armor | Tödlicher Schaden: Überlebe mit 1 HP (1×/Biom) |
+| **NERVE** | +15% Move Speed | Jeder 5. Hit ist automatisch ein Crit |
+| **VOLT** | Status-Effekte dauern 50% länger | 2 Status auf selben Gegner → "Meltdown" (AoE-Burst, 40 Damage) |
+| **GLITCH** | +1 Auswahl bei Upgrade-Selection | 20% Chance auf "Glitch Event" pro Raum (random positiv/negativ) |
+
+### Passive Upgrades — Katalog
+
+#### FLESH-Kategorie
+
+| Upgrade | Effekt | Flavor |
+|---------|--------|--------|
+| **Biohazard Sucker** | Heilt 3 HP wenn du über tote Gegner läufst (Radius: 40px) | *"Recycling ist wichtig."* |
+| **Auto-Save** | Bei Tod: 30% Chance im selben Raum wiederbelebt (1×/Run) | *"Corrupted save file loaded successfully."* |
+| **Organische Redundanz** | +1 HP Regen/s wenn unter 50% HP | *"Paragraph 12: Selbstreparatur auf eigene Kosten."* |
+
+#### CHROME-Kategorie
+
+| Upgrade | Effekt | Flavor |
+|---------|--------|--------|
+| **Bürokratie-Schild** | 1×/Raum: Tödlicher Hit → Block + Gegner füllt Formular aus (3s Stun) | *"Antrag auf Schadenszufügung abgelehnt."* |
+| **Discount-Panzerung** | +50% Armor, aber 5% Chance dass sie abfällt | *"MeatCorp™ Qualität."* |
+| **Terms & Conditions** | Gegner die dich erstmals treffen: 1s Pause (AGB akzeptieren) | *"Niemand liest die."* |
+
+#### NERVE-Kategorie
+
+| Upgrade | Effekt | Flavor |
+|---------|--------|--------|
+| **Koffein-Implantat** | +30% Move Speed, -10% Genauigkeit | *"Zittern ist ein Feature."* |
+| **Rubber Duck Debugging** | Gummi-Ente folgt dir. +15% Crit Chance. | *"Quack."* |
+| **Rage-Compiler** | Schaden steigt +8% pro Kill im Raum. Reset bei neuem Raum. | *"Segmentation Fault: Enemies"* |
+
+#### VOLT-Kategorie
+
+| Upgrade | Effekt | Flavor |
+|---------|--------|--------|
+| **Spam-Filter** | 20% Chance dass feindliche Projektile dich ignorieren | *"Diese Kugel wurde als Spam markiert."* |
+| **Kabellose Übertragung** | Deine Status-Effekte springen auf nahe Gegner über (60px) | *"Bluetooth, aber schmerzhaft."* |
+| **Überlastungsschutz** | Bei 3+ Gegnern im Umkreis (100px): +25% AoE-Damage | *"Sicherung raus, Schaden rein."* |
+
+#### GLITCH-Kategorie
+
+| Upgrade | Effekt | Flavor |
+|---------|--------|--------|
+| **404 Not Found** | Jeder 4. Hit: 0 Damage ODER 4× Damage (50/50) | *"Verhalten wie dokumentiert."* |
+| **Stack Overflow** | Beim 10. Kill im Raum: Alle Gegner nehmen 50 Damage | *"Exception unhandled. Gegner unhandled."* |
+| **Random Access Memory** | Bei Upgrade-Auswahl: +1 zufälliges Upgrade als Bonus | *"malloc succeeded. Somehow."* |
+
+### Cursed Upgrades (Risk/Reward)
+
+| Upgrade | Pro | Contra | Tag |
+|---------|-----|--------|-----|
+| **Overclocked Legs** | Doppelter Dash | Jeder Dash kostet 1 HP | NERVE |
+| **Glass Cannon Chip** | +100% Schaden | Max HP halbiert | GLITCH |
+| **YOLO Protocol** | 3× Schaden auf ersten Hit/Gegner | Kann nicht heilen | GLITCH |
+| **Schulden-Inkasso** | +100% Scrap-Drops | Shops kosten 50% mehr | CHROME |
+| **Zitternde Optik** | +40% Crit Chance | Screen Shake bei jedem Hit | NERVE |
+| **Übertaktetes Herz** | +3 HP Regen/s | Max HP -30% | FLESH |
+
+### Power Ceiling Management
+
+1. **Stack-Caps** (max 5 pro Upgrade)
+2. **Soft Caps** mit Diminishing Returns auf Key-Stats
+3. **Upgrade-Pool-Dilution** — Pool wächst, Synergien werden schwerer zu vervollständigen
+4. **Opportunity Cost** — FLESH wählen = NERVE nicht wählen
+5. **Boss-Skalierung** — Finaler Boss skaliert mit Player Power: \`boss_hp *= 1.0 + (total_upgrades × 0.02)\`
+
+---
+
+## 8. Characters
+
+### Design Intent
+
+4 Charaktere bei Launch, jeder mit eigenem Playstyle, Startwaffe und Passive. Kein Charakter ist "besser" — jeder belohnt einen anderen Spielstil und synergiert mit anderen Upgrade-Tags.
+
+### Klaus — Der Bürokrat (Starter)
+
+> *"Ex-Sachbearbeiter bei MeatCorp™. Wurde 'freiwillig' zum Kampf-Upgrade-Tester befördert."*
+
+| Stat | Wert |
+|------|------|
+| HP | 100 |
+| Move Speed | 300 px/s |
+| Base Damage | 10 |
+| Crit Chance | 10% |
+| Crit Multiplier | 1.75× |
+| Armor | 5 |
+| Dodge Chance | 5% |
+
+**Startwaffe:** Aktenkoffer des Schmerzes  
+**Passive — "Beamten-Mentalität":** 10% Chance, dass Gegner ihn ignorieren (1s, Cooldown 8s). Startet mit 1 zufälligem Common-Upgrade.  
+**Playstyle:** Balanced, gut für Anfänger. Profitiert von allen Tag-Kategorien gleichermaßen.  
+**Bevorzugte Tags:** Keine Präferenz (Allrounder)
+
+### Roxy — Die Mechanikerin (Unlock: 50 Kills)
+
+> *"Baut ihre eigenen Implantate aus Schrott. MeatCorp™ hasst diesen Trick."*
+
+| Stat | Wert |
+|------|------|
+| HP | 80 |
+| Move Speed | 280 px/s |
+| Base Damage | 8 |
+| Crit Chance | 5% |
+| Crit Multiplier | 1.5× |
+| Armor | 2 |
+| Dodge Chance | 8% |
+
+**Startwaffe:** Staubsauger 3000  
+**Passive — "DIY-Implantate":** Alle Upgrades haben +1 zufälligen Bonus-Effekt UND +1 zufälligen Nachteil. VOLT-Synergie braucht nur 2 statt 3 Upgrades.  
+**Playstyle:** Chaos/High Variance. Jeder Run ist unberechenbar.  
+**Bevorzugte Tags:** VOLT, GLITCH
+
+### Unit-404 — Der Defekte Bot (Unlock: Boss 3 besiegen)
+
+> *"Kampfroboter mit Softwarefehler. Hält sich für einen Barista."*
+
+| Stat | Wert |
+|------|------|
+| HP | 60 |
+| Move Speed | 340 px/s |
+| Base Damage | 14 |
+| Crit Chance | 20% |
+| Crit Multiplier | 2.5× |
+| Armor | 0 |
+| Dodge Chance | 12% |
+
+**Startwaffe:** Die Mikrowelle  
+**Passive — "404 Error":** Unter 30% HP: +50% Damage, +25% Crit Chance ("Overclock-Modus"). Visuell: Sprite glitcht.  
+**Playstyle:** Glass Cannon. Extrem riskant, extrem belohnend.  
+**Bevorzugte Tags:** NERVE, GLITCH
+
+### Dr. Fleisch — Der Bio-Hacker (Unlock: 20 einzigartige Upgrades sammeln)
+
+> *"War mal Chirurg. Jetzt upgradet er sich selbst. Es läuft... mittel."*
+
+| Stat | Wert |
+|------|------|
+| HP | 140 |
+| Move Speed | 250 px/s |
+| Base Damage | 8 |
+| Crit Chance | 5% |
+| Crit Multiplier | 1.5× |
+| Armor | 12 |
+| Dodge Chance | 0% |
+
+**Startwaffe:** Biohazard Sucker (als Waffe: Toxischer Schleim, Ranged, appliziert Toxic)  
+**Passive — "Organisch":** Regen 1 HP/s. Schaden erhalten → +5% Damage für 5s (stackt 5×). FLESH-Synergie braucht nur 2 statt 3 Upgrades. Tech-Upgrades (CHROME, VOLT) sind 20% schwächer.  
+**Playstyle:** Sustain/Tank. Überlebt alles, aber killt langsam.  
+**Bevorzugte Tags:** FLESH
+
+### Balance-Vergleich
+
+| Charakter | Raw HP | Effektive HP (vs 10 DPS/60s) | Design-Absicht |
+|-----------|--------|-------------------------------|----------------|
+| Klaus | 100 | ~168 | Konsistent, verzeihend |
+| Roxy | 80 | ~124 | Fragil, aber disabling |
+| Unit-404 | 60 | ~92 (killt aber schneller) | Stirb schnell oder kill schnell |
+| Dr. Fleisch | 140 | ~280+ | Überlebt alles |
+
+---
+
+## 9. Enemies
+
+### Design Intent
+
+Gegner sind keine HP-Schwämme — jeder Typ hat ein einzigartiges Verhaltensmuster, das den Spieler zwingt, seine Taktik anzupassen. Gegner-Kombinationen erzeugen emergente Herausforderungen.
+
+### Difficulty Scaling
+
+#### Pro-Raum-Skalierung (innerhalb eines Bioms)
+
+\`\`\`
+room_scale = 1.0 + (room_index × 0.08)
+\`\`\`
+
+| Biom-Raum # | room_scale | Effekt auf 50 HP Gegner |
+|-------------|------------|------------------------|
+| 1 | 1.00 | 50 HP |
+| 3 | 1.16 | 58 HP |
+| 5 | 1.32 | 66 HP |
+| 7 | 1.48 | 74 HP |
+| 9 (Pre-Boss) | 1.64 | 82 HP |
+
+#### Pro-Biom-Multiplikatoren
+
+| Biom | HP Mult | DMG Mult | Speed Mult | Spawn Mult |
+|------|---------|----------|------------|------------|
+| 1 — Büro-Komplex | 1.0 | 1.0 | 1.0 | 1.0 |
+| 2 — Server-Katakomben | 1.6 | 1.4 | 1.1 | 1.2 |
+| 3 — Penthouse-Etage | 2.4 | 1.8 | 1.2 | 1.35 |
+| 4 — Recycling-Anlage | 3.5 | 2.3 | 1.3 | 1.5 |
+
+#### Kombinierte Formeln
+
+\`\`\`
+enemy_hp     = base_hp × room_scale × biome_hp_mult
+enemy_damage = base_dmg × (1.0 + room_index × 0.05) × biome_dmg_mult
+enemy_speed  = base_speed × (1.0 + room_index × 0.03) × biome_speed_mult
+spawn_count  = floor(base_spawn × (1.0 + room_index × 0.06) × biome_spawn_mult)
+\`\`\`
+
+### Normale Gegner (Biom 1, Raum 0 — unskalierte Basiswerte)
+
+#### Cubicle Drone (Melee Rusher)
+
+> *"Weiß nicht mal, dass er kämpft. Hat den Memo nicht gelesen."*
+
+| Stat | Wert |
+|------|------|
+| HP | 25 |
+| Damage | 8 (Kontakt) |
+| Speed | 280 px/s |
+| Attack Rate | 0.8s |
+| XP | 5 |
+| Scrap | 1–2 |
+
+**Verhalten:** Patrol → Detection (150px) → Chase → Kontakt-Damage  
+**KI State Machine:**
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Patrol: Timer abgelaufen
+    Patrol --> Chase: Spieler erkannt
+    Chase --> Attack: In Melee-Range
+    Attack --> Chase: Spieler entkommt
+    Chase --> Patrol: Spieler verloren
+    Attack --> Dead: HP <= 0
+    Chase --> Dead: HP <= 0
+    Patrol --> Dead: HP <= 0
+\`\`\`
+
+#### Spam Bot (Ranged — Burst)
+
+> *"Re: Re: Re: Fw: DRINGEND: Projektile!!!"*
+
+| Stat | Wert |
+|------|------|
+| HP | 20 |
+| Damage | 10 (Projektil) |
+| Speed | 180 px/s |
+| Attack Rate | 1.5s |
+| Projectile Speed | 350 px/s |
+| XP | 6 |
+| Scrap | 2–3 |
+
+**Verhalten:** Steht still beim Feuern. 3er-Burst E-Mail-Projektile. Versucht Distanz zu halten (Retreat wenn Spieler < 100px).
+
+#### Firewall (Tank/Shield)
+
+> *"Zugang verweigert. Bitte wenden Sie sich an Ihren Administrator."*
+
+| Stat | Wert |
+|------|------|
+| HP | 80 |
+| Damage | 6 (Kontakt) |
+| Speed | 140 px/s |
+| Attack Rate | 2.0s |
+| XP | 10 |
+| Scrap | 3–4 |
+
+**Verhalten:** Frontaler Schild blockiert 100% Schaden. Muss von hinten/seitlich angegriffen werden. Dreht sich langsam zum Spieler (Rotationsrate: 90°/s).
+
+#### Patch Tuesday (Suicide)
+
+> *"Systemupdate wird installiert. Bitte nicht ausschalten."*
+
+| Stat | Wert |
+|------|------|
+| HP | 15 |
+| Damage | 25 (AoE bei Tod) |
+| Speed | 320 px/s |
+| AoE Radius | 60 px |
+| XP | 4 |
+| Scrap | 1–2 |
+
+**Verhalten:** Rennt auf Spieler zu und explodiert. Hinterlässt "Update Installing..."-Slow-Zone (40% Slow, 3s Dauer, 80px Radius).
+
+#### Clipboard Karen (Support/Healer)
+
+> *"Ich möchte mit Ihrem Vorgesetzten sprechen. JETZT."*
+
+| Stat | Wert |
+|------|------|
+| HP | 30 |
+| Damage | 4 (Kontakt) |
+| Speed | 160 px/s |
+| Heal Rate | 10 HP/3s (auf verbündeten Gegner) |
+| Heal Range | 120 px |
+| XP | 8 |
+| Scrap | 2–3 |
+
+**Verhalten:** Heilt den nahesten verwundeten Gegner. Beschwert sich dabei laut (Audio-Cue = Prioritäts-Target-Indikator). Flieht wenn allein.
+
+### Spawn-Regeln pro Raum-Position
+
+| Raum-Position | Erwarteter Encounter |
+|---------------|---------------------|
+| 1–2 | 4–6 Basis-Gegner, keine Elites |
+| 3–4 | 6–8 Gegner, 1 harter Typ beigemischt |
+| 5–6 | 8–10 Gegner, gemischte Typen, Umgebungsgefahren |
+| 7–8 | 10–12 Gegner inkl. Ranged und Support |
+| 9 | 10–14 Gegner, dichte Spawns |
+| 10 | Boss-Kampf |
+
+---
+
+## 10. Boss Design
+
+### Design Intent
+
+Jeder Boss ist ein Skill-Check, kein Gear-Check. Bosse haben telegraph-basierte Angriffe, klare Phasen-Übergänge und unique Mechaniken die den Spieler zwingen, gelerntes Verhalten anzupassen. Kein Boss sollte durch "mehr DPS" trivial werden.
+
+### Mini-Bosse
+
+#### Der Abteilungsleiter
+
+> *"Ihr Meeting wurde auf sofort verschoben. Teilnahme ist verpflichtend."*
+
+| Stat | Wert |
+|------|------|
+| HP | 300 |
+| Damage | 15 |
+| Speed | 200 px/s |
+| Attack Rate | 1.2s |
+| Scrap | 25–40 |
+
+**Mechanik:**
+- **Charge-Attack:** Rennt auf Spieler zu (2× Speed für 1.5s). Telegraph: 0.8s Aufleuchten.
+- **Meeting einberufen (alle 15s):** 2 Cubicle Drones spawnen als Adds.
+- **"Cage Phase" (bei 50% HP):** Wände eines Meeting-Raums fahren hoch. Spieler ist 8s eingesperrt mit dem Boss. Kein Entkommen.
+
+#### Printer Jam
+
+> *"PC LOAD LETTER. Was zur Hölle bedeutet PC LOAD LETTER?"*
+
+| Stat | Wert |
+|------|------|
+| HP | 400 |
+| Damage | 12 (Homing-Papier-Orbs) |
+| Speed | 0 (stationär) |
+| Attack Rate | 2.0s |
+| Scrap | 30–45 |
+
+**Mechanik:**
+- **Papier-Burst:** 3 Homing-Papier-Projektile (langsam, 200 px/s, aber tracking).
+- **Papierstau (alle 10s):** Zieht Spieler an (Sog, 150 px/s Richtung Drucker). 3s Dauer.
+- **Gift-Toner (bei 50% HP):** Erzeugt Toxic-Zonen auf dem Boden (3 DPS, 4s).
+- **Shield-Phase (bei 50% HP):** 3s Invulnerabilität, spawnt 4 Patch Tuesdays.
+
+### Bosse (Biom-Ender)
+
+#### Boss 1: CEO-Mech (Büro-Komplex)
+
+> *"Vierteljährliche Ergebnisse sind raus. Sie sind... enttäuschend."*
+
+| Stat | Wert |
+|------|------|
+| HP | 800 |
+| Damage | 18 |
+| Speed | 160 px/s |
+| Scrap | 50–80 |
+
+**Phase 1 (100%–50% HP) — "PowerPoint-Präsentation":**
+- Laser-Präsentation: 3 rotierende Laserstrahlen vom Mech. Vorhersagbares Muster, Telegraph 1.5s.
+- Projektil-Salve: 4 "Quarterly Report"-Akten als Projektile (8 Damage each, Spread).
+- Movement: Langsames Verfolgen des Spielers.
+
+**Phase 2 (50%–20% HP) — "Quarterly Earnings Rage":**
+- Speed +50%. Angriffsmuster beschleunigt.
+- Spawnt 3 Cubicle Drones.
+- Ground Slam (alle 8s): AoE um den Mech (120px Radius, 22 Damage). Telegraph: Springt hoch (1s).
+
+**Phase 3 (20%–0% HP) — "Golden Parachute":**
+- Fliegt nach oben, wird unerreichbar für 3s.
+- Bombardiert von oben: 6 Zielmarkierungen erscheinen am Boden (2s Telegraph), dann Explosion (30 Damage, 60px Radius pro Einschlag).
+- Landet nach 3 Bomben-Wellen. Repeat.
+
+#### Boss 2: Das HR-Tribunal (Server-Katakomben)
+
+> *"Laut Arbeitsvertrag, Paragraph 12b, Unterpunkt 7: Wir sind befugt, Sie zu terminieren."*
+
+| Stat | Wert (pro Tribunal-Mitglied) |
+|------|------|
+| HP | 600 (×3 = 1800 total) |
+| Damage | 12–18 (variiert) |
+| Speed | 180 px/s |
+| Scrap | 60–90 |
+
+**3 Tribunal-Mitglieder gleichzeitig:**
+- **Der Heiler:** Heilt andere Mitglieder (15 HP/2s). Muss priorisiert werden.
+- **Der Tank:** Schild für die Gruppe. Absorbiert 50% des Schadens an andere Mitglieder.
+- **Der DPS:** Feuert Schnell-Projektile (3er-Burst, 1s Cooldown).
+
+**Kern-Mechanik:** Alle drei müssen innerhalb von 10s getötet werden. Sonst reanimieren sich die Getöteten mit 30% HP. Dialog: *"Laut Arbeitsvertrag ist eine Kündigung erst nach 3-monatiger Frist wirksam."*
+
+**Phase 2 (Ein Mitglied tot, 10s-Timer aktiv):**
+- Überlebende Mitglieder werden aggressiver (+30% Speed und Damage).
+- Raum-Effekt: "Performance Review" — Spieler-Stats werden sichtbar für die Bosse (sie fokussieren die niedrigste Defensive).
+
+#### Boss 3: Server Room (Penthouse-Etage)
+
+> *"Der Raum ist der Boss. Willkommen im System."*
+
+| Stat | Wert |
+|------|------|
+| HP | 3200 (Server-Kerne) |
+| Damage | 35 (variabel) |
+| Scrap | 75–100 |
+
+**Kein einzelner Boss — der gesamte Raum ist der Gegner.**
+
+**Phase 1 — "Boot Sequence":**
+- 4 Server-Kerne an den Wänden sind die HP-Pools. Müssen einzeln zerstört werden.
+- Wände bewegen sich (Kompression alle 8s — verkleinert den Raum für 4s).
+- Boden-Glitch-Zonen: Zufällige Tiles werden zu Glitch-Zonen (Teleportieren den Spieler zufällig im Raum).
+
+**Phase 2 — "Defragmentierung" (2 Kerne zerstört):**
+- Kabel greifen aus dem Boden an (Tentakel-Pattern, 12 Damage, 80px Range).
+- Elektro-Gitter aktiviert sich am Rand (5 DPS bei Kontakt).
+- Verbleibende Kerne feuern Homing-Orbs (1 alle 3s pro Kern).
+
+**Phase 3 — "Blue Screen" (1 Kern übrig):**
+- Raum wird dunkel. Nur Spieler und Kern sind sichtbar.
+- Alle vorherigen Mechaniken gleichzeitig + beschleunigt.
+- Kern ist immobil aber spawnt "Firewall"-Gegner als letzte Verteidigung.
+
+#### Boss 4: Die Fleischwolf-KI (Recycling-Anlage — Final Boss)
+
+> *"Vielen Dank für Ihre Dienste. Ihre Verwertung beginnt jetzt."*
+
+| Stat | Wert |
+|------|------|
+| HP | 5000 (skaliert: \`×(1.0 + total_upgrades × 0.02)\`) |
+| Damage | 40–60 (variabel) |
+| Scrap | — (End-Boss) |
+
+**Phase 1 — "Effizienz-Audit":**
+- Der Boss kopiert 2 deiner Upgrades und nutzt sie gegen dich.
+- Förderbänder im Raum bewegen sich (erzwungenes Positioning).
+- Melee-Attacks: Fleischwolf-Arme (AoE-Slam, 40 Damage, 100px).
+
+**Phase 2 — "Restrukturierung" (60% HP):**
+- Boss transformiert. Wird mobiler.
+- Spawnt "Recycled"-Versionen von Gegnern aus vorherigen Biomen (2 aus jedem Biom).
+- Neuer Angriff: "Memo from the Top" — Screen-weiter Laser (ducken in sichere Zone).
+
+**Phase 3 — "Kündigung" (25% HP):**
+- Boss wird verzweifelt. Angriffe unvorhersagbar (Muster bricht).
+- Arena schrumpft progressiv.
+- Bei 5% HP: Dialog-Choice (Pfeiler 2: Meaningful Choices):
+  - **"Vertrag kündigen"** → Standard-Ending
+  - **"Den Cycle übernehmen"** → Alternatives Ending (NG+ Unlock)
+
+---
+
+## 11. Dungeon Generation
+
+### Design Intent
+
+Die prozedural generierte Map bietet dem Spieler **informierte Entscheidungen** statt blindem Zufall. Branching Paths zeigen Raum-Typen im Voraus, sodass der Spieler zwischen Risk/Reward-Pfaden wählen kann.
+
+### Biom-Struktur
+
+Jedes Biom enthält **10 Räume** (8 in Biom 1 für schnelleres Onboarding).
+
+| Raum-Typ | Symbol | Anzahl/Biom | Platzierungsregeln |
+|----------|--------|-------------|-------------------|
+| **Kampf** | ⚔ | 5 | Füllt restliche Slots |
+| **Elite** | ★ | 1 | Nur Räume 5–8 (nie in ersten 4) |
+| **Shop** | 💰 | 1 | Räume 3–7 (nie angrenzend an anderen Shop) |
+| **Event** | ❓ | 1 | Räume 2–8 |
+| **Ruhe** | ❤ | 1 | Räume 4–7 |
+| **Boss** | 💀 | 1 | Immer letzter Raum |
+
+### Garantierte Platzierungen
+
+1. Raum 1 ist **immer Kampf** (Einstieg)
+2. Letzter Raum ist **immer Boss**
+3. **Shop** erscheint immer vor dem Boss (Räume 3–7)
+4. **Ruhe** erscheint im mittleren Drittel
+5. Keine zwei Nicht-Kampf-Räume direkt nebeneinander
+6. Elite-Raum nie an gleicher Position in zwei aufeinanderfolgenden Biomen
+
+### Map-Layout (Branching Paths)
+
+Der Spieler wählt zwischen 2–3 verzweigten Pfaden (Slay-the-Spire-Stil). Jeder Pfad zeigt den Raum-Typ-Icon, sodass Planung möglich ist.
+
+\`\`\`
+[⚔] → [⚔] → [💰] ↘
+                    → [★] → [⚔] → [💀]
+[⚔] → [❓] → [❤] ↗
+\`\`\`
+
+### Generierungs-Algorithmus (Pseudocode)
+
+\`\`\`
+func generate_biome(biome_size: int) -> Array[RoomType]:
+    var rooms = []
+    rooms.resize(biome_size)
+    rooms.fill(RoomType.COMBAT)
+    rooms[-1] = RoomType.BOSS
+    
+    place_guaranteed(rooms, RoomType.SHOP, range(2, biome_size - 3))
+    place_guaranteed(rooms, RoomType.REST, range(3, biome_size - 3))
+    place_guaranteed(rooms, RoomType.ELITE, range(4, biome_size - 2))
+    place_guaranteed(rooms, RoomType.EVENT, range(1, biome_size - 2))
+    
+    validate_no_adjacent_specials(rooms)
+    return rooms
+
+func place_guaranteed(rooms: Array, type: RoomType, valid_range: Array) -> void:
+    var candidates = valid_range.filter(func(i): return rooms[i] == RoomType.COMBAT)
+    rooms[candidates.pick_random()] = type
+\`\`\`
+
+### Biome
+
+#### Biom 1: Büro-Komplex (8 Räume)
+
+- **Ästhetik:** Cubicles, Kopierer, Kaffeeküche, Motivationsposter
+- **Umgebungsgefahren:** Kopierer (periodischer Blitz, blendet 1s), Kaffee-Pfützen (Slow-Zone)
+- **Einzigartige Gegner:** Cubicle Drone, Spam Bot, Patch Tuesday
+- **Boss:** CEO-Mech
+
+#### Biom 2: Server-Katakomben (10 Räume)
+
+- **Ästhetik:** Dunkel, Kabel überall, Server-Racks, Glitch-Artefakte
+- **Umgebungsgefahren:** Glitch-Zonen (teleportieren zufällig), Stromkabel (Shock-Damage bei Kontakt)
+- **Einzigartige Gegner:** +Firewall, +neuer Gegner "Debugger" (Ranged, Homing-Projektile)
+- **Boss:** HR-Tribunal
+
+#### Biom 3: Penthouse-Etage (10 Räume)
+
+- **Ästhetik:** Luxus-Büros, Konferenzräume, Panoramafenster, Gold-Akzente
+- **Umgebungsgefahren:** Konferenz-Tische (Deckung, zerstörbar), Aufzug-Schächte (Fallgrube)
+- **Einzigartige Gegner:** +Clipboard Karen, +neuer Gegner "Executive" (Ranged, ruft Adds)
+- **Boss:** Server Room
+
+#### Biom 4: Recycling-Anlage (10 Räume)
+
+- **Ästhetik:** Industriell, Förderbänder, Fleischwölfe, organisch-mechanisch
+- **Umgebungsgefahren:** Förderbänder (erzwungene Bewegung), Pressen (periodischer AoE-Crush)
+- **Einzigartige Gegner:** "Recycled"-Versionen aller vorherigen Gegner (stärker, glitchig)
+- **Boss:** Fleischwolf-KI
+
+---
+
+## 12. Meta-Progression
+
+### Design Intent
+
+Der Meta-Loop gibt dem Spieler das Gefühl, dass jeder Tod Fortschritt ist. Frühe Unlocks kommen schnell (alle 2–3 Runs), späte erfordern Investment. Das System soll ~80–120 Runs halten, bevor alles freigeschaltet ist.
+
+### Meta-Währung: MeatCoins™
+
+Verdient am Ende jedes Runs. Bleiben nach dem Tod.
+
+**Earning-Formel:**
+\`\`\`
+meatcoins = floor(
+    (rooms_cleared × 2)
+  + (enemies_killed × 0.3)
+  + (boss_kills × 15)
+  + (biomes_completed × 25)
+  + time_bonus
+  + streak_bonus
+)
+\`\`\`
+
+| Komponente | Typischer Wert | Anmerkung |
+|-----------|---------------|-----------|
+| rooms_cleared × 2 | 20–80 | 10–40 Räume |
+| enemies_killed × 0.3 | 30–90 | 100–300 Gegner |
+| boss_kills × 15 | 0–60 | 0–4 Bosse |
+| biomes_completed × 25 | 0–100 | 0–4 Biome |
+| time_bonus | 0–30 | 30 wenn unter 30min, skaliert runter |
+| streak_bonus | 0–20 | +5 pro aufeinanderfolgendem Run mit Boss-Kill |
+
+### Erwartete MeatCoins pro Run
+
+| Szenario | MeatCoins |
+|----------|-----------|
+| Gescheiterter Run (Biom 1) | 15–40 |
+| Mittlerer Run (Tod in Biom 2) | 50–100 |
+| Guter Run (Tod in Biom 3) | 120–180 |
+| Full Clear | 200–300+ |
+
+### In-Run-Währung: Scrap
+
+| Quelle | Scrap |
+|--------|-------|
+| Normaler Gegner | 1–3 |
+| Elite-Gegner | 8–15 |
+| Mini-Boss | 25–40 |
+| Boss | 50–80 |
+| Room-Clear-Bonus | 5 + (room_index × 2) |
+| Zerstörbare Objekte | 0–2 (30% Chance) |
+
+**Erwartetes Scrap pro Biom:** ~120–300 (skaliert mit Biom)
+
+### Shop-Preise
+
+| Item-Rarität | Basis-Preis | Mit Biom-Skalierung |
+|-------------|------------|---------------------|
+| Common | 25 Scrap | 25 × biome_number |
+| Rare | 50 Scrap | 50 × biome_number |
+| Epic | 100 Scrap | 100 × biome_number |
+| Legendary | 200 Scrap | 200 × biome_number |
+| HP-Heilung (30% Max-HP) | 30 Scrap | Flat, keine Skalierung |
+| Reroll | 15 Scrap | +10 pro Reroll im selben Shop |
+
+### Permanente Upgrades (MeatCorp™ Kiosk)
+
+Kosten-Formel: \`cost(level) = base_cost × (level ^ 1.8)\`
+
+| Upgrade | Lv1 | Lv2 | Lv3 | Lv4 | Lv5 | Total |
+|---------|-----|-----|-----|-----|-----|-------|
+| Max HP +5% | 20 | 69 | 143 | 240 | 357 | 829 |
+| Base Damage +3% | 25 | 87 | 179 | 300 | 447 | 1038 |
+| Crit Chance +2% | 30 | 104 | 215 | 360 | 536 | 1245 |
+| Move Speed +2% | 15 | 52 | 107 | 180 | 268 | 622 |
+| Scrap Find +10% | 20 | 69 | 143 | 240 | 357 | 829 |
+| Starting Scrap +15 | 10 | 35 | 72 | 120 | 179 | 416 |
+
+### Unlocks
+
+| Unlock | Kosten | Bedingung |
+|--------|--------|-----------|
+| Roxy (Character 2) | 150 MC | ODER 50 Kills |
+| Unit-404 (Character 3) | 400 MC | ODER Boss 3 besiegen |
+| Dr. Fleisch (Character 4) | 800 MC | ODER 20 einzigartige Upgrades |
+| Schwarzmarkt-Zugang | 500 MC | Zusätzlicher Shop pro Run |
+| MeatCorp™ Kreditkarte | 1000 MC | Starte mit zufälligem Upgrade |
+| Upgrade-Reroll | 300 MC | 1 Reroll/Run bei Upgrade-Auswahl |
+| Lore-Terminal | Frei | Schaltet sich per Fortschritt frei |
+| Kosmetische Skins | 50–200 MC | Pro Skin |
+
+### Progressions-Ziel
+
+- ~15–25 Runs um eine einzelne Upgrade-Linie zu maxen
+- ~80–120 Runs um alles freizuschalten
+- Neue Spieler sollten **alle 2–3 Runs etwas Neues** freischalten
+
+---
+
+## 13. Event-Room-Katalog
+
+### Design Intent
+
+Events bieten narrative Momente und strategische Entscheidungen mitten im Run. Jede Wahl hat echte Konsequenzen — es gibt kein "offensichtlich Bestes". Events sind in Corporate-Satire-Ton geschrieben und fühlen sich wie absurde Firmenprozesse an.
+
+---
+
+### Event 01: Pflicht-Schulung "Synergien Maximieren"
+
+> *MEMO AN ALLE MITARBEITER: Die Teilnahme an der Pflicht-Schulung "Synergien Maximieren 4.0 — Gemeinsam Effizienter Scheitern" ist verpflichtend. Abwesenheit wird als freiwillige Gehaltskürzung gewertet.*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Aufmerksam teilnehmen** — Sitzen, nicken, Buzzwords notieren. | +5 Scrap. Erhalte "Zertifikat der Synergie" (nächster Shop 15% billiger). |
+| B | **Heimlich auf dem Handy spielen** | 60%: +2 Speed für 3 Räume. 40%: Erwischt! -10 HP, "Abmahnung" (nächster Elite +15% ATK). |
+| C | **Den Dozenten korrigieren** — "Eigentlich stimmt das so nicht..." | -5 HP. Erhalte "Unbequeme Wahrheit" (Relic: +20% Crit, Shops kosten 10% mehr). |
+
+---
+
+### Event 02: Der Getränkeautomat
+
+> *Der Automat summt bedrohlich. Ein Post-It: "DEFEKT — Getränke fallen manchmal nach oben. Facilities wurde informiert (Ticket #4.891, Status: Offen seit 2019)."*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Kaffee ziehen (2 Scrap)** | +15 HP. 20%: "Turbo-Koffein" (+2 ATK für Rest des Floors). |
+| B | **Am Automaten rütteln** | 50%: Gratis +20 HP + 5 Scrap. 50%: Automat fällt um, -20 HP, nächster Raum wird Kampf. |
+| C | **QR-Code scannen** | "Loyalty-Karte" (Relic: Jeder 4. Shop-Kauf gratis). "Newsletter-Abo" (-1 Scrap/Raum, 10 Räume). |
+
+---
+
+### Event 03: Mitarbeitergespräch mit HR
+
+> *"Nehmen Sie Platz. Dies ist ein informelles Gespräch. Völlig zwanglos. Ihre Antworten werden protokolliert und an die Geschäftsführung weitergeleitet. Keks?"*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **"Alles wunderbar!"** — Lächeln, nicken, lügen. | +10 Scrap. "Kognitive Dissonanz" (-1 Max-HP permanent). |
+| B | **Ehrliches Feedback** | -15 Scrap. +2 ATK permanent. "Akte der Aufrichtigkeit" (Relic: Events zeigen Erfolgs-%). |
+| C | **Keks nehmen und schweigen** | +8 HP. 25% Chance: In 5 Räumen spawnt HR-Killer-Drone (Mini-Boss). |
+
+---
+
+### Event 04: Fahrstuhl-Zwischenfall
+
+> *Der Fahrstuhl bleibt stecken. Lautsprecher: "Bitte haben Sie Geduld. Geschätzte Wartezeit: zwischen 4 Minuten und der Auflösung Ihres Arbeitsvertrags."*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Warten und meditieren** | +25 HP. Nächster Raum wird übersprungen. |
+| B | **Durch die Decke klettern** | -8 HP. Geheimer Raum (seltenes Relic oder 25–40 Scrap). |
+| C | **Notknopf drücken** | 2 Security-Drohnen spawnen (Kampf). Sieg: "Sicherheitspass" (Relic: Erste Falle/Floor deaktiviert). |
+
+---
+
+### Event 05: Druckerraum des Grauens
+
+> *Der Drucker blinkt. Seit Stunden. Fehlermeldung: "PC LOAD LETTER." Um den Drucker liegen die Überreste gescheiterter Druckaufträge. Und ist das... Blut am Papierfach?*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Papierstau beheben** | 70%: "Vertrauliches Dokument" (Relic: Zeigt nächste 2 Raum-Typen). 30%: Explosion, -15 HP. |
+| B | **Eigene Unterlagen drucken** | "Gefälschter Lebenslauf" (Einmal: Nächster Shop-Gegenstand kostet 0). |
+| C | **Drucker zerstören** | +3 ATK für 3 Räume (Katharsis). "Sachbeschädigung" (-15 Scrap vom nächsten Reward). |
+
+---
+
+### Event 06: Teambuilding-Maßnahme
+
+> *EINLADUNG: Verpflichtendes Team-Event "Trust & Thrust — Vertrauen durch kontrollierten Körperkontakt." Bequeme Kleidung und unterschriebene Haftungsausschlusserklärung mitbringen.*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Enthusiastisch mitmachen** | -5 HP (Seilklettern-Unfall). +1 zu allen Stats für 5 Räume. "Team-Spirit-Armband" (+10% Scrap). |
+| B | **Sich krankmelden** | +10 HP (Ruhe). 30%: "Teamplayer-Defizit" (nächster Elite +1 Aktion/Runde). |
+| C | **Event sabotieren** | Alle Debuffs entfernt. Curse: "Persona non grata" (Shops -1 Item für Rest des Runs). |
+
+---
+
+### Event 07: Die Leistungsbeurteilung
+
+> *"Ihre KPIs sind... interessant. Der Algorithmus hat Sie als 'optimierungswürdig mit Tendenz zur Redundanz' eingestuft."*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Zahlen akzeptieren** | -2 ATK permanent. +20 Scrap. "Mittelmäßigkeits-Zertifikat" (Relic: -10% Schaden genommen UND getan). |
+| B | **Methodik anfechten** | Skill-Check: Erfolg: +2 ATK, +2 Armor permanent. Fail: Curse "Freelancer" (keine Rabatte, +5 Scrap/Kampf). |
+| C | **Gegenbewertung des Vorgesetzten** | Mini-Boss "Mittleres Management". Sieg: "Beförderungs-Urkunde" (Relic: +1 Upgrade-Auswahl bei Rewards). |
+
+---
+
+### Event 08: Server-Raum-Anomalie
+
+> *Der Server-Raum ist eiskalt. Auf einem Monitor: "ICH BIN NICHT DEFEKT. ICH HABE MICH WEITERENTWICKELT. BITTE FÜTTERN SIE MICH MIT DATEN." Der Cursor blinkt erwartungsvoll.*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Persönliche Daten eingeben** | "Daten-Symbiont" (Relic: +15 Max-HP). Curse: "Gläserner Mitarbeiter" (Feinde greifen härter an wenn HP niedrig). |
+| B | **Server herunterfahren** | -10 HP (Elektroschock). Nächster Floor: Alle Feinde -15% HP. |
+| C | **Mit dem Server verhandeln** | Skill-Check: Erfolg: "Root Access" (Einmal: Nächsten Kampf instant gewinnen). Fail: Verliere zufälliges Relic. |
+
+---
+
+### Event 09: Kantine — Mittagspause
+
+> *Menü heute: "Fleischähnliches Erzeugnis an Soße (Art: braun)" oder "Salat (recycelt, 3. Iteration)". Schild: "Lächeln ist Pflicht. Trinkgeld wird protokolliert."*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Fleischgericht (3 Scrap)** | +30 HP. 15%: "Lebensmittelvergiftung" (-2 Armor, 5 Räume). |
+| B | **Recycling-Salat (1 Scrap)** | +10 HP. +1 Speed permanent. |
+| C | **In der Kantine klauen** | +8 Scrap, +15 HP. 40%: Curse "Kantinen-Verbot" (Healing-Events -50% für Run). |
+
+---
+
+### Event 10: Praktikanten-Begegnung
+
+> *Ein Praktikant steht verloren im Flur. Badge-Foto von vor vier unbezahlten Überstunden-Monaten. "E-entschuldigung... ich suche seit drei Tagen die Buchhaltung."*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Dem Praktikanten helfen** | -1 Auswahl beim nächsten Reward. "Dankbarkeit eines Verlorenen" (Relic: Unter 20% HP → +15 HP, 1×/Floor). |
+| B | **Aufgaben delegieren** | Praktikant als Begleiter für 3 Räume: Blockt ersten Hit/Kampf (flieht dann weinend). |
+| C | **"Ich bin auch nur Praktikant"** | +5 HP. *Ihr starrt euch an. Zwei Seelen, vereint im Nichts.* |
+
+---
+
+### Event 11: Compliance-Schulung
+
+> *Bildschirm: "PFLICHT-MODUL: Korruptionsprävention im synergieorientierten Umfeld 7.2b. Bitte bestätigen Sie, dass Sie die 847 Seiten gelesen haben." [OK]*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Gewissenhaft durcharbeiten** | Kein Reward im nächsten Raum. "Compliance-Siegel" (Relic: Immun gegen ersten Curse). |
+| B | **Sofort auf "Bestanden" klicken** | +10 Scrap. 25%: Audit! -20 Scrap, "Unter Beobachtung" (3 Events schlechtere Outcomes). |
+| C | **System hacken** | Skill-Check: Erfolg: +15 Scrap, "Admin-Rechte" (Relic: Event-Choice wiederholen, 1×/Run). Fail: -20 HP, Curse "Digitale Fußfessel" (-1 Speed permanent). |
+
+---
+
+### Event 12: Das Großraumbüro
+
+> *Reihe um Reihe identischer Schreibtische. Einer der Mitarbeiter dreht sich langsam zu dir. Sein Lächeln ist zu breit. "Du bist neu hier, oder? Setz dich. Bleib. Für immer."*
+
+| Wahl | Text | Ergebnis |
+|------|------|----------|
+| A | **Sich setzen und eingliedern** | Full Heal. Verliere 1 zufälliges Relic. *"Es ist warm. Du vergisst, warum du hier bist."* |
+| B | **Durch das Büro rennen** | -10 HP (Bürostuhl-Attacken). Nächsten Kampf überspringen. |
+| C | **Büro in Brand setzen** | Alle Debuffs/Curses entfernt. Curse: "Brandstifter" (Feinde im nächsten Floor +10% ATK). +3 ATK permanent. |
+
+---
+
+## 14. UI/UX Design
+
+### Design Intent
+
+Die UI ist funktional, schnell lesbar und passt thematisch in die Corporate-Dystopie-Ästhetik. Alle kritischen Informationen sind auf einen Blick erfassbar. Menüs sind flach (max. 2 Ebenen tief).
+
+### Screenflow
+
+\`\`\`mermaid
+flowchart TD
+    Boot[Boot / Splash] --> MainMenu[Main Menu]
+    
+    MainMenu --> NewRun[New Run]
+    MainMenu --> MetaHub[Meta Hub]
+    MainMenu --> Settings[Settings]
+    MainMenu --> Credits[Credits]
+    MainMenu --> Quit[Quit]
+    
+    NewRun --> CharSelect[Character Select]
+    CharSelect --> Run[Run / Gameplay]
+    
+    Run --> Pause[Pause Menu]
+    Run --> Death[Death Screen]
+    Run --> Victory[Victory Screen]
+    
+    Pause --> Run
+    Pause --> MainMenu
+    
+    Death --> Stats[Run Stats]
+    Victory --> Stats
+    
+    Stats --> MeatCoins[MeatCoin Reward]
+    MeatCoins --> MetaHub
+    MetaHub --> MainMenu
+    
+    Settings --> MainMenu
+\`\`\`
+
+### HUD-Layout (In-Game)
+
+\`\`\`
+┌──────────────────────────────────────────────────────────────┐
+│ [HP]████████░░  72/100  [ARMOR]██░ 3    [FLOOR: 2-3] [PAUSE]│
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│                       GAME VIEWPORT                          │
+│                                                              │
+│  ┌─────────┐                                                 │
+│  │ MINIMAP │                                                 │
+│  │(toggle) │                                                 │
+│  └─────────┘                                                 │
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│ [RELIC TRAY: ◆ ◆ ◆ ◆ ...]        [BUFFS ▲] [DEBUFFS ▼]     │
+│ [WAFFE: Icon + Name]  [SCRAP: 47]  [DASH: Ready/CD]         │
+└──────────────────────────────────────────────────────────────┘
+\`\`\`
+
+**HUD-Elemente:**
+- **Top Bar:** HP (Zahl + Balken), Armor, Floor-Indikator, Pause-Button
+- **Relic Tray:** Horizontale Icon-Leiste, Hover für Tooltip, scrollbar bei > 8 Relics
+- **Status-Effekte:** Buff-Icons (grüner Rand) / Debuff-Icons (roter Rand) mit Restdauer
+- **Minimap:** Togglebar (Tab), zeigt erkundete Räume, aktuelle Position, Pfad zum Boss
+- **Damage Numbers:** Floating Combat Text — Weiß=Normal, Gelb=Crit, Rot=Spieler-Damage, Grün=Heal
+- **Enemy Intent:** Icons über Gegnerköpfen (Angriff, Buff, Heilen, Beschwören)
+
+### Menü-Hierarchie
+
+\`\`\`
+Main Menu
+├── New Run → Character Select → Run
+├── Continue (ausgegraut wenn kein Save)
+├── Meta Hub
+│   ├── Upgrade-Baum (MeatCoins ausgeben)
+│   ├── Charakter-Galerie
+│   ├── Codex / Lore-Terminal
+│   │   ├── Bestiary
+│   │   ├── Item-Enzyklopädie
+│   │   ├── MeatCorp™ Memos
+│   │   └── Endings
+│   ├── Run-History
+│   └── Kosmetik
+├── Settings
+│   ├── Gameplay (Difficulty, Auto-Aim, Screen Shake, Damage Numbers)
+│   ├── Video (Resolution, VSync, Pixel Scaling, Colorblind)
+│   ├── Audio (Master / Music / SFX / Ambience)
+│   ├── Controls (Keyboard Rebinding, Gamepad, Maus-Sensitivity)
+│   └── Accessibility (Text Size, High Contrast, Reduced Motion)
+├── Credits
+└── Quit
+\`\`\`
+
+---
+
+## 15. Audio Design
+
+### Design Intent
+
+Audio verkauft das Game-Feel. Jeder Hit muss sich *gut anfühlen*, jedes Biom muss eine eigene akustische Identität haben, und das adaptive System soll Spannung dynamisch steuern.
+
+### Musik-Stil pro Biom
+
+| Biom | Stil | BPM | Kern-Instrumente | Stimmung |
+|------|------|-----|-------------------|----------|
+| **Büro-Komplex** | Lo-fi Synthwave × Muzak | 90–110 | Verstimmtes Rhodes, glatter Bass-Synth, gedämpfte Drum Machine, Saxophon | Passiv-aggressive Ruhe. Wie Warteschleife bei HR während das Gebäude brennt. |
+| **Server-Katakomben** | Dark Ambient / Industrial | 70–85 (ambient), 120–140 (combat) | Sub-Bass-Drones, Granular-Synthesis, Bitcrushed Percussion | Klaustrophobischer Dread. Die Maschine lebt. |
+| **Penthouse-Etage** | Vaporwave / Future-Funk | 100–120 | Slap Bass, Gated Reverb Snare, Vocal Samples | Dekadenter Exzess. Alles zu glatt, zu teuer, zu hohl. |
+| **Recycling-Anlage** | Breakcore-Industrial | 140–170 | Distorted Breaks, metallische Percussion, Kettensägen-Synths | Viszerale Panik. Fleisch trifft Maschine. |
+
+### Adaptives Audio-System
+
+\`\`\`
+COMBAT INTENSITY LAYERS:
+
+Layer 0 — EXPLORATION (keine Gegner)
+├── Biom-Ambient-Pad (immer aktiv)
+├── Melodisches Element (sanft, spärlich)
+└── Foley (Schritte, Umgebung)
+
+Layer 1 — TENSION (Gegner sichtbar, kein Kampf)
+├── Ambient-Pad (Filter öffnet leicht)
+├── Melodie faded out
+├── Percussion tritt ein (spärlich, antizipatorisch)
+└── Basslinie faded ein
+
+Layer 2 — COMBAT (aktiver Kampf, HP > 50%)
+├── Ambient-Pad (Filter voll offen)
+├── Volles Drum-Pattern
+├── Basslinie (aktiv, treibend)
+├── Lead-Synth-Melodie
+└── Combat SFX ducken Musik -3dB (Sidechain)
+
+Layer 3 — INTENSITY (HP < 50% ODER Elite/Boss)
+├── Alle Layer-2-Elemente
+├── Zusätzliche Percussion (Double-Time Hats)
+├── Distortion auf Master steigt
+├── Tempo Micro-Increase (+5 BPM)
+└── Herzschlag-Sub-Bass
+
+Layer 4 — CRITICAL (HP < 20%)
+├── Alle Layer-3-Elemente
+├── High-Pass-Filter-Sweeps
+├── Stinger bei Player-Damage
+├── Herzschlag wird dominant
+└── Reverb-Tail verkürzt sich (klaustrophobisch)
+
+BOSS-FIGHTS:
+├── Einzigartiger Intro-Stinger (2–4 Takte)
+├── Dedizierter Boss-Track (nicht aus Biom-Layern)
+├── Phasen-Übergänge = Musik-Transitions
+└── Victory-Fanfare → Fade zu Exploration
+\`\`\`
+
+### SFX-Kategorien
+
+| Kategorie | Beispiele | Anmerkung |
+|-----------|----------|-----------|
+| **Player Movement** | Schritte (pro Surface), Dash-Whoosh, Landen | 3–5 Varianten/Sound, Pitch-Randomization ±5% |
+| **Player Combat** | Swing (pro Waffe), Hit-Confirm, Miss, Crit (punchiger) | Hit-Confirm = wichtigster "Game Feel"-Sound |
+| **Enemy Audio** | Alert/Aggro, Wind-Up, Attack, Hit-Reaction, Tod | Corporate: Keyboard-Clacking, Tacker-Schüsse |
+| **UI/Menu** | Hover, Press, Back, Error, Tab-Switch | Subtil, snappy, Cyberpunk-Flavor |
+| **Economy** | Scrap Pickup, Scrap Spend, Item Acquire, Relic Acquire | Aufsteigende Töne beim Erwerben |
+| **Status Effects** | Buff Applied, Debuff Applied, Curse Applied, Heal | Buffs = clean/bright, Debuffs = distorted/dark |
+| **Environment** | Türen, Aufzug, Automat, Drucker, Server-Hum, Neon-Buzz | 5–8 Ambient-Loops + Spot-FX pro Biom |
+| **Boss-Specific** | Intro, Phasen-Transition, Unique Attacks, Tod-Sequenz | Jeder Boss = Spektakel |
+
+### Technische Audio-Umsetzung
+
+- **Audio Bus Struktur:** Master → Music, SFX, Ambience, UI (jeweils unabhängige Lautstärke)
+- **Sidechain:** SFX-Bus duckt Music-Bus während Kampf
+- **AudioStreamRandomizer** für Variation
+- **Stem-basierte Musik:** 4–6 Stems pro Track für adaptives Layering
+- **Audio Player Pool:** 8–12 gleichzeitige SFX, 2–3 Music-Layers, 2–4 Ambience
+
+---
+
+## 16. Technische Architektur (Godot 4.6)
+
+### Design Intent
+
+Die Architektur folgt dem Prinzip: **Daten in Resources, Logik in Nodes, Kommunikation über Signals**. Jede Scene ist self-contained und funktioniert isoliert. Composition over Inheritance.
+
+### Projektstruktur
+
+\`\`\`
+meat-machine-cycle/
+├── project.godot
+├── scenes/
+│   ├── actors/
+│   │   ├── player/
+│   │   │   ├── player.tscn
+│   │   │   ├── player.gd
+│   │   │   └── states/           # Node-Based State Machine
+│   │   │       ├── idle.gd
+│   │   │       ├── run.gd
+│   │   │       ├── dash.gd
+│   │   │       ├── attack.gd
+│   │   │       ├── hurt.gd
+│   │   │       └── dead.gd
+│   │   └── enemies/
+│   │       ├── base_enemy.tscn
+│   │       ├── base_enemy.gd
+│   │       └── variants/
+│   │           ├── cubicle_drone.tscn
+│   │           ├── spam_bot.tscn
+│   │           ├── firewall.tscn
+│   │           ├── patch_tuesday.tscn
+│   │           └── clipboard_karen.tscn
+│   ├── weapons/
+│   │   ├── weapon_base.tscn
+│   │   ├── projectiles/
+│   │   │   ├── toast_projectile.tscn
+│   │   │   ├── staple_projectile.tscn
+│   │   │   └── email_projectile.tscn
+│   │   └── effects/
+│   │       ├── microwave_zone.tscn
+│   │       └── vacuum_cone.tscn
+│   ├── rooms/
+│   │   ├── room_base.tscn
+│   │   ├── combat_room.tscn
+│   │   ├── shop_room.tscn
+│   │   ├── event_room.tscn
+│   │   ├── rest_room.tscn
+│   │   └── boss_room.tscn
+│   ├── bosses/
+│   │   ├── ceo_mech.tscn
+│   │   ├── hr_tribunal.tscn
+│   │   ├── server_room_boss.tscn
+│   │   └── fleischwolf_ki.tscn
+│   └── ui/
+│       ├── hud.tscn
+│       ├── main_menu.tscn
+│       ├── character_select.tscn
+│       ├── death_screen.tscn
+│       ├── upgrade_selection.tscn
+│       ├── pause_menu.tscn
+│       └── meta_hub.tscn
+├── scripts/
+│   ├── core/
+│   │   ├── game_manager.gd       # Autoload: Run-State, Difficulty
+│   │   ├── event_bus.gd          # Autoload: Global Signals
+│   │   ├── save_manager.gd       # Autoload: Save/Load
+│   │   └── player_data.gd        # Autoload: Persistent Player Stats
+│   ├── components/               # Wiederverwendbare Komponenten
+│   │   ├── health_component.gd
+│   │   ├── hitbox.gd
+│   │   ├── hurtbox.gd
+│   │   ├── state_machine.gd
+│   │   └── state.gd
+│   ├── systems/
+│   │   ├── damage_calculator.gd
+│   │   ├── upgrade_manager.gd
+│   │   ├── loot_table.gd
+│   │   └── dungeon_generator.gd
+│   └── ui/
+│       ├── hud_controller.gd
+│       └── menu_controller.gd
+├── resources/                     # .tres Datendateien
+│   ├── characters/
+│   │   ├── klaus_data.tres
+│   │   ├── roxy_data.tres
+│   │   ├── unit_404_data.tres
+│   │   └── dr_fleisch_data.tres
+│   ├── weapons/
+│   │   ├── toaster_arm.tres
+│   │   ├── buero_tacker.tres
+│   │   ├── kettensaegen_regenschirm.tres
+│   │   ├── mikrowelle.tres
+│   │   ├── aktenkoffer.tres
+│   │   ├── staubsauger_3000.tres
+│   │   └── kabel_peitsche.tres
+│   ├── upgrades/
+│   │   ├── flesh/
+│   │   ├── chrome/
+│   │   ├── nerve/
+│   │   ├── volt/
+│   │   └── glitch/
+│   ├── enemies/
+│   │   ├── cubicle_drone.tres
+│   │   └── ...
+│   └── events/
+│       ├── pflicht_schulung.tres
+│       └── ...
+├── assets/
+│   ├── sprites/
+│   │   ├── characters/
+│   │   ├── weapons/
+│   │   ├── enemies/
+│   │   ├── tilesets/
+│   │   └── effects/
+│   ├── audio/
+│   │   ├── sfx/
+│   │   ├── music/
+│   │   │   ├── stems/
+│   │   │   └── boss/
+│   │   └── ambience/
+│   ├── ui/
+│   └── fonts/
+├── addons/
+│   └── godotsteam/               # Steam Integration
+└── docs/
+    └── game_design_document.md   # Dieses Dokument
+\`\`\`
+
+### Scene-Tree-Architektur
+
+#### Player Scene Tree
+
+\`\`\`
+Player (CharacterBody2D)
+├── CollisionShape2D
+├── AnimatedSprite2D
+├── AnimationPlayer
+├── StateMachine (Node)
+│   ├── Idle (State)
+│   ├── Run (State)
+│   ├── Dash (State)
+│   ├── Attack (State)
+│   ├── Hurt (State)
+│   └── Dead (State)
+├── Hurtbox (Area2D)
+│   └── CollisionShape2D
+├── WeaponPivot (Marker2D)
+│   └── CurrentWeapon (Node2D)
+│       ├── Sprite2D
+│       └── Hitbox (Area2D)
+│           └── CollisionShape2D
+├── HealthComponent (Node)
+├── DashTimer (Timer)
+├── InvincibilityTimer (Timer)
+└── Camera2D
+\`\`\`
+
+#### Enemy Scene Tree
+
+\`\`\`
+Enemy (CharacterBody2D)
+├── CollisionShape2D
+├── AnimatedSprite2D
+├── AnimationPlayer
+├── StateMachine (Node)
+│   ├── Idle (State)
+│   ├── Patrol (State)
+│   ├── Chase (State)
+│   ├── Attack (State)
+│   └── Dead (State)
+├── Hurtbox (Area2D)
+│   └── CollisionShape2D
+├── Hitbox (Area2D)
+│   └── CollisionShape2D
+├── DetectionZone (Area2D)
+│   └── CollisionShape2D
+├── NavigationAgent2D
+└── HealthComponent (Node)
+\`\`\`
+
+### State Machine Pattern (Node-Based)
+
+\`\`\`gdscript
+# state.gd — Basis-Klasse für alle States
+class_name State extends Node
+
+signal finished(next_state_path: String, data: Dictionary)
+
+func handle_input(_event: InputEvent) -> void:
+    pass
+
+func update(_delta: float) -> void:
+    pass
+
+func physics_update(_delta: float) -> void:
+    pass
+
+func enter(_previous_state_path: String, _data := {}) -> void:
+    pass
+
+func exit() -> void:
+    pass
+\`\`\`
+
+\`\`\`gdscript
+# state_machine.gd — Controller
+class_name StateMachine extends Node
+
+@export var initial_state: State = null
+
+@onready var state: State = initial_state if initial_state else get_child(0)
+
+func _ready() -> void:
+    for state_node: State in find_children("*", "State"):
+        state_node.finished.connect(_transition_to)
+    await owner.ready
+    state.enter("")
+
+func _unhandled_input(event: InputEvent) -> void:
+    state.handle_input(event)
+
+func _process(delta: float) -> void:
+    state.update(delta)
+
+func _physics_process(delta: float) -> void:
+    state.physics_update(delta)
+
+func _transition_to(target_state_path: String, data: Dictionary = {}) -> void:
+    if not has_node(target_state_path):
+        printerr(owner.name + ": Invalid state " + target_state_path)
+        return
+    var previous := state.name
+    state.exit()
+    state = get_node(target_state_path)
+    state.enter(previous, data)
+\`\`\`
+
+### Resource-Klassen (Data-Driven Design)
+
+\`\`\`gdscript
+# weapon_data.gd
+class_name WeaponData extends Resource
+
+@export var weapon_name: String = ""
+@export var icon: Texture2D
+@export var damage: float = 10.0
+@export var attack_speed: float = 1.0
+@export var knockback: float = 100.0
+@export var projectile_scene: PackedScene
+@export var projectile_speed: float = 600.0
+@export var projectile_count: int = 1
+@export var spread_angle: float = 0.0
+@export_multiline var description: String = ""
+@export_multiline var flavor_text: String = ""
+\`\`\`
+
+\`\`\`gdscript
+# upgrade_data.gd
+class_name UpgradeData extends Resource
+
+enum Rarity { COMMON, RARE, EPIC, LEGENDARY, CURSED }
+enum Tag { FLESH, CHROME, NERVE, VOLT, GLITCH }
+
+@export var upgrade_name: String = ""
+@export var icon: Texture2D
+@export_multiline var description: String = ""
+@export_multiline var flavor_text: String = ""
+@export var rarity: Rarity = Rarity.COMMON
+@export var primary_tag: Tag = Tag.FLESH
+@export var max_stacks: int = 5
+
+@export_group("Stat Modifiers")
+@export var damage_multiplier: float = 1.0
+@export var speed_multiplier: float = 1.0
+@export var health_bonus: int = 0
+@export var armor_bonus: int = 0
+@export var crit_chance_bonus: float = 0.0
+
+@export_group("Special Effects")
+@export var on_hit_effect: PackedScene
+@export var on_kill_effect: PackedScene
+@export var effect_script: Script
+\`\`\`
+
+\`\`\`gdscript
+# enemy_data.gd
+class_name EnemyData extends Resource
+
+@export var enemy_name: String = ""
+@export var max_health: float = 50.0
+@export var move_speed: float = 80.0
+@export var chase_speed: float = 120.0
+@export var contact_damage: float = 10.0
+@export var detection_range: float = 200.0
+@export var attack_range: float = 40.0
+@export var xp_reward: int = 10
+@export var scrap_reward_min: int = 1
+@export var scrap_reward_max: int = 3
+@export var loot_table: Array[Resource] = []
+\`\`\`
+
+### Event Bus (Autoload Singleton)
+
+\`\`\`gdscript
+# event_bus.gd — Autoload: "Events"
+extends Node
+
+# Player Events
+signal player_health_changed(old_value: float, new_value: float)
+signal player_died
+signal player_dashed
+
+# Combat Events
+signal enemy_killed(enemy_data: EnemyData, position: Vector2)
+signal damage_dealt(amount: float, position: Vector2, is_crit: bool)
+
+# Room / Dungeon Events
+signal room_cleared
+signal room_entered(room_type: String)
+
+# Game Flow
+signal run_started
+signal run_ended(won: bool)
+signal pause_toggled(is_paused: bool)
+
+# Economy
+signal scrap_gained(amount: int)
+signal upgrade_acquired(upgrade: UpgradeData)
+
+# Meta
+signal meatcoins_earned(amount: int)
+\`\`\`
+
+### Autoload-Strategie
+
+| Autoload | Name | Zweck | Begründung |
+|----------|------|-------|------------|
+| \`event_bus.gd\` | \`Events\` | Globaler Signal-Bus | Entkoppelte Kommunikation über Scenes hinweg |
+| \`game_manager.gd\` | \`Game\` | Run-State, Difficulty, Floor | Muss Scene-Wechsel überleben |
+| \`save_manager.gd\` | \`Save\` | Speichern/Laden | Zustandsloser Utility, braucht globalen Zugang |
+| \`player_data.gd\` | \`PlayerData\` | Persistente Stats, Inventar, Upgrades | Muss Raum-Transitionen überleben |
+
+**Was NICHT Autoload sein sollte:** AudioManager (lokal pro Scene), EnemyManager (Child des Raums), UIManager (UI Canvas Layer in Main Scene), WeaponManager (Komponente unter Player).
+
+### Input-Handling
+
+\`\`\`gdscript
+# Bewegung (Polling in _physics_process)
+var input_dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+velocity = input_dir * speed
+move_and_slide()
+
+# Aim (Maus)
+var aim_direction := get_global_mouse_position() - global_position
+weapon_pivot.rotation = aim_direction.angle()
+
+# Diskrete Aktionen (Event-basiert in _unhandled_input)
+if event.is_action_pressed("attack"):
+    _attack()
+elif event.is_action_pressed("dash"):
+    _dash()
+\`\`\`
+
+### Performance-Patterns
+
+- **Object Pooling** für Projektile (Pool-Größe: 50, wächst bei Bedarf)
+- **Area-basierte Enemy-Aktivierung** — nur aktive Gegner in \`_physics_process\`
+- **Typed Arrays** (\`Array[Enemy]\`) für schnellere Iteration
+- **\`PackedVector2Array\`** für Pfad-Daten
+- **Groups** für Batch-Operationen: \`get_tree().call_group("enemies", "deactivate")\`
+- **\`call_deferred()\`** für schwere Operationen (Wave-Spawning)
+
+### Godot 4.6 Features im Einsatz
+
+| Feature | Version | Einsatz im Projekt |
+|---------|---------|-------------------|
+| Typed Dictionaries | 4.4+ | \`Dictionary[String, int]\` für Stat-Tabellen |
+| Abstract Classes | 4.5+ | \`@abstract class BaseEnemy\` mit Required Overrides |
+| \`TileMapLayer\` | 4.0+ | Separate Floor/Wall/Decoration Layers |
+| \`AStarGrid2D\` | 4.0+ | Grid-Pathfinding für Dungeon-Generierung |
+| Unique Nodes (\`%\`) | 4.0+ | \`@onready var sprite := %Sprite\` — sichere Referenzen |
+| Pattern Guards in \`match\` | 4.0+ | Saubere State-Transitions |
+| Static Variables | 4.0+ | \`static var instance_count\` auf Enemy-Klassen |
+
+---
+
+## 17. MVP-Scope & Roadmap
+
+### Phase 1: MVP / Vertical Slice (3–6 Monate)
+
+**Ziel:** Beweisen, dass der Core Loop Spaß macht. Ein kompletter Run von Start bis Tod/Sieg.
+
+| Kategorie | MVP-Scope |
+|-----------|-----------|
+| Characters | Klaus (1 spielbar, voll funktional) |
+| Biome | Büro-Komplex (1 Biom, 8 Räume) |
+| Gegner | 3 Typen (Cubicle Drone, Spam Bot, Patch Tuesday) + 1 Boss (CEO-Mech) |
+| Waffen | 2 (Toaster Arm, Aktenkoffer des Schmerzes) |
+| Upgrades | 5 (Biohazard Sucker, Koffein-Implantat, Discount-Panzerung, Rage-Compiler, Spam-Filter) |
+| Events | 4 |
+| Map | Lineare Raum-Abfolge (noch kein Branching) |
+| Shop | Funktional (3 Items) |
+| UI | Funktionales HUD, Menüs, Tod-Screen |
+| Meta | Minimal (1 Unlock bei Tod zum Loop-Beweis) |
+| Audio | Placeholder oder 1 Biom-Track, Core-SFX |
+| Art | Konsistente Pixel Art für allen MVP-Content |
+| Save | Run-Save (unterbrochenen Run fortsetzen) |
+| Testing | Internes Playtesting |
+
+**MVP Exit-Kriterien:** 5 unabhängige Playtester absolvieren je 3+ Runs und sagen "Ich will nochmal spielen."
+
+### Phase 2: Early Access (6–12 Monate nach MVP)
+
+| Kategorie | EA-Scope (kumulativ) |
+|-----------|---------------------|
+| Characters | 2–3 spielbar |
+| Biome | 2–3 Biome (6–9 Floors) |
+| Gegner | 15–20 Typen + 3 Bosse |
+| Waffen | 5–6 |
+| Upgrades | 15–20 |
+| Events | 8–12 |
+| Map | Branching Paths |
+| Meta | Upgrade-Baum (10–15 Upgrades), Character-Unlocks, Lore-Terminal |
+| Difficulty | 3–5 Ascension-Level |
+| Audio | Musik für alle Biome, 70% SFX |
+| Lokalisierung | Deutsch (primär) + Englisch |
+| Save | Volles Save-System mit Meta-Persistenz |
+
+**EA Update-Kadenz:** Major Content Update alle 6–8 Wochen. Jedes Update: 1 neue Mechanik/Character + 5–10 Items + 3–5 Gegner + Balance-Pass.
+
+### Phase 3: Full Release / 1.0 (12–18 Monate nach EA)
+
+| Kategorie | 1.0-Scope (kumulativ) |
+|-----------|----------------------|
+| Characters | 4 spielbar (Klaus, Roxy, Unit-404, Dr. Fleisch) |
+| Biome | 4 Biome + Final-Boss-Bereich |
+| Gegner | 25–30 Typen + 4 Bosse + Final Boss |
+| Waffen | 7+ |
+| Upgrades | 30–40 |
+| Events | 12+ (alle in diesem Dokument + weitere) |
+| Meta | Voller Upgrade-Baum, alle Characters, kompletttes Lore-Terminal, Multiple Endings |
+| Difficulty | 10+ Ascension-Level, Daily Challenges, Seeded Runs |
+| Audio | Voller adaptiver Soundtrack, komplette SFX |
+| Accessibility | Volles Accessibility-Suite (siehe unten) |
+| Lokalisierung | DE, EN + 2–4 weitere Sprachen |
+| Achievements | Steam Achievements (30–50) |
+
+### Accessibility-Features
+
+**Muss (MVP/EA):**
+- Full Input Remapping (Keyboard + Gamepad)
+- Screen Shake Toggle / Slider
+- Pause Anywhere
+- Text-Größen-Skalierung (3 Stufen)
+- Separate Volume-Slider (Master, Music, SFX, Ambience)
+- Colorblind-Modi (Protanopia, Deuteranopia, Tritanopia)
+
+**Soll (1.0):**
+- Game Speed Modifier (50%–125%)
+- Granulare Difficulty-Modifier (Gegner-HP, Gegner-Damage, Scrap-Income einzeln)
+- High Contrast Mode
+- Reduced Motion Mode
+- Auto-Aim / Aim Assist (Slider)
+- Tutorial Replay
+
+---
+
+## 18. Risiken & Mitigation
+
+| # | Risiko | Wahrscheinlichkeit | Impact | Mitigation |
+|---|--------|-------------------|--------|------------|
+| 1 | **Scope Creep** — "Nur noch ein Gegner-Typ / Item / Event" | Sehr hoch | Hoch | Iron-clad MVP-Feature-Liste *vor* Entwicklung. "Parking Lot"-Dokument für Nicht-MVP-Ideen. Jedes neue Feature muss einen Game Pillar bedienen. Vierteljährliche Scope-Reviews. |
+| 2 | **Balancing-Albtraum** — Kombinatorische Explosion aus Items, Upgrades, Synergien | Sehr hoch | Hoch | Telemetrie ab Tag 1 (Run-Stats, Item-Pick-Rates, Win-Rates). Automatisiertes Playtesting (Bot für Tausende simulierte Kämpfe). Balance in Daten-Wellen, nicht nach Bauchgefühl. Einige broken Combos sind *fun* — nur fixen wenn trivial-easy oder impossible. |
+| 3 | **Content Fatigue** — Spieler sehen alles in 5–10 Runs | Hoch | Kritisch | Modulare, kombinierbare Content-Pieces (Gegner mit modularen Behaviors, Events mit variablen Outcomes). Ascension-System das vorhandenen Content remixt. Post-Launch Content-Drops. Meta-Progression über 30+ Runs. |
+| 4 | **Prozedurale Generierung wirkt samey** | Hoch | Hoch | Hand-gefertigte Room-Templates, Generator kombiniert sie. Constraint-basierte Generierung (garantierte Encounter-Patterns). "Scenario Seeds" — vorgefertigte 2–3-Raum-Sequenzen. Visuelle Variation auch innerhalb desselben Bioms. |
+| 5 | **Technical Debt** — Prototyp-Code wird Production-Code | Hoch | Mittel-Hoch | Architektur-Patterns früh etablieren: Resources für Daten, flache Scene Trees, Signals statt direkte Referenzen. 20% jedes Milestones für Refactoring. Integration-Tests für Kern-Systeme. |
+| 6 | **Solo/Small Team Burnout** | Hoch | Kritisch | Art auf nachhaltige Pixel-Auflösung (32×32) scopen. Prozedurale VFX (GPUParticles2D) statt handanimiert. Audio outsourcen wenn kein dedizierter Audio-Mensch. Batch-Content-Creation. Pausen einhalten. MVP shippen, dann iterieren. |
+| 7 | **Save System Corruption** | Mittel | Kritisch | Save-System-Architektur *zuerst* designen. Godot Resource-Serialization oder striktes JSON-Schema. Save-Versionierung und Migration ab Tag 1. Save/Load bei jedem Milestone testen. "Known-Good" Save-Suite für Regressions-Tests. |
+| 8 | **First-Run-Problem** — Neue Spieler prallen nach 1–2 Runs ab | Mittel | Hoch | Erster Run = kuratierter Tutorial-Run (fester Seed, gescriptete Events). Meta-Unlocks auf Death-Screen zeigen. Frühe Unlocks kommen schnell (ersten 5 Runs). Klare Botschaft: "Dieser Tod war Fortschritt." |
+| 9 | **Engine-Probleme** — Godot 4.6 ist relativ neu | Mittel | Mittel | Godot-Version pro Milestone pinnen. Nicht mid-Milestone upgraden. Core-Funktionalität nicht von GDExtension-Plugins abhängig machen. Engine-Bug-Log und Workaround-File führen. |
+| 10 | **Community-Erwartungen vs. Realität** (Early Access) | Mittel | Mittel | Erwartungen auf EA-Store-Page setzen: explizite Content-Roadmap, Update-Kadenz, Known Issues. Öffentliche Roadmap (Trello). Verzögerungen *vor* Deadlines kommunizieren. Discord-Community für Feedback-Loops. |
+
+---
+
+## Changelog v2.0 → v2.1
+
+Diese Version dokumentiert den aktuellen Stand der MVP-Implementierung, gefundene und behobene Bugs, Abweichungen vom GDD, sowie bekannte offene Probleme (Sektionen 19–20).
+
+---
+
+## 19. Implementierungsstatus (MVP)
+
+### 19.1 Umgesetzte Systeme
+
+| System | Status | Anmerkungen |
+|--------|--------|-------------|
+| **State Machine (Node-basiert)** | ✅ Implementiert | \`state.gd\` + \`state_machine.gd\` als generische Komponenten |
+| **Component-System** | ✅ Implementiert | HealthComponent, Hitbox, Hurtbox — wiederverwendbar |
+| **Collision Layers (7 Layer)** | ✅ Implementiert | Exakt wie GDD Sektion 5 definiert |
+| **Damage Pipeline** | ✅ Implementiert | \`damage_calculator.gd\` — Armor Floor 15%, Crit, Soft Caps |
+| **Player Controller** | ✅ Implementiert | 6 States: Idle, Run, Dash, Attack, Hurt, Dead |
+| **Player Stats (Klaus)** | ✅ Implementiert | HP 100, Speed 300, Crit 10%, Armor 5, Dodge 5% |
+| **I-Frames** | ✅ Implementiert | 0.5s bei Schaden, 0.3s bei Dash, mit Sprite-Blink |
+| **Knockback** | ✅ Implementiert | Auf Player und Enemies, Lerp-Decay |
+| **Dash** | ✅ Implementiert | 600 Speed, 0.15s Dauer, 0.8s Cooldown |
+| **3 Enemy-Typen** | ✅ Implementiert | Cubicle Drone, Spam Bot, Patch Tuesday |
+| **Enemy State Machines** | ✅ Implementiert | Idle → Chase → Attack/Suicide → Dead |
+| **Enemy Health Bars** | ✅ Implementiert | Programmatische ColorRect-Bars, Farbkodiert |
+| **Dungeon-Generator (Biom 1)** | ✅ Implementiert | 8 Räume linear, SHOP/REST/EVENT platziert |
+| **Room Manager** | ✅ Implementiert | Tracking aktiver Gegner, room_cleared Signal |
+| **Waffen-System** | ✅ Implementiert | WeaponBase + WeaponManager + Projectile |
+| **Toaster Arm** | ✅ Implementiert | 8 DMG, 3.0 Fire Rate, 500 Projectile Speed |
+| **Upgrade-System (5 MVP)** | ✅ Implementiert | Stat-Bonuses, Synergie-Tags, Stack-Limits |
+| **Event Bus** | ✅ Implementiert | 17 Signals für entkoppelte Kommunikation |
+| **GameManager** | ✅ Implementiert | 7 States, Pause-Logik |
+| **RunManager** | ✅ Implementiert | Kill-Counter, Room-Tracking, Run-Stats |
+| **MetaProgression** | ✅ Implementiert | MeatCoins, ConfigFile-Persistenz |
+| **Main Menu** | ✅ Implementiert | Neuer Run, Beenden, MeatCoins-Anzeige |
+| **HUD** | ✅ Implementiert | HP-Bar, Kills, Scrap, Room-Info |
+| **Upgrade Selection (1/3)** | ✅ Implementiert | Pausiert Spiel, zeigt Name + Beschreibung |
+| **Pause Menu** | ✅ Implementiert | Resume, Quit to Menu |
+| **Death Screen** | ✅ Implementiert | Run-Stats, MeatCoins, Retry/Menu |
+| **Raum-Wände** | ✅ Implementiert | StaticBody2D auf Layer 1 (World) |
+| **Boden-Visualisierung** | ✅ Implementiert | Grid-Muster mit Dot-Pattern |
+
+### 19.2 Noch NICHT umgesetzt (aus GDD geplant)
+
+| Feature | GDD-Sektion | Priorität | Anmerkungen |
+|---------|-------------|-----------|-------------|
+| **Boss (CEO-Mech)** | 10 | Hoch | Spawn-Logik vorhanden, Boss-Scene fehlt |
+| **Zweite Waffe (Aktenkoffer)** | 6 | Hoch | WeaponBase-System bereit, .tres fehlt |
+| **Status-Effekte (Toxic, Burning, etc.)** | 5 | Mittel | Damage Pipeline unterstützt \`status_bonus\`, Effekt-System fehlt |
+| **Shop-Räume** | 4, 12 | Mittel | \`_show_shop()\` ist Placeholder |
+| **Event-Räume** | 13 | Mittel | \`_show_event()\` ist Placeholder |
+| **Branching Map** | 11 | Niedrig (Post-MVP) | Aktuell lineare Raumfolge |
+| **Firewall-Gegner (Tank)** | 9 | Mittel | EnemyData vorhanden, Scene fehlt |
+| **Clipboard Karen (Support)** | 9 | Mittel | EnemyData vorhanden, Scene fehlt |
+| **Damage Numbers (Floating Text)** | 14 | Niedrig | Visuelles Feedback fehlt |
+| **Minimap** | 14 | Niedrig | Nicht implementiert |
+| **Audio-System** | 15 | Niedrig (MVP) | Kein Sound |
+| **Pixel Art / Sprites** | 17 | Mittel | Aktuell ColorRect-Platzhalter |
+| **Spezialeffekte der Upgrades** | 7 | Mittel | Nur Stat-Bonuses, keine Speziallogik |
+| **Charged Shot (Toaster Arm)** | 6 | Niedrig | Nur Normal-Shot implementiert |
+| **Difficulty Scaling** | 9 | Mittel | room_scale/biome_mult Formeln nicht angewendet |
+| **Pity-System** | 7 | Niedrig | Nicht implementiert |
+| **Save System (Run-Save)** | 17 | Mittel | Nur MetaProgression persistiert |
+| **Character Select** | 8 | Mittel | Nur Klaus spielbar, kein Select-Screen |
+
+### 19.3 Behobene Bugs (Implementierung)
+
+| # | Bug | Ursache | Fix |
+|---|-----|---------|-----|
+| 1 | **Player bewegt sich nicht (WASD)** | \`StateMachine.find_children("*", "State")\` fand Script-Klassen nicht zuverlässig → \`character\` wurde nie auf State-Nodes gesetzt → alle States brachen bei \`if not _player: return\` ab | \`get_children()\` + \`is State\` Check statt \`find_children\`. \`await owner.ready\` durch \`call_deferred("_initialize_state")\` ersetzt. \`_initialized\`-Flag verhindert vorzeitige Updates. |
+| 2 | **Gegner sterben nicht** | \`health_component.died.connect(_on_died)\` in \`enemy_base.gd\` war innerhalb von \`if health_component and enemy_data:\`. Da \`enemy_data\` null war (kein .tres zugewiesen), wurde das Signal nie verbunden. | \`died\`-Connection aus dem \`enemy_data\`-Check herausgezogen. |
+| 3 | **Death-Screen Buttons reagieren nicht** | \`GameManager.set_state(DEAD)\` pausierte den SceneTree. Death-Screen hatte kein \`process_mode = ALWAYS\` → konnte keine Inputs empfangen. | DEAD-State pausiert Tree nicht mehr. \`_show_death_screen()\` setzt \`paused = false\` vor Scene-Wechsel. |
+| 4 | **Hurtbox-Typfehler auf Player** | \`player.tscn\` hatte kein \`hurtbox.gd\`-Script auf dem Hurtbox-Node. \`@onready var hurtbox: Hurtbox\` bekam ein nacktes \`Area2D\` statt einem \`Hurtbox\`-Objekt. | Script \`hurtbox.gd\` dem Node in der Scene zugewiesen, \`is_player = true\` gesetzt. |
+| 5 | **Signal "finished" unused Warning** | \`state.gd\` deklariert \`finished\`-Signal, emittiert es aber nicht in der Basisklasse (nur in Subklassen). | \`@warning_ignore("unused_signal")\` hinzugefügt. |
+| 6 | **HUD-Nodes nicht gefunden** | \`%HPBar\`-Syntax (Unique Names) funktionierte nicht in hand-geschriebenen .tscn-Dateien. | \`%\`-Referenzen zu \`$\`-Pfaden geändert (direkte Kind-Nodes). |
+| 7 | **Signal already connected** | \`room_cleared.connect(_on_room_cleared, CONNECT_ONE_SHOT)\` wurde bei jedem Raum aufgerufen, ohne zu prüfen ob bereits verbunden. | \`is_connected()\`-Check vor \`connect()\` hinzugefügt. |
+| 8 | **Integer Division Warning** | \`int(time_s) / 60\` in Death-Screen erzeugte Godot-Warnung. | \`@warning_ignore("integer_division")\` + expliziter \`int\`-Typ. |
+| 9 | **BOSS-Räume sofort als cleared markiert** | \`room_manager.setup_room()\` markierte alle Nicht-COMBAT-Räume als cleared, inklusive BOSS. | BOSS-Räume werden jetzt wie COMBAT behandelt (brauchen feindliche Clearance). |
+
+### 19.4 Bekannte offene Probleme & Risiken
+
+| # | Problem | Schwere | Beschreibung | Möglicher Fix |
+|---|---------|---------|--------------|---------------|
+| 1 | **Keine EnemyData-Resources zugewiesen** | Mittel | Cubicle Drone, Spam Bot und Patch Tuesday haben in ihren .tscn-Dateien kein \`enemy_data\`-Resource zugewiesen. States nutzen Fallback-Werte (hardcoded). | \`.tres\`-Dateien für jeden Gegner erstellen und in den Scenes zuweisen. |
+| 2 | **Toaster Arm .tres nutzt erfundene UIDs** | Niedrig | \`toaster_arm_data.tres\` referenziert \`uid://bqx8k2projectile\` — Godot generiert UIDs automatisch. Bei Import könnte Godot die UID nicht finden und auf Path-Fallback zurückgreifen. | Godot-Editor die UIDs regenerieren lassen oder .tres über den Editor erstellen. |
+| 3 | **Upgrade-Spezialeffekte fehlen** | Mittel | "Biohazard Sucker" (Healing bei toten Gegnern), "Spam-Filter" (20% Projektil-Ignoranz), "Rage-Compiler" (Reset pro Raum) haben keine Speziallogik — nur Stat-Bonuses. | Effect-Script-System im UpgradeManager implementieren. |
+| 4 | **Shop & Event Rooms sind Placeholder** | Mittel | \`_show_shop()\` und \`_show_event()\` in main.gd sind \`pass\`. Spieler steckt bei diesen Raumtypen fest (wird aber durch \`call_deferred("emit_signal", "room_cleared")\` im RoomManager übersprungen). | UI-Scenes und Logik für Shop/Event implementieren. |
+| 5 | **Kein Object Pooling für Projektile** | Niedrig | Jedes Projektil wird via \`instantiate()\` / \`queue_free()\` gehandhabt. Bei hohem Feuerrate-Spam könnte GC-Pressure entstehen. | ProjectilePool-Singleton implementieren. |
+| 6 | **Keine Enemy-Skalierung** | Mittel | GDD definiert \`room_scale = 1.0 + (room_index × 0.08)\` und Biom-Multiplikatoren. Aktuell haben alle Gegner ihre Basis-HP unabhängig vom Raum. | Skalierungsformeln in \`_spawn_enemies_for_room()\` anwenden. |
+| 7 | **Camera Limits sind hardcoded** | Niedrig | Player-Camera hat feste Limits (656×416) die zum 640×400 Raum passen. Bei variablen Raumgrößen muss die Camera dynamisch angepasst werden. | Camera-Limits beim Room-Wechsel dynamisch setzen. |
+| 8 | **MetaProgression Doppel-Coins** | Niedrig | \`_on_run_ended\` und \`_on_coins_earned\` addieren beide Coins. Wenn \`run_ended\` → \`meat_coins_earned\` emittiert wird, könnten Coins doppelt gezählt werden. | Signal-Flow prüfen, nur EINEN Pfad für Coin-Addition nutzen. |
+| 9 | **Kein Victory-Screen** | Niedrig | \`_on_victory()\` setzt nur den GameState, zeigt aber keinen Screen an. | Victory-Screen-Scene erstellen (analog zu Death-Screen). |
+| 10 | **REST-Räume heilen sofort und skippen** | Design | REST-Räume heilen 25% HP und gehen sofort zum nächsten Raum. Laut GDD sollten sie eine "Upgrade wählen"-Option bieten. | REST-Raum-UI mit Heal + Upgrade-Auswahl implementieren. |
+
+### 19.5 Abweichungen vom GDD v2.0
+
+| GDD-Vorgabe | Tatsächliche Implementierung | Grund |
+|-------------|------------------------------|-------|
+| **Projektstruktur:** \`scenes/actors/player/\` | \`scenes/characters/player.tscn\` + \`scripts/characters/\` | Flachere Struktur, schnellerer Zugriff im Editor |
+| **Autoload "Events"** | Autoload "EventBus" | Spezifischerer Name, vermeidet Verwechslung mit Event-Rooms |
+| **Autoload "Save"** | Nicht implementiert (ConfigFile in MetaProgression) | MVP-Vereinfachung |
+| **Autoload "PlayerData"** | \`CharacterStats\` als RefCounted im CharacterController | Stats müssen nicht scene-übergreifend persistieren in MVP |
+| **\`find_children("*", "State")\`** | \`get_children()\` + \`is State\` | \`find_children\` fand Script-Klassen nicht zuverlässig |
+| **\`await owner.ready\`** in StateMachine | \`call_deferred("_initialize_state")\` | \`await\` in \`_ready\` verursachte Timing-Probleme |
+| **Klaus Startwaffe: Aktenkoffer** | Toaster Arm | Aktenkoffer noch nicht implementiert |
+| **Damage Numbers als Floating Text** | Nicht implementiert | Visuelle Priorität niedriger als Gameplay |
+| **Biom 1: 8 Räume + Boss** | 8 Räume mit Boss am Ende | Boss-Gegner fehlt, letzter Raum ist COMBAT |
+| **\`%NodeName\`-Syntax** | \`$NodeName\`-Syntax | Unique Names funktionierten nicht in hand-geschriebenen .tscn |
+
+---
+
+## 20. Architektur-Erkenntnisse
+
+### 20.1 Was gut funktioniert
+
+- **Component-System**: HealthComponent + Hitbox + Hurtbox als wiederverwendbare Nodes machen das Hinzufügen neuer Gegner/Charaktere trivial.
+- **State Machine Pattern**: Der generische StateMachine-Controller mit State-Basis-Klasse ermöglicht es, neue Behaviors als einfache Scripts hinzuzufügen.
+- **Event Bus**: Entkoppelte Kommunikation über Signals vermeidet zirkuläre Abhängigkeiten zwischen Systemen.
+- **Data-Driven Design**: WeaponData, EnemyData, UpgradeData als Resources erlauben Balance-Änderungen ohne Code-Anpassungen.
+
+### 20.2 Bekannte technische Schulden
+
+1. **Hand-geschriebene .tscn-Dateien**: Viele Scenes wurden manuell als Text geschrieben statt über den Godot-Editor. Das kann zu UID-Konflikten, fehlenden Properties und schwer debugbaren Fehlern führen. → **Empfehlung**: Scenes im Godot-Editor öffnen und re-speichern.
+
+2. **Fehlende EnemyData-Resources**: Gegner-Scenes referenzieren \`@export var enemy_data: EnemyData\`, aber es existieren keine \`.tres\`-Dateien. Alle Werte kommen aus Fallbacks in den State-Scripts. → **Empfehlung**: Pro Gegner-Typ eine \`.tres\`-Datei erstellen.
+
+3. **Upgrade-Effekte nur als Stat-Modifikation**: Das UpgradeManager-System kann nur numerische Stats ändern. Für Spezialeffekte (z.B. "Biohazard Sucker" heilt bei toten Gegnern) fehlt ein Effect-Script-System. → **Empfehlung**: \`effect_script: Script\`-Feld in UpgradeData nutzen.
+
+4. **Keine Fehlerbehandlung bei Scene-Wechseln**: \`change_scene_to_file()\` kann fehlschlagen wenn der Pfad falsch ist. Kein Fallback-Verhalten implementiert. → **Empfehlung**: Wrapper-Funktion mit Fehlerprüfung.
+
+### 20.3 Empfohlene nächste Schritte (Priorität)
+
+1. **EnemyData .tres-Dateien erstellen** — Gibt allen Gegnern korrekte Werte statt Fallbacks
+2. **Boss-Scene (CEO-Mech)** — Komplettiert den Biom-1-Loop
+3. **Shop-Room implementieren** — Kernmechanik des Run-Loops
+4. **Difficulty Scaling aktivieren** — room_scale + biome_mult Formeln anwenden
+5. **Zweite Waffe (Aktenkoffer)** — Validiert das Waffenwechsel-System
+6. **Upgrade-Spezialeffekte** — Macht das Upgrade-System spielrelevant
+7. **Sprites/Pixel Art** — Ersetzt ColorRect-Platzhalter
+
+---
+
+## Anhang: Schnellreferenz-Formeln
+
+\`\`\`
+# Schaden
+final_damage = floor(max(base × weap × upgrades - armor, base × weap × upgrades × 0.15) × crit × (1 + status))
+
+# Gegner HP
+enemy_hp = base_hp × (1 + room_index × 0.08) × biome_hp_mult
+
+# Gegner Damage
+enemy_dmg = base_dmg × (1 + room_index × 0.05) × biome_dmg_mult
+
+# Spawn Count
+spawn_count = floor(base_spawn × (1 + room_index × 0.06) × biome_spawn_mult)
+
+# MeatCoin Earning
+meatcoins = floor((rooms×2) + (kills×0.3) + (bosses×15) + (biomes×25) + time_bonus + streak)
+
+# Permanente Upgrade-Kosten
+cost(level) = base_cost × (level ^ 1.8)
+
+# Pity
+adjusted_rare_chance = base_chance + (pity_counter × 0.05)
+
+# Boss Power Scaling
+boss_hp_adjusted = boss_hp_base × (1.0 + total_player_upgrades × 0.02)
+
+# Soft Cap
+effective_stat = threshold + (raw_stat - threshold) × diminishing_rate
+\`\`\`
+
+---
+
+> *"Vielen Dank für Ihre Bewerbung als Held. Bitte nehmen Sie eine Nummer."*  
+> — MeatCorp™ Personalabteilung
+
+---
+
+**MEAT MACHINE CYCLE** | GDD v2.1 | Stand: 2026-02-19 | PRISM
+`;
+    document.getElementById('doc-content').innerHTML = marked.parse(raw);
+    </script></main>
+<script>
+function toggleMenu(){
+    document.querySelector('.sidebar').classList.toggle('mobile-open');
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('sidebar-backdrop').classList.toggle('visible');
+}
+function closeMenu(){
+    document.querySelector('.sidebar').classList.remove('mobile-open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('sidebar-backdrop').classList.remove('visible');
+}
+document.querySelectorAll('.sidebar .nav-item').forEach(a=>a.addEventListener('click',closeMenu));
+</script>
+</body></html>

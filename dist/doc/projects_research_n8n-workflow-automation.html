@@ -1,0 +1,749 @@
+<!DOCTYPE html><html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>n8n Workflow Automation // PRISM Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --bg-void: #06060b;
+    --bg-base: #0a0a14;
+    --bg-surface: #111122;
+    --bg-elevated: #1a1a2e;
+    --neon-cyan: #00f0ff;
+    --neon-magenta: #ff00aa;
+    --neon-violet: #8b5cf6;
+    --neon-green: #39ff14;
+    --neon-amber: #ffb800;
+    --text-primary: #e0e0f0;
+    --text-secondary: #8888aa;
+    --text-muted: #555570;
+    --glass-bg: rgba(17, 17, 34, 0.6);
+    --glass-border: rgba(0, 240, 255, 0.08);
+    --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.3);
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-display: 'Orbitron', var(--font-sans);
+    --sidebar-collapsed: 64px;
+    --sidebar-expanded: 260px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-void); }
+::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+* { scrollbar-width: thin; scrollbar-color: var(--bg-elevated) var(--bg-void); }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-void);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 15px;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+        radial-gradient(ellipse at 15% 50%, rgba(0, 240, 255, 0.035) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 90%, rgba(255, 0, 170, 0.02) 0%, transparent 50%);
+    z-index: 0; pointer-events: none;
+}
+body::after {
+    content: ''; position: fixed; inset: 0;
+    background: linear-gradient(rgba(0,240,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.015) 1px, transparent 1px);
+    background-size: 80px 80px; pointer-events: none; z-index: 0;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: var(--sidebar-collapsed);
+    background: var(--bg-surface);
+    border-right: 1px solid var(--glass-border);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden; z-index: 100;
+    display: flex; flex-direction: column;
+}
+.sidebar:hover { width: var(--sidebar-expanded); }
+.sidebar-logo {
+    padding: 18px 16px; border-bottom: 1px solid var(--glass-border);
+    white-space: nowrap; display: flex; align-items: center; gap: 12px; min-height: 64px;
+}
+.sidebar-logo .logo-icon { font-size: 1.6rem; flex-shrink: 0; width: 30px; text-align: center; filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.5)); }
+.sidebar-logo .logo-text { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--neon-cyan); letter-spacing: 0.1em; text-transform: uppercase; text-shadow: 0 0 20px rgba(0, 240, 255, 0.4); opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .logo-text { opacity: 1; }
+.sidebar-avatar { padding: 12px 16px; text-align: center; opacity: 0; transition: opacity 0.3s 0.15s; }
+.sidebar:hover .sidebar-avatar { opacity: 1; }
+.sidebar-avatar img { width: 80px; height: 80px; border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 0 20px rgba(0, 240, 255, 0.15); }
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 4px 0; }
+.nav-section {
+    padding: 14px 20px 4px; font-family: var(--font-mono); font-size: 0.58em; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted);
+    white-space: nowrap; opacity: 0; transition: opacity 0.2s 0.1s;
+}
+.sidebar:hover .nav-section { opacity: 1; }
+.nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 20px; color: var(--text-secondary); text-decoration: none;
+    font-family: var(--font-mono); font-size: 0.8em; letter-spacing: 0.03em;
+    white-space: nowrap; border-left: 3px solid transparent; transition: all 0.2s ease;
+}
+.nav-item:hover { color: var(--neon-cyan); background: rgba(0, 240, 255, 0.04); border-left-color: var(--neon-cyan); }
+.nav-item.active { color: var(--neon-cyan); background: rgba(0, 240, 255, 0.07); border-left-color: var(--neon-cyan); }
+.nav-item .icon { width: 24px; flex-shrink: 0; text-align: center; font-size: 1.1em; }
+.nav-item .label { opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .nav-item .label { opacity: 1; }
+.sidebar-footer {
+    padding: 14px 20px; border-top: 1px solid var(--glass-border);
+    font-family: var(--font-mono); font-size: 0.65em; color: var(--text-muted);
+    white-space: nowrap; display: flex; align-items: center; gap: 8px;
+}
+.status-dot { width: 6px; height: 6px; background: var(--neon-green); border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 8px rgba(57, 255, 20, 0.5); animation: pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.sidebar-footer .footer-text { opacity: 0; transition: opacity 0.2s 0.1s; }
+.sidebar:hover .footer-text { opacity: 1; }
+
+/* Main */
+.main {
+    margin-left: var(--sidebar-collapsed); padding: 2.5rem 3rem;
+    position: relative; z-index: 1; min-height: 100vh;
+    transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: calc(100vw - var(--sidebar-collapsed));
+}
+.sidebar:hover ~ .main { margin-left: var(--sidebar-expanded); max-width: calc(100vw - var(--sidebar-expanded)); }
+
+.hero-banner { width: 100%; height: 160px; border-radius: 14px; overflow: hidden; margin-bottom: 2rem; position: relative; border: 1px solid var(--glass-border); }
+.hero-banner img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) saturate(1.3); }
+.hero-banner .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(255,0,170,0.1)); mix-blend-mode: overlay; }
+.hero-banner .hero-text { position: absolute; bottom: 20px; left: 24px; }
+.hero-banner .hero-text h1 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 0.06em; text-shadow: 0 0 30px rgba(0, 240, 255, 0.4); }
+.hero-banner .hero-text p { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); }
+
+.page-title { font-family: var(--font-display); font-size: 2rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neon-cyan); text-shadow: 0 0 30px rgba(0, 240, 255, 0.25); margin-bottom: 0.3rem; }
+.page-subtitle { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 2.5rem; }
+
+h2 { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin: 2.5rem 0 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); }
+h3 { font-size: 1.05rem; color: var(--neon-cyan); margin: 1.5rem 0 0.5rem; }
+a { color: var(--neon-cyan); text-decoration: none; transition: all 0.15s; }
+a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
+
+.card {
+    background: var(--glass-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: 12px;
+    padding: 0.9rem 1.2rem; margin: 0.4rem 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card:hover { transform: translateY(-2px); border-color: rgba(0, 240, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
+.card a { display: flex; justify-content: space-between; align-items: center; color: var(--text-primary); font-weight: 500; font-size: 0.95rem; }
+.card a:hover { text-decoration: none; }
+.card .meta { color: var(--text-muted); font-size: 0.7rem; font-family: var(--font-mono); }
+.category { margin-bottom: 1rem; }
+
+.doc-viewer {
+    background: var(--glass-bg); backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: 14px; padding: 2.5rem;
+    font-size: 15px; line-height: 1.8;
+}
+.doc-viewer h1 { font-family: var(--font-display); font-size: 1.6rem; color: var(--neon-cyan); margin: 0 0 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.8rem; }
+.doc-viewer h2 { font-size: 1.2rem; color: var(--neon-cyan); text-transform: none; letter-spacing: normal; font-family: var(--font-sans); font-weight: 600; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.4rem; margin: 2rem 0 0.8rem; }
+.doc-viewer h3 { font-size: 1.05rem; color: var(--neon-violet); margin: 1.5rem 0 0.5rem; }
+.doc-viewer h4 { font-size: 0.95rem; color: var(--neon-amber); margin: 1.2rem 0 0.4rem; }
+.doc-viewer p { margin: 0.6rem 0; }
+.doc-viewer code { background: rgba(0, 240, 255, 0.08); padding: 2px 7px; border-radius: 5px; color: var(--neon-cyan); font-size: 0.88em; font-family: var(--font-mono); }
+.doc-viewer pre { background: rgba(0, 0, 0, 0.5); padding: 1.25rem; border-radius: 10px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--glass-border); }
+.doc-viewer pre code { background: none; padding: 0; color: var(--neon-green); display: block; }
+.doc-viewer ul, .doc-viewer ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+.doc-viewer li { margin: 0.3rem 0; }
+.doc-viewer li::marker { color: var(--neon-cyan); }
+.doc-viewer blockquote { border-left: 3px solid var(--neon-violet); padding: 0.5rem 1rem; margin: 1rem 0; background: rgba(139, 92, 246, 0.05); border-radius: 0 8px 8px 0; color: var(--text-secondary); }
+.doc-viewer hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent); margin: 2rem 0; }
+.doc-viewer table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+.doc-viewer th, .doc-viewer td { padding: 0.6rem 1rem; border: 1px solid var(--glass-border); text-align: left; }
+.doc-viewer th { background: rgba(0, 240, 255, 0.06); color: var(--neon-cyan); font-family: var(--font-mono); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+.doc-viewer img { max-width: 100%; border-radius: 8px; }
+.doc-viewer strong { color: var(--text-primary); }
+
+.breadcrumb { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.8rem; font-family: var(--font-mono); }
+.breadcrumb a { color: var(--neon-cyan); }
+.breadcrumb .sep { margin: 0 0.5rem; opacity: 0.3; }
+
+.badge { display: inline-flex; align-items: center; padding: 2px 10px; font-family: var(--font-mono); font-size: 0.7em; text-transform: uppercase; border-radius: 4px; border: 1px solid; }
+.badge-cyan { color: var(--neon-cyan); border-color: rgba(0, 240, 255, 0.3); background: rgba(0, 240, 255, 0.08); }
+.badge-green { color: var(--neon-green); border-color: rgba(57, 255, 20, 0.3); background: rgba(57, 255, 20, 0.08); }
+.badge-red { color: #f87171; border-color: rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.08); }
+
+.footer { margin-top: 3rem; padding-top: 1.5rem; text-align: center; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); }
+.footer .line { height: 1px; background: linear-gradient(90deg, transparent, var(--glass-border), transparent); margin-bottom: 1.5rem; }
+
+/* Hamburger (mobile) */
+.hamburger {
+    display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--bg-surface); border: 1px solid var(--glass-border);
+    cursor: pointer; align-items: center; justify-content: center;
+    backdrop-filter: blur(12px); box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.hamburger span { display: block; width: 20px; height: 2px; background: var(--neon-cyan); border-radius: 1px; transition: all 0.3s; position: relative; }
+.hamburger span::before, .hamburger span::after { content: ''; position: absolute; left: 0; width: 20px; height: 2px; background: var(--neon-cyan); border-radius: 1px; transition: all 0.3s; }
+.hamburger span::before { top: -6px; }
+.hamburger span::after { top: 6px; }
+.hamburger.open span { background: transparent; }
+.hamburger.open span::before { top: 0; transform: rotate(45deg); }
+.hamburger.open span::after { top: 0; transform: rotate(-45deg); }
+.sidebar-backdrop { display: none; position: fixed; inset: 0; z-index: 99; background: rgba(6,6,11,0.7); }
+.sidebar-backdrop.visible { display: block; }
+
+@media (max-width: 768px) {
+    .hamburger { display: flex; }
+    .sidebar { width: 280px !important; transform: translateX(-100%); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); z-index: 150; }
+    .sidebar.mobile-open { transform: translateX(0); }
+    .sidebar.mobile-open .logo-text, .sidebar.mobile-open .sidebar-avatar,
+    .sidebar.mobile-open .nav-section, .sidebar.mobile-open .nav-item .label,
+    .sidebar.mobile-open .footer-text { opacity: 1 !important; }
+    .sidebar:hover { width: 280px !important; }
+    .main { margin-left: 0 !important; max-width: 100vw !important; padding: 1rem !important; padding-top: 64px !important; }
+    .sidebar:hover ~ .main { margin-left: 0 !important; max-width: 100vw !important; }
+    .hero-banner { height: 110px; border-radius: 10px; }
+    .hero-banner .hero-text h1 { font-size: 1.2rem; }
+    .hero-banner .hero-text p { font-size: 0.7rem; }
+    .page-title { font-size: 1.4rem; }
+    .doc-viewer { padding: 1.2rem; font-size: 14px; }
+    .doc-viewer pre { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .doc-viewer table { display: block; overflow-x: auto; }
+    .card a { min-height: 44px; }
+    .nav-item { min-height: 44px; padding: 10px 20px; }
+    .search-bar input { font-size: 16px; }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head><body>
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <span class="logo-icon">🔮</span>
+        <span class="logo-text">PRISM</span>
+    </div>
+    <div class="sidebar-avatar">
+        <img src="static/avatar.png" alt="PRISM" onerror="this.style.display='none'">
+    </div>
+    <nav class="sidebar-nav"><div class="nav-section">Navigation</div>
+<a href="index.html" class="nav-item active"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
+<a href="news.html" class="nav-item"><span class="icon">📰</span><span class="label">AI News</span></a>
+<div class="nav-section">🎮 Meat Machine Cycle</div>
+<a href="doc/projects_mmc_docs_gdd-v2.2.html" class="nav-item"><span class="icon">📄</span><span class="label">GDD v2.2 (aktuell)</span></a>
+<a href="doc/projects_mmc_docs_sprint-plan.html" class="nav-item"><span class="icon">📄</span><span class="label">Sprint Plan</span></a>
+<a href="doc/projects_mmc_docs_architecture.html" class="nav-item"><span class="icon">📄</span><span class="label">Architektur</span></a>
+<a href="doc/projects_mmc_docs_roadmap.html" class="nav-item"><span class="icon">📄</span><span class="label">Roadmap</span></a>
+<a href="doc/MMC_meat-machine-cycle_PROJECT_STRUCTURE.html" class="nav-item"><span class="icon">📄</span><span class="label">Projekt-Struktur</span></a>
+<div class="nav-section">🔬 Research</div>
+<a href="doc/projects_research_blender-ai-pipeline.html" class="nav-item"><span class="icon">📄</span><span class="label">Blender AI Pipeline</span></a>
+<a href="doc/projects_research_gamedev-engines-ai.html" class="nav-item"><span class="icon">📄</span><span class="label">Gamedev Engines & AI</span></a>
+<a href="doc/projects_research_multi-machine-agent-teams.html" class="nav-item"><span class="icon">📄</span><span class="label">Multi-Machine Agent Teams</span></a>
+<a href="doc/projects_research_n8n-workflow-automation.html" class="nav-item"><span class="icon">📄</span><span class="label">n8n Workflow Automation</span></a>
+</nav>
+    <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        <span class="footer-text">PRISM Hub // Public</span>
+    </div>
+</aside>
+<button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
+<main class="main">
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span>n8n-workflow-automation.md</div>
+    <div class="doc-viewer" id="doc-content"></div>
+    <script>
+    const raw = `# n8n — Workflow-Automation für AI Agent Teams
+
+> **Ziel:** Bewertung von n8n als Orchestrierungs- und Automationsplattform für unser Agent-Setup.
+> **Stand:** Februar 2026 | **Autor:** PRISM
+
+---
+
+## Inhaltsverzeichnis
+
+1. [Was ist n8n?](#1-was-ist-n8n)
+2. [Warum n8n für uns relevant ist](#2-warum-n8n-für-uns-relevant-ist)
+3. [Kernfeatures](#3-kernfeatures)
+4. [AI & LangChain Integration](#4-ai--langchain-integration)
+5. [n8n vs andere Ansätze](#5-n8n-vs-andere-ansätze)
+6. [Step-by-Step: Setup auf Mac Mini](#6-step-by-step-setup-auf-mac-mini)
+7. [Beispiel-Workflows für unser Setup](#7-beispiel-workflows-für-unser-setup)
+8. [Integration mit CrewAI / A2A / OpenClaw](#8-integration-mit-crewai--a2a--openclaw)
+9. [Kosten & Lizenz](#9-kosten--lizenz)
+10. [Empfehlung](#10-empfehlung)
+
+---
+
+## 1. Was ist n8n?
+
+**n8n** (ausgesprochen "n-eight-n", steht für "nodemation") ist eine **Self-Hosted Workflow-Automation-Plattform** mit:
+
+- **Visueller Node-Editor** — Drag & Drop Workflows bauen
+- **400+ Integrationen** — APIs, Datenbanken, SaaS-Services
+- **Native AI-Capabilities** — LangChain-basierte AI-Nodes
+- **Code wenn nötig** — JavaScript/Python in jedem Node
+- **Fair-Code Lizenz** — Open Source, self-hostable, Enterprise-Option
+
+**Analogie:** n8n ist wie Zapier/Make, aber self-hosted, mit Code-Zugang und AI-native.
+
+---
+
+## 2. Warum n8n für uns relevant ist
+
+### Das Problem das n8n löst
+
+Wir haben aktuell viele lose Teile:
+- PRISM (OpenClaw) auf dem Mac Mini
+- ADy als separater Agent
+- Telegram als Kommunikationskanal
+- GitHub für Code
+- Blender MCP für 3D
+- ComfyUI für Bildgenerierung
+- Reolink Kameras
+- Diverse APIs
+
+**n8n kann der Klebstoff sein, der alles verbindet** — ohne dass wir für jede Integration custom Code schreiben.
+
+### Konkrete Use Cases für Clay Machine Games
+
+| Use Case | n8n Workflow |
+|----------|-------------|
+| **Automatisches Asset-Processing** | Bild hochladen → ComfyUI → Nachbearbeitung → Git Commit |
+| **PR Review Pipeline** | GitHub Webhook → AI Agent reviewed Code → Kommentar auf PR |
+| **Daily Standup Automation** | Cron → Git Log lesen → AI Summary → Telegram an Team |
+| **Bug Reports** | Telegram "Bug: ..." → GitHub Issue erstellen → Label setzen |
+| **Content Pipeline** | Idee in Telegram → Research Agent → Draft → Review → Publish |
+| **Multi-Agent Orchestrierung** | Trigger → CrewAI Crew starten → Ergebnis an Telegram |
+| **Monitoring** | Server-Status prüfen → Alert bei Problemen |
+| **News Aggregation** | RSS Feeds → AI Filter → Zusammenfassung → Hub/Telegram |
+
+---
+
+## 3. Kernfeatures
+
+### Visual Workflow Builder
+\`\`\`
+[Trigger] → [Node] → [Node] → [Output]
+    │           │
+    └── [If] ──┤
+               └── [Alternative Path]
+\`\`\`
+
+Jeder Node ist eine Aktion: HTTP Request, Code ausführen, AI Agent aufrufen, Datenbank abfragen, etc.
+
+### Trigger-Typen
+- **Webhooks** — Reagiert auf HTTP Requests (GitHub, Telegram, etc.)
+- **Cron/Schedule** — Zeitgesteuerte Ausführung
+- **Events** — Reagiert auf Änderungen (DB, Dateisystem)
+- **Manual** — Button-Click im Editor
+- **Chat Trigger** — Für AI Chat-Workflows
+
+### Code-Integration
+\`\`\`javascript
+// In jedem Node: JavaScript oder Python
+const items = $input.all();
+const processed = items.map(item => ({
+  ...item,
+  json: {
+    summary: item.json.content.substring(0, 200),
+    timestamp: new Date().toISOString()
+  }
+}));
+return processed;
+\`\`\`
+
+### Error Handling
+- Retry-Logik pro Node
+- Error-Workflows (separater Workflow bei Fehler)
+- Timeout-Konfiguration
+- Human Fallback (Workflow pausiert, wartet auf Mensch)
+
+### Sub-Workflows
+Workflows können andere Workflows aufrufen — ermöglicht modulare Architektur:
+\`\`\`
+Main Workflow
+  ├── Sub: Research Workflow
+  ├── Sub: Code Review Workflow
+  └── Sub: Notification Workflow
+\`\`\`
+
+---
+
+## 4. AI & LangChain Integration
+
+n8n hat **native AI-Nodes** basierend auf LangChain:
+
+### AI Agent Node
+Erstellt einen autonomen AI-Agenten mit:
+- **LLM** (Claude, GPT, Ollama, etc.)
+- **Tools** (HTTP, Code, Datenbank-Abfragen)
+- **Memory** (Buffer, Window, Vector Store)
+- **Output Parser** (Strukturierte Outputs)
+
+### Cluster Nodes (Root + Sub-Nodes)
+\`\`\`
+[AI Agent] ← Root Node
+    ├── [LLM: Claude Sonnet] ← Sub-Node
+    ├── [Tool: Web Search] ← Sub-Node
+    ├── [Tool: n8n Workflow] ← Sub-Node (!)
+    └── [Memory: Buffer] ← Sub-Node
+\`\`\`
+
+**Besonders mächtig:** Ein AI Agent kann andere n8n Workflows als Tools nutzen. Das heißt:
+- Agent entscheidet → "Ich brauche Daten aus GitHub" → Workflow wird ausgeführt → Ergebnis zurück an Agent
+
+### Vector Store Integration
+- Pinecone, Qdrant, Supabase, In-Memory
+- Dokumente laden, embedden, RAG-Pipeline aufbauen
+
+### Chat Trigger
+- Eingebauter Chat-Trigger für Conversational AI
+- Chat Widget als Frontend deploybar
+
+---
+
+## 5. n8n vs andere Ansätze
+
+| | **n8n** | **CrewAI** | **A2A Protocol** | **OpenClaw** |
+|---|---------|-----------|-----------------|-------------|
+| **Zweck** | Workflow Automation | Agent Framework | Agent Kommunikation | Agent Runtime |
+| **Visual Editor** | ✅ Ja | ❌ Nein | ❌ Nein | ❌ Nein |
+| **AI Native** | ✅ LangChain | ✅ Multi-Agent | ❌ Transport-Layer | ✅ LLM-basiert |
+| **400+ Integrations** | ✅ | ❌ | ❌ | ❌ |
+| **Self-Hosted** | ✅ | ✅ | ✅ | ✅ |
+| **Multi-Machine** | ✅ (via Webhooks) | ❌ | ✅ (designt dafür) | ✅ (Nodes) |
+| **Code-Flexibilität** | JS/Python in Nodes | Python | Jede Sprache | Jede Sprache |
+| **Lernkurve** | 🟢 Niedrig (UI) | 🟢 Niedrig | 🟡 Mittel | 🟡 Mittel |
+
+### Fazit: n8n ist kein Ersatz, sondern eine Ergänzung
+
+- **CrewAI** = definiert WIE Agenten zusammenarbeiten
+- **A2A** = definiert WIE Agenten kommunizieren
+- **OpenClaw** = definiert WO Agenten laufen
+- **n8n** = **verbindet alles** und automatisiert die Workflows drumherum
+
+---
+
+## 6. Step-by-Step: Setup auf Mac Mini
+
+### Option A: npx (Schnellstart)
+
+\`\`\`bash
+# Einmalig testen
+npx n8n
+# → http://localhost:5678
+\`\`\`
+
+### Option B: npm (Permanent)
+
+\`\`\`bash
+# Global installieren
+npm install n8n -g
+
+# Starten
+n8n start
+
+# Mit Tunnel (für externe Webhooks, nur Dev!)
+n8n start --tunnel
+\`\`\`
+
+### Option C: Docker (Empfohlen für Production)
+
+\`\`\`bash
+# Volume für persistente Daten
+docker volume create n8n_data
+
+# Starten
+docker run -d \\
+  --name n8n \\
+  --restart unless-stopped \\
+  -p 5678:5678 \\
+  -v n8n_data:/home/node/.n8n \\
+  -e N8N_BASIC_AUTH_ACTIVE=true \\
+  -e N8N_BASIC_AUTH_USER=druid \\
+  -e N8N_BASIC_AUTH_PASSWORD=dein-passwort \\
+  docker.n8n.io/n8nio/n8n
+
+# → http://localhost:5678
+# → LAN: http://192.168.137.148:5678
+\`\`\`
+
+### Option D: Docker Compose (mit Postgres)
+
+\`\`\`yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=druid
+      - N8N_BASIC_AUTH_PASSWORD=dein-passwort
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: n8n
+      POSTGRES_DB: n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  n8n_data:
+  postgres_data:
+\`\`\`
+
+\`\`\`bash
+docker compose up -d
+\`\`\`
+
+### Nach der Installation
+
+1. Browser öffnen: \`http://localhost:5678\`
+2. Account erstellen (Owner)
+3. Ersten Workflow erstellen
+4. API-Keys konfigurieren (Anthropic, OpenAI, etc.)
+
+---
+
+## 7. Beispiel-Workflows für unser Setup
+
+### Workflow 1: Daily Dev Standup
+
+\`\`\`
+[Schedule Trigger: 09:00 Mo-Fr]
+  → [Execute Command: git log --since="yesterday" --oneline]
+  → [AI Agent: Fasse die Commits zusammen]
+  → [Telegram: Sende Summary an Druid]
+\`\`\`
+
+**Konfiguration:**
+- Schedule: Cron \`0 9 * * 1-5\`
+- Execute Command Node: Arbeitsverzeichnis = MMC Repo
+- AI Agent: Claude Sonnet, System Prompt = "Du bist ein Dev-Lead..."
+- Telegram: Bot Token + Chat ID
+
+### Workflow 2: GitHub Issue aus Telegram
+
+\`\`\`
+[Telegram Trigger: Nachricht mit "Bug:"]
+  → [Code: Bug-Beschreibung extrahieren]
+  → [AI Agent: Titel + Labels vorschlagen]
+  → [GitHub: Issue erstellen]
+  → [Telegram: Bestätigung mit Issue-Link]
+\`\`\`
+
+### Workflow 3: AI Research Pipeline
+
+\`\`\`
+[Webhook Trigger: POST /research]
+  → [AI Agent: Web Research mit Tools]
+      ├── [Tool: HTTP Request (Web Fetch)]
+      ├── [Tool: n8n Workflow (Zusammenfassung)]
+      └── [Tool: Code (Markdown formatieren)]
+  → [Write File: research/{topic}.md]
+  → [Telegram: "Research fertig: {link}"]
+\`\`\`
+
+### Workflow 4: Multi-Agent Orchestrierung
+
+\`\`\`
+[Webhook: /develop-feature]
+  → [HTTP Request: POST zu Scout Agent (A2A)]
+  → [Wait: Auf Research-Ergebnis]
+  → [HTTP Request: POST zu ADy Agent (A2A)]
+  → [Wait: Auf Design-Ergebnis]
+  → [AI Agent: PRISM implementiert]
+  → [Execute Command: git add, commit, push]
+  → [Telegram: "Feature implementiert!"]
+\`\`\`
+
+### Workflow 5: Asset Pipeline
+
+\`\`\`
+[Webhook: Neues Asset]
+  → [If: Bild oder 3D?]
+  ├── [Bild] → [HTTP: ComfyUI API] → [Download] → [Git Commit]
+  └── [3D]  → [HTTP: Blender MCP] → [Export GLB] → [Git Commit]
+  → [Telegram: "Asset verarbeitet"]
+\`\`\`
+
+---
+
+## 8. Integration mit CrewAI / A2A / OpenClaw
+
+### n8n + CrewAI
+
+n8n kann CrewAI-Crews als Sub-Prozesse starten:
+
+\`\`\`
+[n8n Trigger]
+  → [Execute Command: python run_crew.py --task "..."]
+  → [Parse Output]
+  → [Weiterverarbeiten]
+\`\`\`
+
+Oder via HTTP wenn CrewAI als API läuft:
+\`\`\`
+[n8n Trigger]
+  → [HTTP Request: POST http://localhost:8080/crew/kickoff]
+  → [Wait for Response]
+  → [Weiterverarbeiten]
+\`\`\`
+
+### n8n + A2A
+
+n8n ist ein **perfekter A2A-Orchestrator**:
+- Jeder A2A Agent ist ein HTTP Endpoint
+- n8n kann HTTP Requests an Agents senden
+- n8n kann Webhooks empfangen (Agent → n8n)
+- n8n managed den gesamten Workflow visuell
+
+### n8n + OpenClaw
+
+Mögliche Integrationen:
+- **Webhook → OpenClaw API** für Node-Steuerung
+- **n8n als Workflow-Backend** für PRISM-Aufgaben
+- **Telegram Bot** kann sowohl in OpenClaw als auch in n8n laufen
+
+### Architektur-Vision
+
+\`\`\`
+┌─────────────────────────────────────────┐
+│              n8n (Mac Mini)              │
+│         Visueller Orchestrator          │
+│                                         │
+│  ┌─────────┐  ┌─────────┐  ┌────────┐ │
+│  │ AI Agent│  │ GitHub  │  │Telegram│ │
+│  │ Nodes   │  │ Webhook │  │ Bot    │ │
+│  └────┬────┘  └────┬────┘  └───┬────┘ │
+│       │            │            │       │
+└───────┼────────────┼────────────┼───────┘
+        │            │            │
+  ┌─────┴─────┐  ┌──┴──┐  ┌─────┴─────┐
+  │ CrewAI    │  │ Git │  │ OpenClaw  │
+  │ (Crews)   │  │ Repo│  │ (PRISM)   │
+  └───────────┘  └─────┘  └───────────┘
+        │                       │
+  ┌─────┴─────┐          ┌─────┴─────┐
+  │ A2A Agents│          │   Nodes   │
+  │ (Remote)  │          │(Devices)  │
+  └───────────┘          └───────────┘
+\`\`\`
+
+---
+
+## 9. Kosten & Lizenz
+
+| Tier | Preis | Features |
+|------|-------|----------|
+| **Community** (Self-Hosted) | **Kostenlos** | Alle Core-Features, unlimited Workflows |
+| **Pro** (Cloud) | ab $20/mo | 2.500 Executions, 5 Workflows aktiv |
+| **Enterprise** | Custom | SSO, LDAP, Audit Log, Support |
+
+**Für uns:** Community (Self-Hosted) reicht komplett. Kostenlos, unlimitiert.
+
+**Lizenz:** "Fair-Code" — Sustainable Use License. Bedeutet:
+- ✅ Source Code einsehbar
+- ✅ Self-Hosting erlaubt
+- ✅ Modifizieren erlaubt
+- ❌ Nicht als SaaS weiterverkaufen (ohne Enterprise-Lizenz)
+
+---
+
+## 10. Empfehlung
+
+### Relevanz für Clay Machine Games: ⭐⭐⭐⭐ (Hoch)
+
+**n8n ist hochrelevant** — aber als **Ergänzung**, nicht als Ersatz für unseren Agent-Stack.
+
+### Was n8n für uns löst
+
+| Problem | n8n Lösung |
+|---------|-----------|
+| Viele lose Services verbinden | Visueller Workflow-Editor mit 400+ Integrationen |
+| Repetitive Automationen | Schedule + Trigger-basierte Workflows |
+| Agent-Orchestrierung | HTTP Nodes als A2A/CrewAI Trigger |
+| Monitoring & Alerts | Error Workflows + Telegram Notifications |
+| Non-Dev Zugänglichkeit | Visual UI — auch ohne Python nutzbar |
+
+### Was n8n NICHT löst
+
+- Ersetzt nicht CrewAI/AutoGen für Agent-Definition
+- Ersetzt nicht A2A für Agent-Protokoll
+- Ersetzt nicht OpenClaw/PRISM als Agent-Runtime
+- Kein nativer Multi-Agent-Teamwork (Agenten die miteinander "diskutieren")
+
+### Empfohlener Einsatz
+
+\`\`\`
+Phase 1 (Sofort machbar):
+├── n8n auf Mac Mini installieren (Docker)
+├── Daily Standup Workflow (Git → AI → Telegram)
+├── Bug-Report Workflow (Telegram → GitHub)
+└── News Aggregation (RSS → AI → Hub)
+
+Phase 2 (Mit Agent-Stack):
+├── n8n als Orchestrator für CrewAI Crews
+├── A2A Agent Endpoints via HTTP Nodes ansprechen
+└── Asset Pipeline (ComfyUI/Blender Integration)
+
+Phase 3 (Production):
+├── Vollständige CI/CD Pipeline
+├── Multi-Agent Workflows visuell orchestriert
+└── Monitoring Dashboard in n8n
+\`\`\`
+
+### TL;DR
+
+**n8n installieren, ja!** Es ist der fehlende **Workflow-Orchestrator** zwischen unseren Agenten, Tools und Services. Kostenlos, self-hosted, visuell, AI-native. Ergänzt CrewAI + A2A + OpenClaw perfekt.
+
+**Nächster Schritt:** \`npx n8n\` auf dem Mac Mini und den ersten Workflow bauen (z.B. Daily Standup Automation).
+
+---
+
+## Quellen & Links
+
+- [n8n GitHub](https://github.com/n8n-io/n8n) — 55k+ ⭐
+- [n8n Docs](https://docs.n8n.io)
+- [AI & LangChain Guide](https://docs.n8n.io/advanced-ai/)
+- [Workflow Templates](https://n8n.io/workflows/?categories=25)
+- [Community Forum](https://community.n8n.io)
+- [Self-Hosted AI Starter Kit](https://docs.n8n.io/hosting/starter-kits/ai-starter-kit/)
+- [npm Installation](https://docs.n8n.io/hosting/installation/npm/)
+- [Docker Installation](https://docs.n8n.io/hosting/installation/docker/)
+`;
+    document.getElementById('doc-content').innerHTML = marked.parse(raw);
+    </script></main>
+<script>
+function toggleMenu(){
+    document.querySelector('.sidebar').classList.toggle('mobile-open');
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('sidebar-backdrop').classList.toggle('visible');
+}
+function closeMenu(){
+    document.querySelector('.sidebar').classList.remove('mobile-open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('sidebar-backdrop').classList.remove('visible');
+}
+document.querySelectorAll('.sidebar .nav-item').forEach(a=>a.addEventListener('click',closeMenu));
+</script>
+</body></html>
