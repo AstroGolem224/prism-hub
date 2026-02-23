@@ -661,7 +661,7 @@ python worker_coder.py
 
 | Maschine | Rolle | Agent | Aufgabe |
 |----------|-------|-------|---------|
-| **Mac Mini** (192.168.137.148) | Orchestrator + Tech Lead | PRISM | Koordination, Coding, Git |
+| **Mac Mini** (LAN) | Orchestrator + Tech Lead | PRISM | Koordination, Coding, Git |
 | **Laptop** (mobil) | Creative Lead | ADy | Design, Art Direction, Lore |
 | **Cloud/VPS** | Researcher | Scout | Web Research, Docs, Trends |
 
@@ -682,7 +682,7 @@ pip install a2a-sdk
 {
   "name": "PRISM",
   "description": "Tech Lead & Orchestrator for MMC game development",
-  "url": "http://192.168.137.148:9000/a2a",
+  "url": "http://your-mac-mini.local:9000/a2a",
   "version": "1.0.0",
   "skills": [
     {"id": "coding", "name": "Godot Coding", "description": "Write and review GDScript"},
