@@ -1,0 +1,21 @@
+🔮 Building static site...
+🔮 PRISM Hub — Static Build
+
+  ✓ index.html
+  ✓ doc/projects_mmc_docs_gdd-v2.2.html
+  ✓ doc/projects_mmc_docs_sprint-plan.html
+  ✓ doc/projects_mmc_docs_architecture.html
+  ✓ doc/projects_mmc_docs_roadmap.html
+  ✓ doc/MMC_meat-machine-cycle_PROJECT_STRUCTURE.html
+  ✓ doc/projects_research_blender-ai-pipeline.html
+  ✓ doc/projects_research_gamedev-engines-ai.html
+  ✓ doc/projects_research_multi-machine-agent-teams.html
+  ✓ doc/projects_research_n8n-workflow-automation.html
+  ✓ news.html
+  ✓ news/2026-02-24.html
+  ✓ news/2026-02-23.html
+  ✓ news/2026-02-22.html
+  ✓ 404.html
+
+🔮 Build complete: 15 pages → dist/
+📦 Committing changes...

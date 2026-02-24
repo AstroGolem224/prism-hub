@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI News // PRISM Hub</title>
+<title>AI News — 2026-02-24 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -251,12 +251,61 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <h1 class="page-title">📰 AI News Archiv</h1>
-    <p class="page-subtitle">// kuratierte ai news // täglich aktualisiert</p>
-    <div class="card"><a href="news/2026-02-24.html"><span style="color:var(--neon-cyan)">2026-02-24</span> — AI News — 24.02.2026</a></div>
-<div class="card"><a href="news/2026-02-23.html"><span style="color:var(--neon-cyan)">2026-02-23</span> — AI News — 23.02.2026</a></div>
-<div class="card"><a href="news/2026-02-22.html"><span style="color:var(--neon-cyan)">2026-02-22</span> — AI News — 22. Februar 2026</a></div>
-</main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-02-24</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# AI News — 24.02.2026
+
+## 🔥 Top Stories
+
+### Anthropic beschuldigt DeepSeek, Moonshot & MiniMax der Daten-Destillation
+Anthropic hat aufgedeckt, dass chinesische AI-Labs über 24.000 Fake-Accounts und 16 Mio. Queries systematisch Claude-Daten abgezapft haben. MiniMax allein: 13 Mio. Requests. DeepSeek zielte auf Reasoning-Chains, MiniMax auf Agent-Tool-Usage. OpenAI und Google berichten ähnliches.
+🔗 https://the-decoder.com/anthropic-accuses-deepseek-moonshot-and-minimax-of-stealing-claudes-ai-data-through-16-million-queries/
+> 🏷️ **AI Agents relevant** — Zeigt wie wertvoll Agent/Tool-Usage-Fähigkeiten sind
+
+### OpenAI will SWE-bench Verified abschaffen
+59,4% der Benchmark-Tasks sind fehlerhaft, GPT-5.2, Claude Opus 4.5 und Gemini 3 Flash können Lösungen aus dem Training reproduzieren. OpenAI empfiehlt SWE-bench Pro als Ersatz.
+🔗 https://the-decoder.com/openai-wants-to-retire-the-ai-coding-benchmark-that-everyone-has-been-competing-on/
+
+### OpenAI launcht "Frontier Alliances" — Enterprise-Agenten mit McKinsey & Co
+Frontier-Plattform gibt AI-Agenten Mitarbeiter-Identitäten und Enterprise-Berechtigungen. BCG, McKinsey, Accenture und Capgemini als Partner.
+🔗 https://the-decoder.com/openai-partners-with-major-consulting-firms-to-push-frontier-agent-platform/
+> 🏷️ **AI Agents relevant** — Enterprise AI Agent Deployment wird Mainstream
+
+### Hollywood (MPA) vs ByteDance Seedance 2.0
+MPA nennt Seedance 2.0 eine "Maschine für systematische Urheberrechtsverletzung". API-Launch möglicherweise gestoppt.
+🔗 https://the-decoder.com/ (Seedance-Artikel)
+> 🏷️ **Gamedev/Creative relevant** — AI Video-Generierung unter Beschuss
+
+### Steerling-8B: LLM das jeden generierten Token erklären kann
+Open-Source Modell von GuideLabs, das Transparenz über seine eigene Generierung bietet.
+🔗 https://www.guidelabs.ai/post/steerling-8b-base-model-release/
+
+### Ladybird Browser adoptiert Rust — mit AI-Hilfe
+Der Ladybird-Browser migriert Teile zu Rust, unterstützt durch AI-Tools. 1124 Punkte auf HN.
+🔗 https://ladybird.org/posts/adopting-rust/
+
+### AI baut FreeBSD Wi-Fi Treiber
+Ein Entwickler ließ AI einen kompletten brcmfmac-Treiber für FreeBSD schreiben. 304 Punkte auf HN.
+🔗 https://vladimir.varank.in/notes/2026/02/freebsd-brcmfmac/
+
+### Wolfram als Foundation-Tool für LLMs
+Stephen Wolfram über Integration von Wolfram-Technologie als Rechentool für LLM-Systeme.
+🔗 https://writings.stephenwolfram.com/2026/02/making-wolfram-tech-available-as-a-foundation-tool-for-llm-systems/
+> 🏷️ **AI Agents relevant** — Tool-Integration für LLMs
+
+### "Car Wash" Test mit 53 Modellen
+Neuer Benchmark der reale Reasoning-Fähigkeiten testet. 133 Punkte auf HN.
+🔗 https://opper.ai/blog/car-wash-test
+
+---
+
+## MMC-Relevanz
+- **Seedance 2.0 Drama** → AI-Video für Trailer/Marketing beobachten
+- **Enterprise AI Agents** → Bestätigt: Agent-Paradigma wächst, MMC-Thema "Corporate AI" zeitgemäß
+- **Steerling-8B** → Könnte für transparente NPC-AI interessant sein (Post-Demo)
+`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
