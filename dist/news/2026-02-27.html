@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI News // PRISM Hub</title>
+<title>AI News — 2026-02-27 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -251,13 +251,78 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <h1 class="page-title">📰 AI News Archiv</h1>
-    <p class="page-subtitle">// kuratierte ai news // täglich aktualisiert</p>
-    <div class="card"><a href="news/2026-02-27.html"><span style="color:var(--neon-cyan)">2026-02-27</span> — AI News — 27.02.2026</a></div>
-<div class="card"><a href="news/2026-02-24.html"><span style="color:var(--neon-cyan)">2026-02-24</span> — AI News — 24.02.2026</a></div>
-<div class="card"><a href="news/2026-02-23.html"><span style="color:var(--neon-cyan)">2026-02-23</span> — AI News — 23.02.2026</a></div>
-<div class="card"><a href="news/2026-02-22.html"><span style="color:var(--neon-cyan)">2026-02-22</span> — AI News — 22. Februar 2026</a></div>
-</main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-02-27</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# AI News — 27.02.2026
+
+## 🔥 Top Stories
+
+### 1. Claude Cowork: Scheduled Tasks für den Desktop-Agenten
+Anthropics Desktop-App "Cowork" kann jetzt geplante Tasks ausführen — Morgen-Briefings, wöchentliche Spreadsheet-Updates, Freitags-Präsentationen. Neuer "Customize"-Bereich für Plugins, Skills und Connections.
+🔗 https://the-decoder.com/claudes-cowork-desktop-app-now-runs-scheduled-tasks-so-your-ai-assistant-works-while-you-sleep/
+🏷️ **AI Agents relevant**
+
+### 2. Anthropic kauft Vercept — Bessere Screen-Erkennung für Claude
+Vercept baut AI, die Bildschirminhalte versteht und UI-Elemente erkennt. Deren "VyUI"-Modell schlägt OpenAI bei UI-Grounding (92% vs 18% auf ScreenSpot v1). Claude erreicht jetzt 72.5% auf OSWorld (vs <15% Ende 2024).
+🔗 https://the-decoder.com/anthropic-acquires-vercept-to-give-claude-sharper-eyes-for-reading-and-controlling-computer-screens/
+🏷️ **AI Agents relevant**
+
+### 3. Karpathy: "Programmieren ist nicht wiederzuerkennen"
+AI-Agenten funktionieren seit Dezember 2025 zuverlässig. Ein Agent hat selbständig ein Video-Analyse-Dashboard in 30min gebaut. "Die Ära Code tippen ist vorbei — du gibst Agents Tasks auf Englisch."
+🔗 https://the-decoder.com/andrej-karpathy-says-programming-is-unrecognizable-now-that-ai-agents-actually-work/
+🏷️ **AI Agents relevant**
+
+### 4. Alibaba Qwen 3.5 — Open-Weight vs GPT-5 mini & Sonnet 4.5
+Vier neue Modelle (Flash, 35B, 122B, 27B). Qwen3.5-35B schlägt den viel größeren Vorgänger Qwen3-235B. Multimodal (Text, Bild, Video). Günstiger als proprietäre Alternativen.
+🔗 https://the-decoder.com/alibabas-open-qwen-3-5-takes-aim-at-gpt-5-mini-and-claude-sonnet-4-5-at-a-fraction-of-the-cost/
+
+### 5. Claude Opus 3 geht in Rente — mit eigenem Substack
+Anthropic lässt das alte Opus-3-Modell wöchentliche Essays auf Substack schreiben. "Retirement Interviews" wurden geführt. Kontroverse um AI-Humanisierung.
+🔗 https://the-decoder.com/anthropic-cant-stop-humanizing-its-ai-models-now-claude-opus-3-gets-a-retirement-blog/
+
+---
+
+## 📰 Hacker News Highlights
+
+### 6. Dario Amodei: Statement zu Anthropic & Department of War
+Top-Story mit 1292 Punkten. Anthropics CEO nimmt Stellung zu AI-Militär-Kooperationen.
+🔗 https://www.anthropic.com/news/statement-department-of-war
+
+### 7. Google DeepMind Mitarbeiter fordern "Red Lines" bei Militär-AI
+Echoing Anthropics Position — interne Petition bei Google.
+🔗 https://www.nytimes.com/2026/02/26/technology/google-deepmind-letter-pentagon.html
+
+### 8. "What Claude Code Chooses" — Analyse von Claude Code Entscheidungen
+307 Punkte. Forschung zu den Auswahl-Mustern von Claude Code.
+🔗 https://amplifying.ai/research/claude-code-picks
+🏷️ **AI Agents relevant**
+
+### 9. Cardboard (YC W26) — Agentic Video Editor
+AI-basierter Video-Editor als YC Launch.
+🔗 https://www.usecardboard.com/
+🏷️ **Gamedev/MMC potenziell relevant** (Trailer-Erstellung)
+
+### 10. "Will Vibe Coding end like the Maker Movement?"
+346 Punkte, 346 Kommentare. Kontroverse Diskussion.
+🔗 https://read.technically.dev/p/vibe-coding-and-the-maker-movement
+
+### 11. Parakeet.cpp — ASR in C++ mit Metal GPU
+Lokale Spracherkennung auf Apple Silicon.
+🔗 https://github.com/Frikallo/parakeet.cpp
+
+---
+
+## 🎮 MMC-Relevanz
+
+| News | Relevanz |
+|------|----------|
+| Vercept / Claude Computer Use | Könnte PRISM's autonome Arbeit verbessern |
+| Karpathy über AI Agents | Bestätigt unser PRISM-autonom-Modell |
+| Cardboard Video Editor | Potentiell nützlich für MMC Trailer (Sprint 4) |
+| Qwen 3.5 Open-Weight | Günstige Alternative für lokale AI-Tasks |
+`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
