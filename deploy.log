@@ -98,3 +98,31 @@
 
 🔮 Build complete: 16 pages → dist/
 📦 Committing changes...
+[main 6ff0d5e] 🔮 Auto-deploy 2026-02-27 07:00
+ 5 files changed, 370 insertions(+), 2 deletions(-)
+ create mode 100644 dist/news/2026-02-27.html
+🚀 Pushing to GitHub...
+✅ Deployed! Cloudflare Pages will build automatically.
+🔮 Building static site...
+🔮 PRISM Hub — Static Build
+
+  ✓ index.html
+  ✓ doc/projects_mmc_docs_gdd-v2.2.html
+  ✓ doc/projects_mmc_docs_sprint-plan.html
+  ✓ doc/projects_mmc_docs_architecture.html
+  ✓ doc/projects_mmc_docs_roadmap.html
+  ✓ doc/MMC_meat-machine-cycle_PROJECT_STRUCTURE.html
+  ✓ doc/projects_research_blender-ai-pipeline.html
+  ✓ doc/projects_research_gamedev-engines-ai.html
+  ✓ doc/projects_research_multi-machine-agent-teams.html
+  ✓ doc/projects_research_n8n-workflow-automation.html
+  ✓ news.html
+  ✓ news/2026-02-28.html
+  ✓ news/2026-02-27.html
+  ✓ news/2026-02-24.html
+  ✓ news/2026-02-23.html
+  ✓ news/2026-02-22.html
+  ✓ 404.html
+
+🔮 Build complete: 17 pages → dist/
+📦 Committing changes...

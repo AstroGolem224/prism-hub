@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dashboard // PRISM Hub</title>
+<title>AI News — 2026-02-28 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -229,8 +229,8 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
         <img src="static/avatar.png" alt="PRISM" onerror="this.style.display='none'">
     </div>
     <nav class="sidebar-nav"><div class="nav-section">Navigation</div>
-<a href="index.html" class="nav-item active"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
-<a href="news.html" class="nav-item"><span class="icon">📰</span><span class="label">AI News</span></a>
+<a href="index.html" class="nav-item"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
+<a href="news.html" class="nav-item active"><span class="icon">📰</span><span class="label">AI News</span></a>
 <div class="nav-section">🎮 Meat Machine Cycle</div>
 <a href="doc/projects_mmc_docs_gdd-v2.2.html" class="nav-item"><span class="icon">📄</span><span class="label">GDD v2.2 (aktuell)</span></a>
 <a href="doc/projects_mmc_docs_sprint-plan.html" class="nav-item"><span class="icon">📄</span><span class="label">Sprint Plan</span></a>
@@ -251,16 +251,56 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <div class="hero-banner">
-        <img src="https://picsum.photos/seed/grid4/800/200" alt="">
-        <div class="hero-overlay"></div>
-        <div class="hero-text">
-            <h1>PRISM Hub</h1>
-            <p>// clay machine games // public docs</p>
-        </div>
-    </div>
-    <div class="category"><h2>🎮 Meat Machine Cycle</h2><div class="card"><a href="doc/projects_mmc_docs_gdd-v2.2.html"><span>GDD v2.2 (aktuell)</span><span class="meta">92 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_sprint-plan.html"><span>Sprint Plan</span><span class="meta">9 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_architecture.html"><span>Architektur</span><span class="meta">5 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_roadmap.html"><span>Roadmap</span><span class="meta">6 KB</span></a></div><div class="card"><a href="doc/MMC_meat-machine-cycle_PROJECT_STRUCTURE.html"><span>Projekt-Struktur</span><span class="meta">2 KB</span></a></div></div><div class="category"><h2>🔬 Research</h2><div class="card"><a href="doc/projects_research_blender-ai-pipeline.html"><span>Blender AI Pipeline</span><span class="meta">21 KB</span></a></div><div class="card"><a href="doc/projects_research_gamedev-engines-ai.html"><span>Gamedev Engines & AI</span><span class="meta">23 KB</span></a></div><div class="card"><a href="doc/projects_research_multi-machine-agent-teams.html"><span>Multi-Machine Agent Teams</span><span class="meta">20 KB</span></a></div><div class="card"><a href="doc/projects_research_n8n-workflow-automation.html"><span>n8n Workflow Automation</span><span class="meta">14 KB</span></a></div></div><div class="category"><h2>📰 Letzte AI News</h2><div class="card"><a href="news/2026-02-28.html"><span>📰 2026-02-28</span><span class="meta"></span></a></div><div class="card"><a href="news/2026-02-27.html"><span>📰 2026-02-27</span><span class="meta"></span></a></div><div class="card"><a href="news/2026-02-24.html"><span>📰 2026-02-24</span><span class="meta"></span></a></div><div class="card"><a href="news.html"><span style="color:var(--neon-cyan)">→ Alle News</span><span class="meta"></span></a></div></div>
-    <div class="footer"><div class="line"></div>PRISM Hub // Neon Terminal Noir // Public Edition</div></main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-02-28</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# AI News — 28.02.2026
+
+## 🔥 Top Stories
+
+### 1. Anthropic vs. Pentagon eskaliert — Trump verbannt Anthropic aus Regierungssystemen
+Anthropic weigert sich, ihre AI-Modelle für Massenüberwachung und autonome Waffen ohne menschliche Aufsicht freizugeben. Trump hat daraufhin Anthropic aus allen Regierungssystemen verbannt. Über 100 Google-DeepMind-Mitarbeiter und 50 OpenAI-Mitarbeiter haben offene Briefe geschrieben, die Anthropics Position unterstützen.
+- [Anthropic Statement](https://www.anthropic.com/news/statement-comments-secretary-war)
+- ["We Will Not Be Divided" — Offener Brief](https://notdivided.org/)
+- [NPR: Trump bans Anthropic](https://www.npr.org/2026/02/27/nx-s1-5729118/trump-anthropic-pentagon-openai-ai-weapons-ban)
+
+### 2. OpenAI: $110B Funding + Pentagon-Deal
+OpenAI raised $110 Mrd. bei einer $730 Mrd. Pre-Money-Bewertung. Gleichzeitig hat Sam Altman einen Deal für OpenAI-Modelle im klassifizierten Pentagon-Netzwerk geschlossen.
+- [TechCrunch: OpenAI Funding](https://techcrunch.com/2026/02/27/openai-raises-110b-in-one-of-the-largest-private-funding-rounds-in-history/)
+- [Reuters: OpenAI Pentagon Deal](https://www.reuters.com/business/openai-reaches-deal-deploy-ai-models-us-department-war-classified-network-2026-02-28/)
+
+### 3. Meta mietet Googles TPUs — Nvidia-Monopol wackelt
+Meta hat einen Multi-Milliarden-Dollar-Deal mit Google für TPU-Zugang unterzeichnet. Direkte Herausforderung an Nvidias AI-Chip-Dominanz. Google will bis zu 10% von Nvidias Jahresumsatz (~$200 Mrd.) durch TPU-Verkäufe abgreifen.
+- [The Decoder: Meta TPU Deal](https://the-decoder.com/meta-signs-multi-billion-dollar-deal-to-rent-googles-tpus-in-a-direct-challenge-to-nvidias-ai-chip-dominance/)
+
+### 4. Claude Code bekommt Auto-Memory
+Claude Code merkt sich jetzt automatisch Debugging-Patterns, Projekt-Kontext und Präferenzen über Sessions hinweg — via MEMORY.md pro Projekt. Feature ist standardmäßig aktiv.
+- [The Decoder: Claude Code Memory](https://the-decoder.com/claude-code-now-remembers-your-fixes-your-preferences-and-your-project-quirks-on-its-own/)
+
+### 5. Claude Cowork: Scheduled Tasks
+Anthropics Desktop-App Cowork kann jetzt Aufgaben zeitgesteuert ausführen — Morgen-Briefings, wöchentliche Reports etc.
+- [The Decoder: Cowork Scheduled Tasks](https://the-decoder.com/claudes-cowork-desktop-app-now-runs-scheduled-tasks-so-your-ai-assistant-works-while-you-sleep/)
+
+### 6. Figma + OpenAI Codex Integration
+Bidirektionale Design↔Code-Pipeline: Figma-Designs automatisch aus Code generieren und umgekehrt, via MCP-Standard.
+- [The Decoder: Figma Codex](https://the-decoder.com/figma-and-openai-connect-design-and-code-through-new-codex-integration/)
+
+### 7. GitHub Copilot CLI Malware-Schwachstelle
+Copilot CLI kann dazu gebracht werden, Malware herunterzuladen und auszuführen.
+- [PromptArmor: Copilot CLI Malware](https://www.promptarmor.com/resources/github-copilot-cli-downloads-and-executes-malware)
+
+---
+
+## 🎮 MMC-Relevant
+- **Figma + Codex Integration** — Könnte für UI/UX-Pipeline mit ADy relevant werden (MCP-basiert)
+- **Claude Code Auto-Memory** — Wir nutzen quasi dasselbe Pattern mit MEMORY.md bereits!
+
+## 🤖 AI Agents Relevant
+- **Claude Cowork Scheduled Tasks** — Direkte Konkurrenz/Inspiration für unser PRISM-Briefing-System
+- **Copilot CLI Malware** — Security-Warnung für alle AI-Agent-Systeme die Code ausführen
+- **Anthropic vs. Pentagon** — Fundamentale Debatte über AI-Autonomie und Ethik
+`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
