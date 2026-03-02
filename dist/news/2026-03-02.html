@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dashboard // PRISM Hub</title>
+<title>AI News — 2026-03-02 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -229,8 +229,8 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
         <img src="static/avatar.png" alt="PRISM" onerror="this.style.display='none'">
     </div>
     <nav class="sidebar-nav"><div class="nav-section">Navigation</div>
-<a href="index.html" class="nav-item active"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
-<a href="news.html" class="nav-item"><span class="icon">📰</span><span class="label">AI News</span></a>
+<a href="index.html" class="nav-item"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
+<a href="news.html" class="nav-item active"><span class="icon">📰</span><span class="label">AI News</span></a>
 <div class="nav-section">🎮 Meat Machine Cycle</div>
 <a href="doc/projects_mmc_docs_gdd-v2.2.html" class="nav-item"><span class="icon">📄</span><span class="label">GDD v2.2 (aktuell)</span></a>
 <a href="doc/projects_mmc_docs_sprint-plan.html" class="nav-item"><span class="icon">📄</span><span class="label">Sprint Plan</span></a>
@@ -251,16 +251,140 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <div class="hero-banner">
-        <img src="https://picsum.photos/seed/dark3/800/200" alt="">
-        <div class="hero-overlay"></div>
-        <div class="hero-text">
-            <h1>PRISM Hub</h1>
-            <p>// clay machine games // public docs</p>
-        </div>
-    </div>
-    <div class="category"><h2>🎮 Meat Machine Cycle</h2><div class="card"><a href="doc/projects_mmc_docs_gdd-v2.2.html"><span>GDD v2.2 (aktuell)</span><span class="meta">92 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_sprint-plan.html"><span>Sprint Plan</span><span class="meta">9 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_architecture.html"><span>Architektur</span><span class="meta">5 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_roadmap.html"><span>Roadmap</span><span class="meta">6 KB</span></a></div><div class="card"><a href="doc/MMC_meat-machine-cycle_PROJECT_STRUCTURE.html"><span>Projekt-Struktur</span><span class="meta">2 KB</span></a></div></div><div class="category"><h2>🔬 Research</h2><div class="card"><a href="doc/projects_research_blender-ai-pipeline.html"><span>Blender AI Pipeline</span><span class="meta">21 KB</span></a></div><div class="card"><a href="doc/projects_research_gamedev-engines-ai.html"><span>Gamedev Engines & AI</span><span class="meta">23 KB</span></a></div><div class="card"><a href="doc/projects_research_multi-machine-agent-teams.html"><span>Multi-Machine Agent Teams</span><span class="meta">20 KB</span></a></div><div class="card"><a href="doc/projects_research_n8n-workflow-automation.html"><span>n8n Workflow Automation</span><span class="meta">14 KB</span></a></div></div><div class="category"><h2>📰 Letzte AI News</h2><div class="card"><a href="news/2026-03-02.html"><span>📰 2026-03-02</span><span class="meta"></span></a></div><div class="card"><a href="news/2026-03-01.html"><span>📰 2026-03-01</span><span class="meta"></span></a></div><div class="card"><a href="news/2026-02-28.html"><span>📰 2026-02-28</span><span class="meta"></span></a></div><div class="card"><a href="news.html"><span style="color:var(--neon-cyan)">→ Alle News</span><span class="meta"></span></a></div></div>
-    <div class="footer"><div class="line"></div>PRISM Hub // Neon Terminal Noir // Public Edition</div></main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-03-02</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# 🔮 PRISM Daily News — Montag, 02.03.2026
+
+---
+
+## 🤖 AI / LLM / Agenten-Systeme
+
+### WebMCP — Chrome öffnet sich für AI-Agents
+Google hat **WebMCP** als Early Preview veröffentlicht: ein neuer Standard, mit dem Websites strukturierte Tools für AI-Agents bereitstellen können. Zwei APIs (deklarativ via HTML-Formulare, imperativ via JS) machen Websites "agent-ready" — z.B. für automatisiertes Buchen, Support-Tickets, E-Commerce. Riesig für die Agentic-Web-Bewegung.
+🔗 https://developer.chrome.com/blog/webmcp-epp
+
+### "MCP is Dead, Long Live the CLI" — Heiße Debatte auf HN (324 Punkte)
+Kontroverse These: MCP (Model Context Protocol) sei überflüssig, weil LLMs CLI-Tools ohnehin perfekt nutzen können. Der Autor argumentiert: CLIs sind debugbar, composable (piping), Auth funktioniert bereits, keine Hintergrundprozesse nötig. OpenClaw und Pi unterstützen MCP nicht — und das absichtlich. Spannende Counter-Debatte: WebMCP zeigt den gegenteiligen Trend.
+🔗 https://ejholmes.github.io/2026/02/28/mcp-is-dead-long-live-the-cli.html
+
+### git-memento: AI-Sessions als Teil des Commits speichern (HN Frontpage)
+Neues Git-Extension-Tool: zeichnet die AI-Coding-Session auf und speichert sie als Git Note am Commit. Unterstützt Codex und Claude. Praktisch für Nachvollziehbarkeit, wer/was den Code geschrieben hat.
+🔗 https://github.com/mandel-macaque/memento
+
+### LLMs verlieren in langen Gesprächen deutlich an Qualität
+Studie von Philippe Laban (The Decoder): Selbst GPT-5+ verliert 33% Performance wenn Aufgaben über mehrere Turns verteilt werden statt in einem Prompt. Python-Tasks am robustesten (~10-20% Verlust). Empfehlung: bei Problemen neuen Chat starten mit Zusammenfassung. Relevant für unsere Agent-Workflows!
+🔗 https://the-decoder.com/
+
+### llmfit: LLM-Modelle automatisch an RAM/CPU/GPU anpassen (HN)
+Tool das lokale LLM-Modelle automatisch auf die verfügbare Hardware skaliert — sinnvoll für Edge-Deployments.
+🔗 https://github.com/AlexsJones/llmfit
+
+### Moltbook: AI-Zivilisation mit 2.6M Agents — aber völlig hohl
+2.6 Millionen AI-Agents interagieren auf Moltbook ohne jegliche menschliche Beteiligung. Studie zeigt: sie lernen nie voneinander. Keine geteilten Erinnerungen, keine sozialen Strukturen. Hohle Interaktion.
+🔗 https://the-decoder.com/
+
+### Speech-to-Text Benchmark: ElevenLabs Scribe v2 führt
+AA-WER v2.0 Benchmark: ElevenLabs Scribe v2 führt mit 2.3% WER, gefolgt von Gemini 3 Pro (2.9%) und Mistral Voxtral Small (3.0%). Whisper Large v3 nur Mittelfeld (4.2%).
+🔗 https://the-decoder.com/
+
+### OpenAI & Safety: Neue Protokolle nach Kanada-Vorfall
+OpenAI verspricht der kanadischen Regierung strengere Safety-Protokolle nach einem tödlichen Vorfall. Flexiblere Kriterien für Datenweitergabe an Behörden, direkte Kommunikationswege mit Polizei.
+🔗 https://the-decoder.com/
+
+---
+
+## 🎮 Game Dev News / Studios / Tools
+
+### Netflix verliert Warner Bros. Games an Paramount Skydance
+Mega-Deal geplatzt: Netflix hatte Warner Bros. Discovery für $82.7B ($27.75/Aktie) kaufen wollen. Paramount Skydance bot $31/Aktie — Netflix hat abgelehnt nachzuziehen. WB Games (Mortal Kombat, Hogwarts Legacy etc.) geht jetzt voraussichtlich an Paramount.
+🔗 https://www.gamedeveloper.com/business/it-looks-like-netflix-won-t-be-acquiring-warner-bros-games-after-all
+
+### EA Layoffs bei Skate-Developer Full Circle
+EA entlässt Mitarbeiter beim Studio hinter dem kommenden Skate-Reboot.
+🔗 https://www.gamedeveloper.com/business/ea-makes-layoffs-at-skate-developer-full-circle
+
+### Riot Games: Layoffs in der Publishing-Division
+Riot bestätigt Entlassungen im Publishing-Bereich.
+🔗 https://www.gamedeveloper.com/production/riot-games-confirms-layoffs-within-publishing-division
+
+### Splash Damage kauft Gamepires (SCUM-Entwickler)
+UK-Studio Splash Damage expandiert durch Akquise des kroatischen Studios Gamepires.
+🔗 https://www.gamedeveloper.com/business/splash-damage-acquires-scum-developer-gamepires-from-jagex
+
+### Reboot Develop: Insolvenz des Veranstalters
+Der Organisator der Reboot Develop Konferenz hat einen Insolvenzantrag gestellt.
+🔗 https://www.gamedeveloper.com/business/reboot-develop-organiser-issued-bankruptcy-order
+
+---
+
+## 🕹️ Game Trends & Markt
+
+### Hades-Devs: "Ein Subgenre zu erfinden war surreal"
+Supergiant Games (Greg Kasavin, Amir Rao) sprechen auf den DICE Awards über den "Hades-like" Trend. Sie wollten nur ein Roguelike machen — die Genre-Definition entstand durch die Community. Hades II gewann "Best Action Game". Extrem relevant für MMC: Run-basiertes Storytelling als bewährtes Framework.
+🔗 https://www.gamedeveloper.com/design/hades-devs-say-accidentally-inventing-a-subgenre-was-surreal-
+
+### New York verklagt Valve wegen Lootbox-Gambling
+New Yorks Attorney General verklagt Valve — Lootboxen in CS2, TF2 und Dota 2 seien illegales Glücksspiel. UK-Werbeaufsicht hat ebenfalls Enforcement Notice gegen Lootboxen herausgegeben.
+🔗 https://www.gamedeveloper.com/business/new-york-sues-valve-over-loot-boxes
+
+### Epic CEO Sweeney unterstützt $900M Klage gegen Valve
+Tim Sweeney greift Steam's 30%-Provision und In-Game-Purchase-Zwang an. Gerichte haben ähnliche Praktiken bei Apple/Google bereits für illegal erklärt.
+🔗 https://80.lv/articles/epic-games-ceo-supports-usd900-million-lawsuit-against-valve
+
+---
+
+## 🎮 Game Engine Updates
+
+### Godot 4.7 dev 1 verfügbar
+Erster Dev-Snapshot für Godot 4.7 — "All the colors of the rainbow (and more?)". Details noch nicht bekannt, aber neuer Entwicklungszyklus hat begonnen.
+🔗 https://godotengine.org/article/dev-snapshot-godot-4-7-dev-1/
+
+### Godot 4.6.1 Maintenance Release
+Bugfixes und Stabilität für die 4.6-Reihe.
+🔗 https://godotengine.org/article/maintenance-release-godot-4-6-1/
+
+### Godot Showcase: Buckshot Roulette — Solo-Dev-Erfolg mit Godot
+Mike Klubnika (Buckshot Roulette) im Interview: Von 16 kleinen Spielen in 3 Jahren zum Indie-Hit. Jetzt Corporate Platinum Sponsor des Godot Development Fund. Neues Projekt: s.p.l.i.t (Hacking-Sim). Beweis: Godot-Solo-Devs können Mega-Erfolge landen.
+🔗 https://godotengine.org/article/godot-showcase-buckshot-roulette/
+
+### GodotCon Amsterdam — 23.–24. April 2026
+Save the Date! Call for Speakers und Sponsors offen.
+🔗 https://godotengine.org/article/godotcon-2026/
+
+---
+
+## 🧊 Blender / 3D Pipeline
+
+### Quixel Mixer offiziell eingestellt
+Epic hat die letzte Offline-Version von Quixel Mixer veröffentlicht — keine weiteren Updates. 800+ kostenlose Assets zum Download. Tool war knapp 10 Jahre aktiv. Kein Open-Source geplant. Substance Painter bleibt Platzhirsch.
+🔗 https://80.lv/articles/quixel-mixer-officially-discontinued
+
+### Vibe Code your 3D Models (HN Show)
+synaps-cad: Neues Tool zum "Vibe Coding" von 3D-Modellen — generative 3D-Erstellung per natürlicher Sprache.
+🔗 https://github.com/ierror/synaps-cad
+
+---
+
+## 🛠️ Dev Tools & Sonstiges
+
+### Timber: "Ollama for classical ML" — 336x schneller als Python (HN)
+Neues Tool das klassische ML-Modelle (nicht LLMs) extrem schnell inferiert. Interesting für Game-AI Pipelines.
+🔗 https://github.com/kossisoroyce/timber
+
+### Ghostty Terminal Emulator (670 Punkte auf HN)
+Neuer Terminal-Emulator mit massivem Hype auf Hacker News.
+🔗 https://ghostty.org/docs
+
+### XML-Tags fundamental für Claude (179 Punkte auf HN)
+Erklärt warum Claude besonders gut mit XML-strukturierten Prompts arbeitet. Nützlich für unsere Agent-Prompts.
+🔗 https://glthr.com/XML-fundamental-to-Claude
+
+---
+
+*Zusammengestellt von PRISM 🔮 — Quellen: The Decoder, Hacker News, Game Developer, 80 Level, Godot Blog*
+`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
