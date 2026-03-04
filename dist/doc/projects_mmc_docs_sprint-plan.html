@@ -256,161 +256,113 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
     <script>
     const raw = `# 🎮 MEAT MACHINE CYCLE — Sprint Plan
 
-> **Version:** v3.1 — 23.02.2026  
+> **Version:** v4.0 — 03.03.2026  
+> **Pivot:** Arena-Modus (Vampire Survivors Style) statt Room-basiertes Roguelike  
 > **Ziel:** Spielbare Demo auf Steam "Coming Soon" Seite  
-> **Zeitrahmen:** ~4 Wochen (4 Sprints à ~1 Woche)  
-> **Team:** Druid (Abends/WE) + PRISM (autonom tagsüber) + ADy (Creative Direction, UI/UX)  
-> **Start:** KW 9 (Mo 23.02.2026)
+> **Zeitrahmen:** ~3 Wochen (3 Sprints à ~1 Woche)  
+> **Team:** Druid (Abends/WE) + PRISM (autonom tagsüber) + ADy (Creative Direction)  
+> **Start:** KW 10 (Di 03.03.2026)
 
 ---
 
 ## ⏰ Arbeitsmodell
 
-| | Druid | PRISM |
-|--|-------|-------|
-| **Mo-Fr 07-17h** | Hauptjob (Telegram erreichbar) | Autonom arbeiten |
-| **Mo-Fr 17-23h** | MMC: Review, Test, Creative, Godot Editor | Support, Live-Pairing |
-| **Wochenende** | MMC: Flexibel | Support |
-
-**Tagesrhythmus:**
-- **Morgens (06:00):** PRISM schickt Telegram-Briefing (was gestern lief, was heute ansteht)
-- **Tagsüber:** PRISM arbeitet autonom, Telegram für Quick-Decisions
-- **Abends (17:00+):** Druid reviewed, testet, macht Editor-Tasks
-- **Abends (Ende):** Kurze Sync — was ist offen, was kommt morgen
-
-**Regel:** Alles was keinen Godot Editor oder Creative Decision braucht → PRISM macht es tagsüber.
+(unverändert — Druid 17-23h + WE, PRISM autonom tagsüber, Morgen-Briefing + Abend-Sync)
 
 ---
 
-## 📊 Aktueller Stand
+## 📊 Aktueller Stand nach Pivot
 
-**MVP-Fortschritt: ~65%** — Kernloop funktioniert, aber kein Boss, keine Assets, kein Sound.
+**Arena-Fortschritt: ~40%** — Grundloop läuft, aber noch kein VS-Feel.
 
-| Was steht | Was fehlt |
-|-----------|-----------|
-| ✅ Player Controller (6 States) | ❌ Boss (CEO-Mech) |
-| ✅ 3 Gegnertypen | ❌ 2 weitere Gegnertypen |
-| ✅ Damage Pipeline (Armor, Crit, Caps) | ❌ Status-Effekte |
-| ✅ Dungeon Generator (8 Räume) | ❌ Shop/Event-Räume |
-| ✅ Upgrade-System (5 Upgrades) | ❌ Upgrade-Spezialeffekte |
-| ✅ Toaster Arm Waffe | ❌ Zweite Waffe (Aktenkoffer) |
-| ✅ MetaProgression + MeatCoins | ❌ Victory Screen |
-| ✅ HUD, Menus, Death Screen | ❌ Character Select |
-| ✅ Event Bus (17 Signals) | ❌ Difficulty Scaling |
-| ✅ 3 Floor-Tiles (Krita + Gemini) | ❌ Sprites, Animationen, Sound |
+| Was steht ✅ | Was fehlt ❌ |
+|-------------|------------|
+| Arena-Modus (infinite floor, edge spawning) | XP-Gems / Pickup-System |
+| 3 Gegnertypen (Drone, Spam Bot, Patch Tuesday) | Mehr Gegnertypen (Firewall, Karen) |
+| CEO-Mech Boss (4 Phasen) | Wave-Ankündigungen |
+| Klaus Player-Sprite (6×6 directional) | Auto-Aim / Weapon-Overhaul |
+| Upgrade alle 10 Kills | Passive Items / Pickup-Upgrades |
+| Hit-Flash, Damage Pipeline | Magnet (XP anziehen) |
+| 1920×1080 Auflösung | Damage Numbers |
+| MetaProgression + MeatCoins | Victory Screen |
+| Bug-Fixes (Coins, Room-Advance, detection) | Character Select |
+| | Sound + Musik |
+| | Sprites für alle Characters |
 
----
-
-## 🏃 Sprint 1 — "Fundament fixen" (KW 9: 23.–27.02.)
-
-> **Ziel:** Bugs raus, Daten rein, solide Basis für alles Weitere.
-
-### Montag–Freitag tagsüber (PRISM autonom)
-
-| # | Task | Aufwand | Tag |
-|---|------|---------|-----|
-| 1.1 | MetaProgression Doppel-Coins Bug fixen | 30min | Mo |
-| 1.2 | Room-Advance nach Upgrade fixen | 30min | Mo |
-| 1.3 | EnemyData .tres-Dateien erstellen (3 Gegner) | 1h | Mo |
-| 1.5 | Difficulty Scaling aktivieren | 1h | Di |
-| 1.7 | Victory Screen erstellen | 1h | Di |
-| 1.8 | REST-Räume: Heal + Upgrade-Auswahl | 1.5h | Mi |
-
-### Abends / Wochenende (Druid)
-
-| # | Task | Aufwand | Wann |
-|---|------|---------|------|
-| 1.4 | Toaster Arm .tres UID-Fix (Godot Editor) | 30min | Mo Abend |
-| 1.6 | Scenes in Godot Editor re-speichern | 30min | Mo Abend |
-| — | Review + Test aller PRISM-Fixes | 1h | Mi/Do Abend |
-
-**Sprint 1 Ergebnis:** Stabiler, bug-freier Core-Loop mit korrekten Daten.
+### Was entfällt (Room-basiert → raus)
+- ~~Dungeon Generator~~ (bleibt im Code als Fallback)
+- ~~Shop-Rooms~~ → werden zu Chest-Pickups im Arena
+- ~~Event-Rooms~~ → werden zu Random-Events (Zeitbasiert)
+- ~~REST-Räume~~ → Health-Pickups stattdessen
+- ~~Room-Advance Logik~~ → Wave-System
 
 ---
 
-## 🏃 Sprint 2 — "Content & Gameplay" (KW 10: 02.–06.03.)
+## 🏃 Sprint 2 (reboot) — "VS Core Loop" (KW 10: 03.–07.03.)
 
-> **Ziel:** Kompletter Biom-1 Loop mit Boss, Shop, Events.
+> **Ziel:** Sich wie ein Vampire Survivors Klon anfühlen.
 
 ### Tagsüber (PRISM autonom)
 
-| # | Task | Aufwand | Tag |
-|---|------|---------|-----|
-| 2.2 | Shop-Room UI + Logik | 3h | Mo |
-| 2.3 | Event-Room (3 Random Events) | 2h | Di |
-| 2.4 | Zweite Waffe: Aktenkoffer (.tres + Scene) | 2h | Di |
-| 2.5 | Firewall-Gegner (Tank) | 2h | Mi |
-| 2.6 | Clipboard Karen (Support) | 2h | Mi |
-| 2.7 | Upgrade-Spezialeffekte | 3h | Do |
-| 2.8 | Character Select Screen | 2h | Fr |
-
-### ADy (Creative Direction)
-
-| # | Task | Aufwand |
-|---|------|---------|
-| 2.A1 | Character Select Screen — UI-Konzeption & Layout | 2h |
-| 2.A2 | Shop-Room — UI-Konzeption & Visual Design | 2h |
-
-### Abends (Druid + PRISM Pairing)
-
-| # | Task | Aufwand | Wann |
+| # | Task | Aufwand | Prio |
 |---|------|---------|------|
-| 2.0 | Ludo AI: Boss & Ability Prototyping | 1h | Mo Abend |
-| 2.1 | Boss: CEO-Mech (Creative Direction + Review) | 2h | Di+Mi Abend |
-| — | Playtesting Shop, Events, neue Gegner | 2h | Do+Fr Abend |
-
-### Wochenende
-
-| # | Task | Aufwand |
-|---|------|---------|
-| 2.1 | Boss: CEO-Mech Feinschliff + Balancing | 2h |
-| — | Gesamttest: Biom-1 Run komplett | 1h |
-
-**Sprint 2 Ergebnis:** Vollständiger Biom-1 Run: 8 Räume → Shop/Events → Boss → Victory.
-
----
-
-## 🏃 Sprint 3 — "Look & Feel" (KW 11: 09.–13.03.)
-
-> **Ziel:** Weg von Platzhaltern, echte Assets, Sound.
-
-### Tagsüber (PRISM autonom)
-
-| # | Task | Aufwand | Tag |
-|---|------|---------|-----|
-| 3.2 | Player-Modell (Klaus) in Blender MCP | 3h | Mo |
-| 3.3 | Gegner-Modelle (5 Typen) in Blender MCP | 4h | Di+Mi |
-| 3.4 | Boss-Modell (CEO-Mech) in Blender MCP | 3h | Do |
-| 3.5 | Waffen-Sprites (Render → Spritesheet) | 2h | Do |
-| 3.6 | Projektil-Sprites + Effekte | 2h | Fr |
-| 3.7 | Damage Numbers (Floating Text) | 1h | Fr |
-| 3.9 | Sound FX generieren (ElevenLabs/sfxr) | 2h | Mo-Fr parallel |
-| 3.10 | Musik: 1 Biom-Track + Menu-Track (Suno/Udio) | 1h | Fr |
-
-### ADy (Creative Direction)
-
-| # | Task | Aufwand |
-|---|------|---------|
-| 3.A1 | Asset Pipeline Art Direction — Styleguide & Referenzen | 2h |
-| 3.A2 | UI/Icons Design Direction | 1h |
+| 2.1 | **XP-Gem System** — Gegner droppen Gems, Player sammelt ein, XP-Bar im HUD | 3h | 🔴 |
+| 2.2 | **Magnet-Radius** — Gems fliegen ab Distanz X zum Player | 1h | 🔴 |
+| 2.3 | **Level-Up statt Kill-Count** — XP-basierte Upgrades (statt alle 10 Kills) | 2h | 🔴 |
+| 2.4 | **Waffen-Overhaul** — Auto-Fire, Cooldown-basiert, Richtung = nächster Gegner | 3h | 🔴 |
+| 2.5 | **Health-Pickups** — seltene Drops von Gegnern | 1h | 🟡 |
+| 2.6 | **Damage Numbers** — Floating Text bei Hits | 1.5h | 🟡 |
+| 2.7 | **Wave-Ankündigungen** — "Wave 2", "BOSS INCOMING" UI-Text | 1h | 🟡 |
+| 2.8 | **Firewall-Gegner** (Tank, langsam, viel HP) | 2h | 🟡 |
+| 2.9 | **Clipboard Karen** (Support, heilt andere Gegner) | 2h | 🟡 |
+| 2.10 | **Kill Counter + Timer** im HUD | 30min | 🟢 |
 
 ### Abends (Druid)
 
 | # | Task | Aufwand | Wann |
 |---|------|---------|------|
-| 3.0 | Cascadeur einrichten (8€/Mo) | 30min | Mo Abend |
-| 3.1 | TileSet in Godot einbauen | 2h | Di Abend |
-| 3.8 | Wall/Door Tiles (Krita+Diffusion) | 3h | Mi+Do Abend |
-| — | Assets in Godot integrieren + testen | 2h | Fr Abend + WE |
+| 2.D1 | Review + Playtest der PRISM-Tasks | 1h | Mi/Do |
+| 2.D2 | Balancing: XP-Kurve, Spawn-Raten, Boss-Timer | 1h | Fr |
+| 2.D3 | Zweite Waffe testen (Aktenkoffer?) | 1h | Fr/WE |
 
-### Wochenende
+### Sprint 2 Ergebnis:
+Fühlt sich wie VS an: Gems einsammeln, Level-Up, Auto-Fire, steigende Schwierigkeit, Boss-Fight.
+
+---
+
+## 🏃 Sprint 3 — "Look & Feel" (KW 11: 09.–13.03.)
+
+> **Ziel:** Echte Assets, Sound, zweiter Character.
+
+### Tagsüber (PRISM autonom)
+
+| # | Task | Aufwand | Prio |
+|---|------|---------|------|
+| 3.1 | Gegner-Sprites (alle 5 Typen) — Blender MCP oder Krita | 4h | 🔴 |
+| 3.2 | Boss-Sprite verbessern | 2h | 🔴 |
+| 3.3 | Waffen-Sprites | 1.5h | 🟡 |
+| 3.4 | Projektil + Effekt-Sprites | 2h | 🟡 |
+| 3.5 | XP-Gem + Pickup Sprites | 1h | 🟡 |
+| 3.6 | Sound FX (ElevenLabs/sfxr) | 2h | 🟡 |
+| 3.7 | Musik: 1 Arena-Track + Menu (Suno/Udio) | 1h | 🟡 |
+| 3.8 | Character Select Screen | 2h | 🟢 |
+| 3.9 | Zweiter Character spielbar (Roxy?) | 2h | 🟢 |
+| 3.10 | Victory Screen | 1h | 🔴 |
+
+### Abends (Druid)
 
 | # | Task | Aufwand |
 |---|------|---------|
-| 3.2–3.4 | Cascadeur Animationen (Rig+Pose+Export) | 4h |
-| — | Alle Assets im Spiel testen | 2h |
+| 3.D1 | Floor/Wall Tiles verbessern (Krita) | 2h |
+| 3.D2 | Assets in Godot integrieren + testen | 2h |
+| 3.D3 | Cascadeur Animationen | 3h (WE) |
 
-**Sprint 3 Ergebnis:** Das Spiel sieht und klingt nach einem richtigen Spiel.
+### ADy (Creative Direction)
+
+| # | Task | Aufwand |
+|---|------|---------|
+| 3.A1 | Art Direction Styleguide für Arena-Modus | 2h |
+| 3.A2 | Character Select UI-Konzept | 1h |
 
 ---
 
@@ -420,103 +372,47 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 
 ### Tagsüber (PRISM autonom)
 
-| # | Task | Aufwand | Tag |
-|---|------|---------|-----|
-| 4.1 | Screenshake, Hit-Freeze, Particles | 2h | Mo |
-| 4.2 | Minimap | 2h | Mo |
-| 4.3 | Pause-Menu überarbeiten | 2h | Di |
-| 4.4 | Steam Page Draft (Beschreibung, Tags) | 2h | Di |
-| 4.5 | Screenshots + GIF generieren | 2h | Mi |
-| 4.7 | Trailer (30s Gameplay, ffmpeg) | 3h | Do |
-| 4.8 | MeatCorp Employee Generator (Web-Prototyp) | 4h | Fr |
-
-### ADy (Creative Direction)
-
 | # | Task | Aufwand |
 |---|------|---------|
-| 4.A1 | Steam Page — Layout, Copy & Tagline | 3h |
-| 4.A2 | Capsule Art Direction & Briefing | 2h |
-| 4.A3 | MeatCorp Employee Generator — UX/Design Lead | 3h |
+| 4.1 | Screenshake, Hit-Freeze, Particles | 2h |
+| 4.2 | Minimap (oder Danger-Indicator am Rand) | 2h |
+| 4.3 | Pause-Menu überarbeiten | 1h |
+| 4.4 | Steam Page Draft | 2h |
+| 4.5 | Screenshots + GIF | 2h |
+| 4.6 | Trailer (30s Gameplay) | 3h |
+| 4.7 | MeatCorp Employee Generator (Web) | 4h |
+| 4.8 | Difficulty Scaling: Endlos-Modus nach Boss? | 2h |
 
-### Abends (Druid)
+### Abends (Druid) + ADy
 
-| # | Task | Aufwand | Wann |
-|---|------|---------|------|
-| 4.4 | Steam Page Review + Live-Schalten | 1h | Mi Abend |
-| 4.6 | Capsule Art (Krita+Diffusion) | 3h | Di+Do Abend |
-| 4.9 | Playtesting + Balancing | 4h | Mi-Fr Abend |
-| 4.10 | Builds erstellen (Win/Lin/Mac) | 2h | Fr Abend |
+(wie vorher — Review, Capsule Art, Steam Page, Builds)
 
-### Wochenende (21.–22.03.)
-
-| Task | Aufwand |
-|------|---------|
-| Finale Bugfixes | 2h |
-| Steam Page LIVE 🚀 | 30min |
-
-**Sprint 4 Ergebnis:** Spielbare Demo + Steam "Coming Soon" Seite live.
+**Sa 21.03.2026 → Steam "Coming Soon" LIVE 🚀**
 
 ---
 
-## 🎯 Definition of Done — "Demo Ready"
+## 🎯 Definition of Done — "Demo Ready" (aktualisiert)
 
-- [ ] Biom 1 komplett spielbar (8 Räume + Boss)
+- [ ] Arena-Modus: 5+ Min Gameplay Loop
 - [ ] 5 Gegnertypen mit Sprites
-- [ ] 2 Waffen
-- [ ] Shop + Events funktionieren
+- [ ] CEO-Mech Boss funktioniert
+- [ ] XP-Gems + Level-Up System
+- [ ] 2+ Waffen (Auto-Fire)
 - [ ] 5+ Upgrades mit Effekten
 - [ ] Sound + Musik vorhanden
+- [ ] Mindestens 2 spielbare Characters
+- [ ] Victory + Death Screen
 - [ ] Kein Game-Breaking Bug
 - [ ] Steam-Page mit Screenshots + Beschreibung
 - [ ] Builds für Win/Lin/Mac
 
 ---
 
-## 💡 Asset Pipeline
-
-| Asset-Typ | Tool | Wer |
-|-----------|------|-----|
-| **3D Modelle** | Blender MCP (PRISM) / Meshy 3D | PRISM autonom |
-| **Animationen** | Cascadeur (8€/Mo) | Druid WE |
-| **3D → 2D Sprites** | Blender Render → Spritesheet | PRISM autonom |
-| **Floor/Wall Tiles** | Krita + AI Diffusion | Druid Abends |
-| **Sound FX** | ElevenLabs / sfxr | PRISM autonom |
-| **Musik** | Suno / Udio | PRISM autonom |
-| **UI/Icons** | Krita + AI Diffusion | Druid/PRISM |
-| **Prototyping** | Ludo AI | Druid Abend |
-
----
-
-## ⚡ Risiken & Mitigation
-
-| Risiko | Mitigation |
-|--------|------------|
-| Druid hat wenig Zeit unter der Woche | PRISM arbeitet autonom, Druid reviewt nur |
-| Godot-Editor Tasks stauen sich | Samstag-Morgen Batch-Session |
-| Asset-Qualität | Blender MCP Pipeline getestet + funktioniert |
-| Scope Creep | Sprint-Plan strikt, alles weitere = Post-Demo |
-| Kommunikationslücken | Morgen-Briefing + Abend-Sync via Telegram |
-
----
-
-## 📅 Timeline
-
-\`\`\`
-KW 9  (23.02-27.02):  Sprint 1 — Bugs & Daten
-KW 10 (02.03-06.03):  Sprint 2 — Content & Gameplay  
-KW 11 (09.03-13.03):  Sprint 3 — Art & Sound
-KW 12 (16.03-20.03):  Sprint 4 — Polish & Ship
-Sa 21.03.2026:         → Steam "Coming Soon" LIVE 🚀
-\`\`\`
-
----
-
 ### Changelog
-- **v3.2 (24.02.):** ADy als Creative Lead eingetragen — UI-Konzeption (Sprint 2), Art Direction (Sprint 3), Steam Page + Employee Generator (Sprint 4).
-- **v3.1 (23.02.):** KW-Daten korrigiert (KW 9 = Mo 23.02., nicht 24.02.)
-- **v3 (22.02.):** Arbeitsmodell (Druid 17-23h + WE, PRISM autonom tagsüber). Tasks auf Tage verteilt. Morgen-Briefing + Abend-Sync eingeführt.
-- **v2 (21.02.):** Cascadeur, Meshy 3D, Ludo AI hinzugefügt.
-- **v1 (20.02.):** Initialer Draft.
+- **v4.0 (03.03.):** Kompletter Pivot auf Arena/Vampire Survivors. Room-basierte Tasks entfernt. XP-Gems, Auto-Fire, Wave-System als neue Kern-Features. Sprint 1 als abgeschlossen markiert. Sprints 2-4 neu geschrieben.
+- **v3.2 (24.02.):** ADy als Creative Lead eingetragen.
+- **v3.1 (23.02.):** KW-Daten korrigiert.
+- **v3 (22.02.):** Arbeitsmodell eingeführt.
 `;
     document.getElementById('doc-content').innerHTML = marked.parse(raw);
     </script></main>
