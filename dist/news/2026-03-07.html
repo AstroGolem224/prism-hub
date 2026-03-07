@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI News // PRISM Hub</title>
+<title>AI News — 2026-03-07 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -251,17 +251,98 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <h1 class="page-title">📰 AI News Archiv</h1>
-    <p class="page-subtitle">// kuratierte ai news // täglich aktualisiert</p>
-    <div class="card"><a href="news/2026-03-07.html"><span style="color:var(--neon-cyan)">2026-03-07</span> — 📰 AI & Game Dev News — 7. März 2026</a></div>
-<div class="card"><a href="news/2026-03-02.html"><span style="color:var(--neon-cyan)">2026-03-02</span> — 🔮 PRISM Daily News — Montag, 02.03.2026</a></div>
-<div class="card"><a href="news/2026-03-01.html"><span style="color:var(--neon-cyan)">2026-03-01</span> — 📰 PRISM Daily News — 01.03.2026 (Sonntag)</a></div>
-<div class="card"><a href="news/2026-02-28.html"><span style="color:var(--neon-cyan)">2026-02-28</span> — AI News — 28.02.2026</a></div>
-<div class="card"><a href="news/2026-02-27.html"><span style="color:var(--neon-cyan)">2026-02-27</span> — AI News — 27.02.2026</a></div>
-<div class="card"><a href="news/2026-02-24.html"><span style="color:var(--neon-cyan)">2026-02-24</span> — AI News — 24.02.2026</a></div>
-<div class="card"><a href="news/2026-02-23.html"><span style="color:var(--neon-cyan)">2026-02-23</span> — AI News — 23.02.2026</a></div>
-<div class="card"><a href="news/2026-02-22.html"><span style="color:var(--neon-cyan)">2026-02-22</span> — AI News — 22. Februar 2026</a></div>
-</main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-03-07</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# 📰 AI & Game Dev News — 7. März 2026
+
+## 🤖 AI & LLM News
+
+### OpenAI Codex Security
+- **Codex Security** (ex-Aardvark) jetzt in Research Preview für Enterprise/Business/Edu
+- AI-powered Security Agent für Code-Vulnerabilities
+- 50% weniger False Positives, 84% weniger redundante Alerts
+- 1.2M Commits gescannt in 30 Tagen, 792 kritische Vulns gefunden
+- **Relevanz:** Automatisierte Code-Security für unsere Game-Engine Entwicklung
+- [Source: The Decoder](https://the-decoder.com/)
+
+### ChatGPT für Excel
+- **GPT-5.4** optimiert für Financial Tasks
+- Natural Language Interface für Spreadsheets
+- Verbindungen zu FactSet, Moody's, S&P Global
+- **Relevanz:** Datenanalyse für Game Market Research automatisieren
+
+### Anthropic vs Pentagon Drama
+- Anthropic offiziell als "Supply Chain Risk" eingestuft
+- CEO Dario Amodei will rechtlich dagegen vorgehen
+- Konflikt wegen Mass Surveillance & Autonomous Weapons Policies
+- Claude läuft weiter im Pentagon's classified cloud
+- **Relevanz:** AI Safety & Ethics Diskussion verschärft sich
+
+### SoftBank's $40B OpenAI Bet
+- Historisch größter Kredit für OpenAI-Anteil
+- AI-Partner haben kombiniert $96B Schulden aufgebaut
+- Nur 3% der Konsumenten zahlen bisher für AI Services
+- **Bubble-Warnung:** Bank of England flaggt Risiken
+
+## 🎮 Game Engine & Tools
+
+### Godot Engine Updates
+- **Godot 4.7 dev 2** verfügbar
+- **Godot 4.6.1** Maintenance Release (erste 4.6 Bugfixes)
+- **GodotCon Amsterdam** 23-24 April — Save the Date!
+- **Inverse Kinematics** Returns in 4.6 (3D IK System)
+- **Buckshot Roulette Showcase** — Success Story mit Mike Klubnika
+- [Source: Godot Blog](https://godotengine.org/blog/)
+
+### Hacker News Highlights
+- **Anthropic Red Team** hardening Firefox (531 Upvotes)
+- **"Claude Code hat in mir eine neue Leidenschaft entfacht"** — 60-jähriger Dev (253 Upvotes)
+- **LLMs work best with user-defined acceptance criteria** (111 Upvotes)
+- Show HN: **Moongate** — Ultima Online server emulator in .NET
+
+## 💼 Industry & Market
+
+### Oracle Job Cuts für AI Investment
+- Tausende Stellen gestrichen für AI Data Center Expansion
+- Free Cash Flow wird bis ~2030 negativ erwartet
+- Massive AI-Infrastruktur Investments für OpenAI & andere
+
+### Tech Employment Crisis
+- **Schlimmer als 2008 oder 2020** Rezessionen laut neuen Daten
+- 796 Upvotes auf HN — breite Diskussion in der Community
+
+---
+
+## 🎯 MMC Sprint Status (KW 10 — Sprint 2: "VS Core Loop")
+
+**Sprint 2 Ziel:** Vampire Survivors Feeling implementieren
+
+### 📊 Sprint 2 Fortschritt
+- **Aktuell:** Arena-Modus Grundloop steht (40%)
+- **Fokus:** XP-Gems, Auto-Fire, Level-Up System
+- **Deadline:** Sprint Ende 07.03. (heute!)
+
+### ⚡ PRISM kann heute autonom machen:
+1. **XP-Gem System** finalisieren (Gegner droppen, Player sammelt)
+2. **Magnet-Radius** implementieren 
+3. **Waffen Auto-Fire** mit nächstem Gegner targeting
+4. **Health-Pickups** von Gegnern
+5. **Kill Counter + Timer** HUD
+6. **Damage Numbers** floating text
+
+### 🚨 Für Druid heute Abend:
+- **Review + Playtest** der PRISM Implementations
+- **Balancing:** XP-Kurve, Spawn-Raten prüfen
+- **Sprint 3 Planning** für nächste Woche
+
+### 🔥 Kritischer Pfad:
+Sprint 2 muss **heute abgeschlossen** werden für Zeitplan. Sprint 3 ("Look & Feel") startet Montag.
+
+---
+
+*Generiert von PRISM 🔮 — 07.03.2026 06:00*`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
