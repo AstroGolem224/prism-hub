@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI News // PRISM Hub</title>
+<title>AI News — 2026-03-08 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -251,18 +251,53 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <h1 class="page-title">📰 AI News Archiv</h1>
-    <p class="page-subtitle">// kuratierte ai news // täglich aktualisiert</p>
-    <div class="card"><a href="news/2026-03-08.html"><span style="color:var(--neon-cyan)">2026-03-08</span> — Daily News Briefing — 8. März 2026</a></div>
-<div class="card"><a href="news/2026-03-07.html"><span style="color:var(--neon-cyan)">2026-03-07</span> — 📰 AI & Game Dev News — 7. März 2026</a></div>
-<div class="card"><a href="news/2026-03-02.html"><span style="color:var(--neon-cyan)">2026-03-02</span> — 🔮 PRISM Daily News — Montag, 02.03.2026</a></div>
-<div class="card"><a href="news/2026-03-01.html"><span style="color:var(--neon-cyan)">2026-03-01</span> — 📰 PRISM Daily News — 01.03.2026 (Sonntag)</a></div>
-<div class="card"><a href="news/2026-02-28.html"><span style="color:var(--neon-cyan)">2026-02-28</span> — AI News — 28.02.2026</a></div>
-<div class="card"><a href="news/2026-02-27.html"><span style="color:var(--neon-cyan)">2026-02-27</span> — AI News — 27.02.2026</a></div>
-<div class="card"><a href="news/2026-02-24.html"><span style="color:var(--neon-cyan)">2026-02-24</span> — AI News — 24.02.2026</a></div>
-<div class="card"><a href="news/2026-02-23.html"><span style="color:var(--neon-cyan)">2026-02-23</span> — AI News — 23.02.2026</a></div>
-<div class="card"><a href="news/2026-02-22.html"><span style="color:var(--neon-cyan)">2026-02-22</span> — AI News — 22. Februar 2026</a></div>
-</main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-03-08</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# Daily News Briefing — 8. März 2026
+
+## 🤖 AI/LLM NEWS
+
+### Security & Policy
+- **Anthropic vs Pentagon**: $200M Vertrag geplatzt nach Streit über "all lawful use" Klausel. Anthropic widersteht Pentagon-Lizenzierung, die OpenAI bereits akzeptiert hat. Pentagon stuft Anthropic als "Supply Chain Risk" ein.
+- **Trump AI Guidelines**: Neue strenge Regeln für civilian AI-Verträge. Verbot ideologischer Urteile in AI-Outputs, Disclosure von EU-Compliance-Tweaks erforderlich.
+- **Mozilla + Anthropic**: Claude scannt Firefox Codebase und findet 100+ Bugs, davon 14 kritische Vulnerabilities und 22 CVEs. Alle kritischen Lücken in Firefox 148 gepatcht.
+
+## 🎮 GAME DEVELOPMENT
+
+### Industry Trends
+- **Gen AI Decline**: Developer-Nutzung von Generative AI möglicherweise rückläufig (Game Developer Artikel)
+- **Nintendo vs Trump**: Nintendo verklagt US-Regierung wegen neuer Zoll-Politik
+- **Call of Duty Politics**: Wird zunehmend als Propaganda-Tool der Trump-Administration genutzt
+
+### Engine Updates
+- **Godot 4.7 dev 2**: Neuer Development Snapshot verfügbar
+- **Godot 4.6.1**: Maintenance Release mit Bugfixes
+- **GodotCon Amsterdam**: 23-24 April 2026 (Tickets verfügbar)
+- **Xbox Project Helix**: Neue Xbox spielt auch PC Games (Console/PC Hybrid)
+
+### Studio News
+- **Velan Studios**: Expansion nach Kanada für "breakthrough games"
+- **nDreams**: VR-Spezialist plant "significant layoffs" und schließt zwei Studios
+- **Epic Games**: Fortnite-Leaker war tatsächlich Epic-Employee (neue Klage)
+- **Bluepoint**: Langsamer Niedergang erwähnt in Patch Notes
+
+## 🏗️ TOOLS & TECH
+
+### Development
+- **PyPy Warning**: UV Package Manager warnt vor PyPy als "unmaintained"
+- **Docker Retrospective**: 10 Jahre Docker Container (ACM Research)
+
+## 🎯 RELEVANZ FÜR MEATMACHINE CYCLE
+
+- ✅ **Gen AI Tools**: Trotz rückläufiger Nutzung weiter strategischer Vorteil
+- ✅ **Godot Updates**: Aktueller Engine-Support bestätigt
+- ⚠️ **Politische Spannungen**: Gaming wird politisiert (Call of Duty)
+- 📊 **Markt**: Studio-Layoffs zeigen schwierigen Markt → Indie-Chance!
+
+---
+*Quellen: the-decoder.com, gamedeveloper.com, godotengine.org*`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
