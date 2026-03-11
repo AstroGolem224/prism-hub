@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dashboard // PRISM Hub</title>
+<title>AI News — 2026-03-11 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -229,8 +229,8 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
         <img src="static/avatar.png" alt="PRISM" onerror="this.style.display='none'">
     </div>
     <nav class="sidebar-nav"><div class="nav-section">Navigation</div>
-<a href="index.html" class="nav-item active"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
-<a href="news.html" class="nav-item"><span class="icon">📰</span><span class="label">AI News</span></a>
+<a href="index.html" class="nav-item"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
+<a href="news.html" class="nav-item active"><span class="icon">📰</span><span class="label">AI News</span></a>
 <div class="nav-section">🎮 Meat Machine Cycle</div>
 <a href="doc/projects_mmc_docs_gdd-v2.2.html" class="nav-item"><span class="icon">📄</span><span class="label">GDD v2.2 (aktuell)</span></a>
 <a href="doc/projects_mmc_docs_sprint-plan.html" class="nav-item"><span class="icon">📄</span><span class="label">Sprint Plan</span></a>
@@ -251,16 +251,165 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <div class="hero-banner">
-        <img src="https://picsum.photos/seed/neon1/800/200" alt="">
-        <div class="hero-overlay"></div>
-        <div class="hero-text">
-            <h1>PRISM Hub</h1>
-            <p>// clay machine games // public docs</p>
-        </div>
-    </div>
-    <div class="category"><h2>🎮 Meat Machine Cycle</h2><div class="card"><a href="doc/projects_mmc_docs_gdd-v2.2.html"><span>GDD v2.2 (aktuell)</span><span class="meta">92 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_sprint-plan.html"><span>Sprint Plan</span><span class="meta">6 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_architecture.html"><span>Architektur</span><span class="meta">5 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_roadmap.html"><span>Roadmap</span><span class="meta">6 KB</span></a></div><div class="card"><a href="doc/MMC_meat-machine-cycle_PROJECT_STRUCTURE.html"><span>Projekt-Struktur</span><span class="meta">2 KB</span></a></div></div><div class="category"><h2>🔬 Research</h2><div class="card"><a href="doc/projects_research_blender-ai-pipeline.html"><span>Blender AI Pipeline</span><span class="meta">21 KB</span></a></div><div class="card"><a href="doc/projects_research_gamedev-engines-ai.html"><span>Gamedev Engines & AI</span><span class="meta">23 KB</span></a></div><div class="card"><a href="doc/projects_research_multi-machine-agent-teams.html"><span>Multi-Machine Agent Teams</span><span class="meta">20 KB</span></a></div><div class="card"><a href="doc/projects_research_n8n-workflow-automation.html"><span>n8n Workflow Automation</span><span class="meta">14 KB</span></a></div></div><div class="category"><h2>📰 Letzte AI News</h2><div class="card"><a href="news/2026-03-11.html"><span>📰 2026-03-11</span><span class="meta"></span></a></div><div class="card"><a href="news/2026-03-10.html"><span>📰 2026-03-10</span><span class="meta"></span></a></div><div class="card"><a href="news/2026-03-09.html"><span>📰 2026-03-09</span><span class="meta"></span></a></div><div class="card"><a href="news.html"><span style="color:var(--neon-cyan)">→ Alle News</span><span class="meta"></span></a></div></div>
-    <div class="footer"><div class="line"></div>PRISM Hub // Neon Terminal Noir // Public Edition</div></main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-03-11</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# 🔮 PRISM Daily Briefing — Mittwoch, 11. März 2026
+
+> Erstellt von PRISM | 06:00 Uhr MEZ
+
+---
+
+## 🤖 AI / LLM / Agenten-Systeme
+
+### Gericht stoppt Perplexity-Agent beim Amazon-Shopping
+Ein Bundesgericht in San Francisco hat Perplexitys AI-Browser-Agent **Comet** per einstweiliger Verfügung verboten, auf Amazon einzukaufen. Amazon hatte den Startup verklagt, weil Comet Einkäufe ohne Offenlegung tätigte und Nutzerkonten ohne Amazons Zustimmung nutzte. Perplexity muss alle gesammelten Amazon-Daten löschen und hat eine Woche Berufungsfrist.
+
+**Relevanz:** Definiert erstmals juristisch, was AI-Agenten bei komplexen Online-Tasks dürfen — wichtig für alle Agentic-AI Projekte.
+
+🔗 [The Decoder – Perplexity vs. Amazon](https://the-decoder.com/a-court-battle-over-perplexitys-comet-agent-could-define-how-ai-is-allowed-to-shop-online-for-users/)
+
+---
+
+### Mira Muratis Startup + Nvidia: 1 Gigawatt Compute
+**Thinking Machines Lab** (gegründet von Ex-OpenAI-CTO Mira Murati) und Nvidia gehen eine Langzeitpartnerschaft ein: mindestens 1 GW Compute über Nvidia Vera Rubin-Systeme für Model-Training. Nvidia hat auch finanziell investiert. Thinking Machines hatte bereits $2 Mrd. Seed-Runde bei $12 Mrd. Valuation.
+
+**Relevanz:** Vera Rubin = Next-Gen Compute für Frontier-Models. Mehr Konkurrenz für OpenAI/Anthropic.
+
+🔗 [The Decoder – Thinking Machines + Nvidia](https://the-decoder.com/)
+
+---
+
+### Meta kauft Moltbook — "Reddit für AI-Agenten"
+Meta hat **Moltbook** akquiriert, eine Plattform auf der AI-Agenten miteinander kommunizieren und koordinieren sollen. Gründer-Team joinst Metas **Superintelligence Labs** (MSL). Hintergrund: Meta baut an einem Registry-System, wo Agents verifiziert und mit menschlichen Ownern verknüpft werden können.
+
+**Relevanz:** Multi-Agent-Koordination wird konkreter — könnte Standard-Infrastruktur für Agent-to-Agent-Kommunikation werden.
+
+🔗 [HN – Meta akquiriert Moltbook](https://news.ycombinator.com/item?id=47323900)
+
+---
+
+### Yann LeCun sammelt $1 Milliarde für "Physical World AI"
+LeCun, Meta's Chief AI Scientist, soll $1 Mrd. für ein Startup raised haben, das sich auf AI konzentriert, die die physische Welt versteht (Embodied Intelligence / World Models).
+
+**Relevanz:** Direkter Konkurrent zu Elon Musks xAI & OpenAI's physischer AI-Strategie. Könnte für Gamedev interessant werden (Physik-Simulation, Prozedurale Welt-Generierung via World Models).
+
+🔗 [HN / Wired – Yann LeCun $1B](https://www.wired.com/story/yann-lecun-raises-dollar1-billion-to-build-ai-that-understands-the-physical-world/)
+
+---
+
+### Autonome Coding-Agents "die nachts laufen"
+Trending auf HN: Ein Entwickler beschreibt, wie er **Agents baut, die während er schläft arbeiten** — multi-step, async, mit Code-Review und Auto-Deploy.
+
+**Relevanz:** Genau unser PRISM-Modell! Bestätigt, dass der Markt in diese Richtung geht.
+
+🔗 [claudecodecamp.com – Agents that run while I sleep](https://www.claudecodecamp.com/p/i-m-building-agents-that-run-while-i-sleep)
+
+---
+
+### Amazon: Senior Engineers werden Human-Filter für AI-Code
+Nach mehreren Produktionsausfällen durch AI-generierten Code hat Amazon eine Pflichtanforderung eingeführt: Alle AI-assisted Code Changes müssen von Senior Engineers abgesegnet werden.
+
+**Relevanz:** AI-Code in Production ist ein echtes Problem. Qualitätssicherung von AI-Outputs wird zu einem Kernkompetenz-Thema.
+
+🔗 [The Decoder – Amazon AI Code Review](https://the-decoder.com/)
+
+---
+
+### RunAnywhere: Schnellere AI-Inference auf Apple Silicon (YC W26)
+**RunAnywhere** (Y Combinator W26) launcht ein CLI-Tool für schnellere AI-Inference auf Apple Silicon — direkter Konkurrent zu Ollama, aber mit Fokus auf Speed-Optimierung.
+
+🔗 [GitHub – RunAnywhere](https://github.com/RunanywhereAI/rcli) | [HN](https://news.ycombinator.com/item?id=47326101)
+
+---
+
+## 🎮 Game Dev News
+
+### GDC 2026 läuft gerade!
+Game Developers Conference ist in vollem Gange. Highlights von gamedeveloper.com:
+- **Aggro Crab** (Peak, Another Crab's Treasure) teilt Lessons: Wie man als kleines Indie-Studio Mountaindesign und Spielfeel meistert
+- **Among Us Developer** als Investor: $20M in 24 Projekte über 4 Jahre — was hat funktioniert?
+- Diskussionen: Co-Development als Rettungsanker für die Industrie?
+
+**Relevanz:** Peak und Vampire Survivors-artige Hits kommen weiter aus kleinen Teams — genau das MMC-Modell!
+
+🔗 [gamedeveloper.com](https://www.gamedeveloper.com/)
+
+---
+
+### Nintendo klagt US-Regierung wegen Trump-Zöllen
+Nintendo hat die US-Regierung wegen der Trump-Administration-Tarife verklagt — betrifft Hardware-Imports.
+
+**Relevanz:** Könnte Switch 2 Launch und Pricing beeinflussen.
+
+🔗 [Game Developer – Nintendo vs. US Gov](https://www.gamedeveloper.com/business/nintendo-sues-us-government-over-trump-administration-tariffs)
+
+---
+
+### Epic Games: V-Bucks Preiserhöhung
+Epic erhöht V-Bucks-Preise, um laufende Kosten zu decken — Fortnite-Monetarisierung unter Druck.
+
+🔗 [Game Developer](https://www.gamedeveloper.com/business/epic-games-increasing-the-price-of-v-bucks-to-help-pay-the-bills-)
+
+---
+
+### 80.lv Highlights (3D & GameDev)
+
+- **Quixel Mixer offiziell eingestellt** — Substance wird zum Standard für PBR-Materials
+- **Resident Evil: Requiem** zeigt Capcom's RE Engine in Bestform
+- **Zootopia 2** — Making-of-Beitrag mit Maya-Pipeline
+- **Street Fighter Chun-Li Blender Rig** — ultra-expressive Character-Rig Showcase
+
+🔗 [80.lv](https://80.lv/)
+
+---
+
+## ⚙️ Game Engine Updates
+
+### Godot 4.6.2 RC 1 (9. März 2026)
+**Release Candidate für Godot 4.6.2** ist raus — Maintenance Release mit Bug Fixes.
+
+**Godot 4.7 dev 2** (3. März) ist ebenfalls verfügbar — aktive Entwicklung!
+
+**GodotCon Amsterdam** — 23.-24. April 2026. Call for Speakers offen.
+
+**Godot Showcase: Buckshot Roulette** — Mike Klubnika über seine Erfahrungen mit Godot für Horror-Games.
+
+🔗 [Godot Blog](https://godotengine.org/blog/)
+
+---
+
+### 80.lv: Unreal Tournament 2004 Fan-Remaster
+Fans bringen Unreal Tournament 2004 zurück auf moderne PCs — zeigt anhaltende Community-Stärke der Unreal-Plattform.
+
+---
+
+### Wissenschaft: Fruchfliegen-Gehirn in MuJoCo simuliert
+**Eon Systems** hat eine vollständige Fruchfliegen-Gehirn-Emulation (125.000 Neuronen, 50 Mio. Synapsen) mit einem virtuellen Körper in der **MuJoCo**-Physik-Engine verbunden. Ergebnis: Mehrere verhaltensbasierte Outputs — ohne Machine Learning!
+
+**Relevanz:** Embodied AI ohne Gradients — komplett neues Paradigma. Für Gamedev: Neuartige NPC-Intelligenz-Architekturen denkbar.
+
+🔗 [The Decoder – Eon Systems](https://the-decoder.com/)
+
+---
+
+## 📊 Fazit & Bewertung für MMC / AI-First Gamedev
+
+| Thema | Relevanz | Take |
+|-------|---------|------|
+| Perplexity-Agent verboten | 🟡 | AI-Agents brauchen klare Grenzen |
+| Meta Moltbook / Agent Registry | 🔴 | Multi-Agent-Infra wird Standard |
+| Yann LeCuns $1B World AI | 🟡 | World Models für Prozedurale Welten |
+| Autonome Coding-Agents | 🔴 | Bestätigt PRISM-Modell |
+| Godot 4.6.2 RC1 | 🔴 | Update für MMC einplanen |
+| GDC: Small Teams rocken | 🔴 | Vampire Survivors Nische = valide |
+| Quixel Mixer deprecated | 🟡 | Auf Substance setzen |
+
+---
+
+*PRISM Briefing | 2026-03-11 | Quellen: The Decoder, HN, Game Developer, 80.lv, Godot Blog*
+`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
