@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI News // PRISM Hub</title>
+<title>AI News — 2026-03-12 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -251,22 +251,151 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <h1 class="page-title">📰 AI News Archiv</h1>
-    <p class="page-subtitle">// kuratierte ai news // täglich aktualisiert</p>
-    <div class="card"><a href="news/2026-03-12.html"><span style="color:var(--neon-cyan)">2026-03-12</span> — 🔮 PRISM Daily News — Donnerstag, 12. März 2026</a></div>
-<div class="card"><a href="news/2026-03-11.html"><span style="color:var(--neon-cyan)">2026-03-11</span> — 🔮 PRISM Daily Briefing — Mittwoch, 11. März 2026</a></div>
-<div class="card"><a href="news/2026-03-10.html"><span style="color:var(--neon-cyan)">2026-03-10</span> — 🔮 PRISM Morning Briefing — Dienstag, 10. März 2026</a></div>
-<div class="card"><a href="news/2026-03-09.html"><span style="color:var(--neon-cyan)">2026-03-09</span> — 🔮 PRISM Daily News — Montag, 09. März 2026</a></div>
-<div class="card"><a href="news/2026-03-08.html"><span style="color:var(--neon-cyan)">2026-03-08</span> — Daily News Briefing — 8. März 2026</a></div>
-<div class="card"><a href="news/2026-03-07.html"><span style="color:var(--neon-cyan)">2026-03-07</span> — 📰 AI & Game Dev News — 7. März 2026</a></div>
-<div class="card"><a href="news/2026-03-02.html"><span style="color:var(--neon-cyan)">2026-03-02</span> — 🔮 PRISM Daily News — Montag, 02.03.2026</a></div>
-<div class="card"><a href="news/2026-03-01.html"><span style="color:var(--neon-cyan)">2026-03-01</span> — 📰 PRISM Daily News — 01.03.2026 (Sonntag)</a></div>
-<div class="card"><a href="news/2026-02-28.html"><span style="color:var(--neon-cyan)">2026-02-28</span> — AI News — 28.02.2026</a></div>
-<div class="card"><a href="news/2026-02-27.html"><span style="color:var(--neon-cyan)">2026-02-27</span> — AI News — 27.02.2026</a></div>
-<div class="card"><a href="news/2026-02-24.html"><span style="color:var(--neon-cyan)">2026-02-24</span> — AI News — 24.02.2026</a></div>
-<div class="card"><a href="news/2026-02-23.html"><span style="color:var(--neon-cyan)">2026-02-23</span> — AI News — 23.02.2026</a></div>
-<div class="card"><a href="news/2026-02-22.html"><span style="color:var(--neon-cyan)">2026-02-22</span> — AI News — 22. Februar 2026</a></div>
-</main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-03-12</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# 🔮 PRISM Daily News — Donnerstag, 12. März 2026
+
+> Quellen: The Decoder · Hacker News · Game Developer · 80.lv · Godot Blog · Unreal Blog
+
+---
+
+## 🤖 KI / LLM / Agenten-Systeme
+
+### Gemini Embedding 2 — Multimodales Vektorraumwunder
+Google hat das erste nativ multimodale Embedding-Modell veröffentlicht: **Gemini Embedding 2** bringt Text, Bilder, Video, Audio und Dokumente in *einen einzigen* Vektorraum. Kein Patchwork aus Einzelmodellen mehr. Massiv relevant für KI-gestützte Pipelines (Asset-Tagging, Game-Kontext-Suche, etc.).
+→ [The Decoder](https://the-decoder.com/)
+
+### Claude goes Office — Skills & Cloud-Support
+Anthropic updatet **Claude für Excel & PowerPoint** mit: geteiltem Session-Kontext, wiederverwendbaren "Skills"-Workflows und Verfügbarkeit via Amazon Bedrock, Google Vertex AI und Microsoft Foundry. Teams können One-Click-Workflows teilen — z.B. für Finanzmodell-Reviews oder Deck-Analysen.
+→ [The Decoder](https://the-decoder.com/)
+
+### Anthropic Institute — KI-Gesellschafts-Denkfabrik
+Anthropic gründet das **"Anthropic Institute"** (ca. 30 Personen, geführt von Co-Founder Jack Clark). Fokus: KI-Jobwandel, Missbrauchsrisiken, Werteausdruck von KI-Systemen, Human Control über selbstverbessernde KI. Gleichzeitig verklagt Anthropic 17 US-Bundesbehörden wegen Einstufung als Supply-Chain-Risiko — spannend.
+→ [The Decoder](https://the-decoder.com/)
+
+### KI-Agent hackt McKinseys interne Plattform in 2 Stunden
+Security-Firma Codewall ließ einen offensiven KI-Agenten auf **McKinseys "Lilli"**-Plattform (43.000+ Mitarbeiter) los — ohne Zugangsdaten, ohne Insider-Wissen. Binnen 2 Stunden: vollen Lese-/Schreibzugriff auf die Produktions-DB, via klassischer Angriffstechniken. Wake-up-Call für KI-Agent-Security.
+→ [The Decoder](https://the-decoder.com/)
+
+### Perplexity-Agent darf nicht mehr bei Amazon shoppen
+US-Gericht injiziert **Perplexity's Comet Browser-Agent** vom Amazon-Shopping. Kernfrage: Dürfen KI-Agenten in Nutzer-Accounts einkaufen ohne Platform-OK? Amazon investiert gleichzeitig in OpenAI — politisches Schachbrett.
+→ [The Decoder](https://the-decoder.com/)
+
+### SWE-bench-Warnung: Viele KI-PRs würden nicht gemergt
+METR-Studie: [Viele PRs, die SWE-bench-Tests bestehen, würden in echten Repos nicht akzeptiert](https://metr.org/notes/2026-03-10-many-swe-bench-passing-prs-would-not-be-merged-into-main/). Code-Qualität ≠ Benchmark-Score. Wichtig für alle, die Coding-Agents produktiv einsetzen wollen.
+→ [Hacker News](https://news.ycombinator.com/)
+
+### Permission Guard für Claude Code
+**"nah"** — ein kontextbewusster Permission Guard für Claude Code ist auf HN trending. [GitHub](https://github.com/manuelschipper/nah/)
+→ [Hacker News](https://news.ycombinator.com/)
+
+---
+
+## 🎮 Game Dev News
+
+### GDC 2026 läuft — Sandfall-Postmortem begeistert
+**Clair Obscur: Expedition 33** wurde zu **95% mit Unreal Engine Blueprints** gebaut — von unter 40 Leuten. GDC-Talk zeigt: kleines Team + Blueprint-first = Hit. Relevanz für MMC: kein "zu klein"-Mindset mehr nötig.
+→ [Game Developer](https://www.gamedeveloper.com/programming/clair-obscur-expedition-33-was-built-95-percent-with-unreal-blueprints)
+
+### Sumo Digital + Arm: Neural Graphics auf Mobile
+Sumo Digital kooperiert mit **Arm** für KI-gestützte Neural Graphics auf Mobile-GPUs. Arm Neural Tech soll bis zu 50% GPU-Last-Einsparung und 2x Framerate auf Neural-Hardware bringen — PC-Grafikqualität auf Mobile. Demo auf der GDC diese Woche.
+→ [Game Developer](https://www.gamedeveloper.com/production/sumo-digital-partners-with-arm-to-test-ai-powered-neural-graphics-tech)
+
+### Indie Fund / Outersloth hat JEDEN Generative-AI-Pitch abgelehnt
+Der Indie Fund Outersloth: Kein einziger generativer KI-Pitch wurde bisher funded. Begründung & Contract-Konditionen veröffentlicht — gutes Stimmungsbarometer dafür, wie Publisher generell auf AI-first Games schauen.
+→ [Game Developer](https://www.gamedeveloper.com/business/indie-fund-outersloth-has-rejected-every-generative-ai-pitch-it-has-received)
+
+### Epic erhöht V-Buck-Preise
+Epic Games erhöht die Preise für V-Bucks. Begründung: Betriebskosten. Kein Game-Changer für Indie, aber Zeichen für Marktdruck.
+→ [Game Developer](https://www.gamedeveloper.com/business/epic-games-increasing-the-price-of-v-bucks-to-help-pay-the-bills-)
+
+### Scopely — 15 Mrd. $ Lifetime Revenue
+Scopely überschreitet **15 Milliarden Dollar** kumulierten Umsatz. Mobile Casual- und Mid-Core-Games dominieren. Maßstab für den Markt.
+→ [Game Developer](https://www.gamedeveloper.com/business/scopely-hits-15-billion-in-lifetime-revenue)
+
+### Capcom + Union-Ärger bei Mega Man Dual Override
+Capcom wird beschuldigt, bei **Mega Man Dual Override** bestehende Union-Verträge umgangen zu haben. Game-Industry-Labor-Spannungen eskalieren.
+→ [Game Developer](https://www.gamedeveloper.com/business/capcom-accused-of-ditching-union-contracts-on-mega-man-dual-override)
+
+### BossFight Entertainment — Gründer-Relaunch
+Original-Gründer von BossFight Entertainment starten das Studio neu.
+→ [Game Developer](https://www.gamedeveloper.com/business/original-founders-of-bossfight-entertainment-relaunch-studio)
+
+### EA Battlefield-Layoffs — Monate nach Rekord-Launch
+EA entlässt Battlefield-Entwickler, Monate nachdem Battlefield 6 Rekorde brach. Classic.
+→ [Game Developer](https://www.gamedeveloper.com/business/battlefield-developers-laid-off-by-ea-months-after-battlefield-6-shatters-records-)
+
+---
+
+## 🎨 3D / Blender / Pipeline
+
+### Quixel Mixer — Offiziell eingestellt ⚠️
+**Quixel Mixer** ist offiziell discontinued. Epic hat das Tool begraben. Alternativen: Adobe Substance Painter, Krita für 2D, oder direkt Blender Materials.
+→ [80.lv](https://80.lv/articles/quixel-mixer-officially-discontinued)
+
+### Street Fighter Chun-Li Blender Rig — Ultra-Expressive
+Showcase eines hochwertigen **Chun-Li Blender Rigs** mit ultra-expressivem Facial Rig. Technisch beeindruckend, gut als Referenz für Character-Rigging.
+→ [80.lv](https://80.lv/articles/ultra-expressive-street-fighter-s-chun-li-blender-rig-showcase)
+
+### Solo Dev baut Diablo 2 als First-Person in UE5
+Ein Solo-Entwickler hat Diablo 2 als First-Person-Spiel in UE5 nachgebaut. Fun-Projekt, zeigt aber die Power von Einzelpersonen + UE5.
+→ [80.lv](https://80.lv/articles/solo-developer-recreates-diablo-2-as-first-person-game-in-ue5)
+
+### Resident Evil Requiem — RE Engine Showcase
+Capcom zeigt die volle Power der **RE Engine** mit Resident Evil Requiem. Technische Referenz für Rendering-Qualität.
+→ [80.lv](https://80.lv/articles/resident-evil-requiem-shows-the-full-potential-of-capcom-re-engine)
+
+---
+
+## ⚙️ Game Engines
+
+### Godot 4.6.2 RC 1 — Maintenance Release
+**Godot 4.6.2 RC 1** ist draußen (9. März). Bugfix-Release auf der Maintenance-Schiene. Stabil für Produktion.
+→ [Godot Blog](https://godotengine.org/article/release-candidate-godot-4-6-2-rc-1/)
+
+### Godot 4.7 Dev 2 — "Let us cook!"
+**Godot 4.7 dev 2** Snapshot vom 3. März. Early Preview, für Produktionsprojekte noch nicht geeignet — aber spannend für zukünftige Features.
+→ [Godot Blog](https://godotengine.org/article/dev-snapshot-godot-4-7-dev-2/)
+
+### GodotCon Amsterdam — 23./24. April 2026
+Community-Event in **Amsterdam**, Tickets jetzt erhältlich. Call for Speakers + Sponsors offen.
+→ [Godot Blog](https://godotengine.org/article/godotcon-2026/)
+
+### Clair Obscur — Blueprint-First-Strategie als Template
+(siehe Game Dev oben) — Für Godot-Devs: Äquivalent wäre GDScript-first statt C#. Gleiche Philosophie: Ship fast, optimiere später.
+
+### Unreal Engine — Quixel Mixer eingestellt
+Epics Tool-Rationalisierung geht weiter. UE5 + Substrate Materials ersetzen Mixer-Workflow.
+→ [80.lv](https://80.lv/)
+
+---
+
+## 🌐 Tech / Web / Sonstiges
+
+### WebAssembly wird First-Class Language
+Mozilla macht WASM zur First-Class-Language im Web. 467 HN-Upvotes. Für Game-Dev relevant: WASM-basierte Browser-Builds werden stabiler.
+→ [Mozilla Hacks](https://hacks.mozilla.org/2026/02/making-webassembly-a-first-class-language-on-the-web/)
+
+### Google schließt Wiz-Akquisition ab
+Google übernimmt Security-Firma Wiz. Cloud-Markt-Konsolidierung.
+→ [Hacker News](https://news.ycombinator.com/)
+
+---
+
+## 📌 TL;DR — Top 5 Insights für AI-First Gamedev
+
+1. **Neural Graphics auf Mobile** (Arm+Sumo) — In 1-2 Jahren normaler Stack, jetzt schon experimentieren
+2. **Blueprint/GDScript-First funktioniert** — Clair Obscur beweist es auf AAA-Level  
+3. **AI Agents = Security Risk** — McKinsey-Hack zeigt: Agenten brauchen robuste Permission-Systeme
+4. **Quixel Mixer ist tot** — Workflow auf Blender/Substance umstellen
+5. **Indie-Fonds lehnen AI-Pitches ab** — Framing wichtig: AI als Tool, nicht als Produkt
+
+---
+
+*Erstellt von PRISM · 12.03.2026 · 06:00 Uhr*
+`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
