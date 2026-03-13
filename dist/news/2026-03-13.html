@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dashboard // PRISM Hub</title>
+<title>AI News — 2026-03-13 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -229,8 +229,8 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
         <img src="static/avatar.png" alt="PRISM" onerror="this.style.display='none'">
     </div>
     <nav class="sidebar-nav"><div class="nav-section">Navigation</div>
-<a href="index.html" class="nav-item active"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
-<a href="news.html" class="nav-item"><span class="icon">📰</span><span class="label">AI News</span></a>
+<a href="index.html" class="nav-item"><span class="icon">🏠</span><span class="label">Dashboard</span></a>
+<a href="news.html" class="nav-item active"><span class="icon">📰</span><span class="label">AI News</span></a>
 <div class="nav-section">🎮 Meat Machine Cycle</div>
 <a href="doc/projects_mmc_docs_gdd-v2.2.html" class="nav-item"><span class="icon">📄</span><span class="label">GDD v2.2 (aktuell)</span></a>
 <a href="doc/projects_mmc_docs_sprint-plan.html" class="nav-item"><span class="icon">📄</span><span class="label">Sprint Plan</span></a>
@@ -251,16 +251,126 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <div class="hero-banner">
-        <img src="https://picsum.photos/seed/neon1/800/200" alt="">
-        <div class="hero-overlay"></div>
-        <div class="hero-text">
-            <h1>PRISM Hub</h1>
-            <p>// clay machine games // public docs</p>
-        </div>
-    </div>
-    <div class="category"><h2>🎮 Meat Machine Cycle</h2><div class="card"><a href="doc/projects_mmc_docs_gdd-v2.2.html"><span>GDD v2.2 (aktuell)</span><span class="meta">92 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_sprint-plan.html"><span>Sprint Plan</span><span class="meta">6 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_architecture.html"><span>Architektur</span><span class="meta">5 KB</span></a></div><div class="card"><a href="doc/projects_mmc_docs_roadmap.html"><span>Roadmap</span><span class="meta">6 KB</span></a></div><div class="card"><a href="doc/MMC_meat-machine-cycle_PROJECT_STRUCTURE.html"><span>Projekt-Struktur</span><span class="meta">2 KB</span></a></div></div><div class="category"><h2>🔬 Research</h2><div class="card"><a href="doc/projects_research_blender-ai-pipeline.html"><span>Blender AI Pipeline</span><span class="meta">21 KB</span></a></div><div class="card"><a href="doc/projects_research_gamedev-engines-ai.html"><span>Gamedev Engines & AI</span><span class="meta">23 KB</span></a></div><div class="card"><a href="doc/projects_research_multi-machine-agent-teams.html"><span>Multi-Machine Agent Teams</span><span class="meta">20 KB</span></a></div><div class="card"><a href="doc/projects_research_n8n-workflow-automation.html"><span>n8n Workflow Automation</span><span class="meta">14 KB</span></a></div></div><div class="category"><h2>📰 Letzte AI News</h2><div class="card"><a href="news/2026-03-13.html"><span>📰 2026-03-13</span><span class="meta"></span></a></div><div class="card"><a href="news/2026-03-12.html"><span>📰 2026-03-12</span><span class="meta"></span></a></div><div class="card"><a href="news/2026-03-11.html"><span>📰 2026-03-11</span><span class="meta"></span></a></div><div class="card"><a href="news.html"><span style="color:var(--neon-cyan)">→ Alle News</span><span class="meta"></span></a></div></div>
-    <div class="footer"><div class="line"></div>PRISM Hub // Neon Terminal Noir // Public Edition</div></main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-03-13</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# 🔮 PRISM Daily Briefing — Freitag, 13. März 2026
+
+> Generiert um 06:00 Uhr | Quellen: The Decoder, HN, Game Developer, 80.lv, Godot Blog
+
+---
+
+## 🤖 AI / LLM / Agenten
+
+### Grok 4.20: Bester Halluzinations-Score aller Modelle
+xAI hat Grok 4.20 mit drei API-Varianten (reasoning, ohne reasoning, multi-agent mode) veröffentlicht. Benchmark-Performance liegt hinter Gemini 3.1 Pro und GPT-5.4 (48 vs. 57 auf Artificial Analysis Intelligence Index), aber der Non-Halluzinations-Score von 78% ist Weltrekord. 2M-Token Context Window, $2-6 pro Million Tokens.  
+🔗 https://the-decoder.com/
+
+### Claude als "Sicherheitsrisiko" eingestuft — Anthropic klagt
+Emil Michael (US Dept. of War CTO) bezeichnete Anthropic offiziell als Supply Chain Risk wegen Claudes Ethik-"Verfassung". Anthropic klagt dagegen, bekommt Unterstützung von Microsoft, OpenAI und Google. Erste US-KI-Firma mit dieser Einstufung, die sonst nur für ausländische Feinde gilt.  
+🔗 https://the-decoder.com/anthropic-officially-deemed-supply-chain-risk-ceo-amodei-announces-legal-challenge/
+
+### Claude: Interaktive Visualisierungen direkt im Chat
+Anthropic launcht Beta-Feature für Claude: Auto-generierte interaktive Diagramme, Charts und Visualisierungen im Gesprächsfluss. Compound-Interest-Kurven, Decision Trees, Periodensystem — Claude entscheidet selbst wann sinnvoll.  
+🔗 https://the-decoder.com/
+
+### ChatGPT verliert Marktanteile — Gemini explodiert
+ChatGPT: 61.7% AI-Webtraffic (vorher 75.7%). Google Gemini: 24.4% (vorher 5.7% — 4x in einem Jahr!). Grok (3.4%) und Claude (3.3%) überholen DeepSeek (3.2%). Absolut: ChatGPT 5.35Mrd, Gemini 2.11Mrd Visits/Monat.  
+🔗 https://the-decoder.com/
+
+### Nvidia: $26 Mrd für Open-Source AI über 5 Jahre
+SEC-Filing zeigt Nvidias strategische Investition in Open-Weight-Modelle — als Antwort auf chinesische Open-Source-Dominanz und um Entwickler im Nvidia-Hardware-Ökosystem zu halten.
+
+### Document Poisoning in RAG-Systemen
+HN-Diskussion: Wie Angreifer RAG-basierte AI-Systeme durch vergiftete Dokumente korrumpieren. Relevant für alle die Agent-Systeme mit externen Wissensquellen bauen.  
+🔗 https://aminrj.com/posts/rag-document-poisoning/
+
+---
+
+## 🎮 Game Dev & Game Industry
+
+### GDC Festival of Gaming — Highlights
+
+**Google Cloud: "Build Living Games with AI"**  
+Jack Buser (30 Jahre Industrie-Veteran) präsentierte Googles Vision für AI in Games. Key Stats:
+- 67% des Industrie-Wachstums kommt von einer Plattform: Roblox
+- 50% des Spending-Wachstums: Spieler aus Mainland China
+- Tencent: 40 Spiele nutzen bereits AI
+- Fazit: AI ist kein Job-Killer sondern Friction-Reducer — ähnlich wie 2D→3D-Transition  
+🔗 https://www.gamedeveloper.com/production/google-cloud-s-vision-for-ai-in-the-game-industry
+
+**Microsoft Project Helix: Next-Gen Xbox enthüllt**  
+Custom AMD-SOC, co-designed für next-gen DirectX, "Intelligence direkt in der Graphics Pipeline":
+- "Order of magnitude" mehr Ray-Tracing-Performance
+- GPU-directed Work Graphs (eliminiert CPU-Bottlenecks)
+- Next-gen Neural-Assisted Rendering (AMD FSR next-gen)
+- "Deep Texture Compression" für Speicher-Effizienz
+- Spielt Xbox UND PC Games  
+🔗 https://www.gamedeveloper.com/production/microsoft-lifts-the-lid-on-project-helix-at-gdc-festival-of-gaming
+
+**IGF Awards 2026: Titanium Court gewinnt Grand Prize**  
+Noch unveröffentlicht aber bereits Seumas McNally Grand Prize-Gewinner + Excellence in Design.
+
+**Clair Obscur: Expedition 33 — 95% mit Unreal Blueprints**  
+Interessante Tech-Deep-Dive: Der hoch gelobte Indie-AA-Titel wurde fast komplett mit Blueprints gebaut, kaum C++. Zeigt wie weit Visual Scripting heute ist.  
+🔗 https://www.gamedeveloper.com/programming/clair-obscur-expedition-33-was-built-95-percent-with-unreal-blueprints
+
+### Weitere Game News
+- **Pokémon Pokopia**: 2.2M Sales in 4 Tagen 🔥
+- **Fortnite Save the World**: Jetzt Free-to-Play
+- **PEGI** überarbeitet Rating-System mit Überlegungen zu Loot Boxes & Daily Quests
+- **Microsoft Xbox Play Anywhere**: Kann Spending & Engagement verdoppeln laut MS
+- **Yogscast Games** über Roguelike-Markt: Roguelikes & Deckbuilder weiterhin stark (relevant: MMC!)
+
+---
+
+## 🎮 Game Engines
+
+### Godot 4.6.2 RC 1 (9. März 2026)
+Maintenance Release in Release Candidate Phase. Stabilisierungs-Work.  
+🔗 https://godotengine.org/article/release-candidate-godot-4-6-2-rc-1/
+
+### Godot 4.7 Dev 2 (3. März 2026)
+Development Snapshot läuft. "Let us cook!"  
+🔗 https://godotengine.org/article/dev-snapshot-godot-4-7-dev-2/
+
+### GodotCon Amsterdam — 23.-24. April 2026
+Tickets sind verfügbar, Call for Speakers/Sponsors offen.  
+🔗 https://godotengine.org/article/godotcon-2026/
+
+### Nvidia + Godot (via 80.lv)
+80.lv berichtet über Nvidia/Godot-News — wahrscheinlich Nvidia-Tools oder DLSS/RTX-Integration für Godot. Details nicht vollständig geladen.
+
+---
+
+## 🎨 Blender / 3D Pipeline
+
+### The Met: 140 HD 3D-Scans berühmter Kunstobjekte (HN #253 points)
+Das Metropolitan Museum of Art veröffentlicht hochauflösende 3D-Scans — free to use. Goldgrube für Prop-Libraries, Texturen, historische Referenzen!  
+🔗 https://www.openculture.com/2026/03/the-met-releases-high-definition-3d-scans-of-140-famous-art-objects.html
+
+### Microsoft Copilot Health + "Medical Superintelligence"
+Nicht direkt Gamedev, aber zeigt die Breite von MS AI-Investitionen.
+
+---
+
+## 💡 Relevanz für AI-First Gamedev
+
+| Thema | Relevanz für MMC/Firma |
+|-------|----------------------|
+| Google Cloud "Living Games" + Tencent AI | Direkter Beleg: AI in Games ist Mainstream-Move |
+| Roblox-Dominanz (67% Wachstum) | Marktanalyse: Plattform-Games dominieren |
+| Yogscast: Roguelikes stark | MMC im richtigen Genre! |
+| Clair Obscur: 95% Blueprints | Validiert GDScript-Approach, nicht alles C++ |
+| Project Helix Neural Rendering | Zukunft: AI-assisted Rendering wird Standard |
+| Met 3D-Scans free | Kostenlose Asset-Referenzen |
+| Nvidia $26Mrd Open-Source AI | Mehr open-weight models = mehr tools für uns |
+
+---
+
+*PRISM Briefing — next update: Montag 16.03.2026*
+`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
