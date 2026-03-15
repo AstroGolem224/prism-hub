@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI News // PRISM Hub</title>
+<title>AI News — 2026-03-15 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -251,25 +251,131 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <h1 class="page-title">📰 AI News Archiv</h1>
-    <p class="page-subtitle">// kuratierte ai news // täglich aktualisiert</p>
-    <div class="card"><a href="news/2026-03-15.html"><span style="color:var(--neon-cyan)">2026-03-15</span> — 🔮 PRISM Morgen-Briefing — Sonntag, 15. März 2026</a></div>
-<div class="card"><a href="news/2026-03-14.html"><span style="color:var(--neon-cyan)">2026-03-14</span> — 🔮 PRISM Daily Briefing — 14. März 2026</a></div>
-<div class="card"><a href="news/2026-03-13.html"><span style="color:var(--neon-cyan)">2026-03-13</span> — 🔮 PRISM Daily Briefing — Freitag, 13. März 2026</a></div>
-<div class="card"><a href="news/2026-03-12.html"><span style="color:var(--neon-cyan)">2026-03-12</span> — 🔮 PRISM Daily News — Donnerstag, 12. März 2026</a></div>
-<div class="card"><a href="news/2026-03-11.html"><span style="color:var(--neon-cyan)">2026-03-11</span> — 🔮 PRISM Daily Briefing — Mittwoch, 11. März 2026</a></div>
-<div class="card"><a href="news/2026-03-10.html"><span style="color:var(--neon-cyan)">2026-03-10</span> — 🔮 PRISM Morning Briefing — Dienstag, 10. März 2026</a></div>
-<div class="card"><a href="news/2026-03-09.html"><span style="color:var(--neon-cyan)">2026-03-09</span> — 🔮 PRISM Daily News — Montag, 09. März 2026</a></div>
-<div class="card"><a href="news/2026-03-08.html"><span style="color:var(--neon-cyan)">2026-03-08</span> — Daily News Briefing — 8. März 2026</a></div>
-<div class="card"><a href="news/2026-03-07.html"><span style="color:var(--neon-cyan)">2026-03-07</span> — 📰 AI & Game Dev News — 7. März 2026</a></div>
-<div class="card"><a href="news/2026-03-02.html"><span style="color:var(--neon-cyan)">2026-03-02</span> — 🔮 PRISM Daily News — Montag, 02.03.2026</a></div>
-<div class="card"><a href="news/2026-03-01.html"><span style="color:var(--neon-cyan)">2026-03-01</span> — 📰 PRISM Daily News — 01.03.2026 (Sonntag)</a></div>
-<div class="card"><a href="news/2026-02-28.html"><span style="color:var(--neon-cyan)">2026-02-28</span> — AI News — 28.02.2026</a></div>
-<div class="card"><a href="news/2026-02-27.html"><span style="color:var(--neon-cyan)">2026-02-27</span> — AI News — 27.02.2026</a></div>
-<div class="card"><a href="news/2026-02-24.html"><span style="color:var(--neon-cyan)">2026-02-24</span> — AI News — 24.02.2026</a></div>
-<div class="card"><a href="news/2026-02-23.html"><span style="color:var(--neon-cyan)">2026-02-23</span> — AI News — 23.02.2026</a></div>
-<div class="card"><a href="news/2026-02-22.html"><span style="color:var(--neon-cyan)">2026-02-22</span> — AI News — 22. Februar 2026</a></div>
-</main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-03-15</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# 🔮 PRISM Morgen-Briefing — Sonntag, 15. März 2026
+
+> Generiert um 06:00 Uhr | Quellen: The Decoder, HackerNews, Game Developer, 80.lv, Godot Blog
+
+---
+
+## 🤖 AI / LLM / Agenten-Systeme
+
+### 🔥 AI-Agent-Boom: China fördert "Ein-Personen-Firmen" mit AI-Mitarbeitern
+Sieben chinesische Lokalbehörden haben innerhalb weniger Tage Förderprogramme für AI-Agent-Ökosysteme aufgelegt. Hefei, Shenzhen, Wuxi, Changshu und Changzhou bieten je **$700K–$1.4M** in Subventionen für Startups, die mit AI Agents als "Mitarbeitern" arbeiten. Das Konzept der "Ein-Personen-Firma" mit AI-Workforce wird aktiv gefördert. Für AI-First Gamedev genau das richtige Framing.
+- 📎 [SCMP Report](https://www.scmp.com/tech/tech-trends/article/3346513/inside-openclaw-mania-gripping-china-security-fears-surge-alongside-enthusiasm)
+
+### 🎤 Hume AI TADA: Open-Source TTS, 5x schneller, zero Hallucinations
+Hume AI hat **TADA** open-sourced — ein TTS-System das Text und Audio synchron verarbeitet. Besonderheit: 1 Audio-Token pro Text-Token (statt Explosion), dadurch **5x schneller** als vergleichbare Systeme und **0 Transkriptions-Halluzinationen** bei 1000+ Tests. Läuft auf Smartphones. 1B (EN) und 3B (8 Sprachen) Versionen, beide Llama-basiert, MIT License.
+- 📎 [GitHub](https://github.com/HumeAI/tada) | [HuggingFace](https://huggingface.co/spaces/HumeAI/tada) | [Paper](https://arxiv.org/pdf/2602.23068v1)
+- 💡 **MMC-Relevanz**: Könnte für NPC-Stimmen oder dynamisches Audio eingesetzt werden
+
+### 🤖 Ai2 MolmoBot: Sim-Only Training, Zero-Shot Real-World
+Allen AI hat **MolmoBot** + **MolmoSpaces** veröffentlicht — Robotik-Modelle die *ausschließlich* in Simulation trainiert wurden und direkt auf echten Robotern funktionieren. 230.000+ Indoor-Szenen, 42M+ physikbasierte Annotationen. Zero-Shot Sim-to-Real Transfer.
+- 📎 [MolmoBot Paper](https://allenai.org/papers/molmobot) | [Blog](https://allenai.org/blog/molmobot-robot-manipulation)
+- 💡 **Relevanz**: Sim-Training-Ansatz direkt übertragbar auf AI-generierte Game-Behaviors
+
+### 🧠 Tree Search Distillation für LLMs (PPO)
+HackerNews-Top: Neue Technik kombiniert Tree Search mit Distillation via PPO für besseres LLM-Reasoning. Interessant für Agent-Systeme die komplexe Entscheidungen treffen müssen.
+- 📎 [Blog Post](https://ayushtambde.com/blog/tree-search-distillation-for-language-models-using-ppo/)
+
+### 🏢 Meta: Bis zu 16.000 Stellen gestrichen — AI als Effizienz-Treiber
+Meta plant Abbau von bis zu **20% der Belegschaft** (~16.000 von 79.000). Hauptmotiv: AI-Infrastruktur-Kosten ausgleichen + AI-generierte Effizienzgewinne. Ähnliche Cuts bei Amazon und Block.
+- 📎 [Reuters](https://www.reuters.com/business/world-at-work/meta-planning-sweeping-layoffs-ai-costs-mount-2026-03-14/)
+
+### 🧪 Mirendil: Ex-Anthropic Neo-Lab, $175M @ $1B Valuation
+Zwei Ex-Anthropic-Forscher gründen Mirendil für AI-beschleunigte Wissenschaft (Biologie, Materialwissenschaft). A16z + Kleiner Perkins co-leaden die Runde. Wächst der Neo-Lab-Trend weiter.
+
+### 🤝 Anthropic Claude Partner Network gestartet
+Anthropic launcht offizielles Partner-Netzwerk für Claude-Integration. HN-Diskussion zeigt breites Interesse aus Enterprise.
+- 📎 [Anthropic](https://www.anthropic.com/news/claude-partner-network)
+
+---
+
+## 🎮 Game Dev News & Markt
+
+### 🏆 GDC Festival of Gaming 2026 — Rebrand, 20.000 Besucher, Rekord-Energie
+GDC hat sich zur **GDC Festival of Gaming** umbenannt und verzeichnete 20.000+ Besucher, 700+ Sessions, 1.100 Speaker. Standing-Room-Only in vielen Sessions. Nächste Ausgabe: **1.–5. März 2027** in San Francisco.
+- 📎 [Game Developer](https://www.gamedeveloper.com/business/rebranded-gdc-festival-of-gaming-attracts-20-000-attendees)
+
+### 🥇 GDCA 2026: Clair Obscur: Expedition 33 räumt ab — 5 Awards inkl. GOTY!
+**Clair Obscur: Expedition 33** von Sandfall Interactive (kleines French Indie Studio!) gewinnt:
+- 🏅 Game of the Year
+- 🏅 Best Debut
+- 🏅 Best Visual Art
+- 🏅 Best Narrative
+- 🏅 Best Audio
+
+**Blue Prince** (Dogubomb) gewann Innovation Award + Best Design. 
+- 📎 [Game Developer](https://www.gamedeveloper.com/design/gdca-2026)
+- 💡 **Fazit**: Kleine Teams, große Visionen — das ist genau unser Weg mit MMC!
+
+### 🎰 IGF 2026: "Titanium Court" gewinnt Seumas McNally Grand Prize
+Das IGF (Independent Games Festival) kürte **Titanium Court** als bestes Indie-Spiel des Jahres.
+- 📎 [Game Developer](https://www.gamedeveloper.com/business/titanium-court-wins-seumas-mcnally-grand-prize-at-28th-annual-igf-awards)
+
+### 🐉 Pokémon Pokopia: 2.2 Millionen Sales in 4 Tagen
+Neues Pokémon-Spinoff pusht die Marke weiter. Zeigt Stärke etablierter IPs im Mobile/Casual-Bereich.
+
+### 💬 PEGI überarbeitet Altersfreigaben: Loot Boxes + Daily Quests jetzt berücksichtigt
+PEGI hat sein Rating-System aktualisiert — Loot Boxes und Daily Quests werden jetzt als bewertungsrelevante Faktoren eingestuft.
+- 📎 [Game Developer](https://www.gamedeveloper.com/business/pegi-revises-its-age-ratings-system-with-considerations-for-loot-boxes-daily-quests)
+
+### 🎭 Lightspeed Studios: Proprietary Dev Framework für "Reality-Rooted" Titles
+Tencent-Tochter Lightspeed präsentiert eigenes Dev-Framework mit Fokus auf realitätsnahe Spielerlebnisse.
+- 📎 [Game Developer](https://www.gamedeveloper.com/production/lightspeed-studios-unveils-proprietary-development-framework-to-build-titles-rooted-in-reality-)
+
+### 🎭 Diablo 2 als FPS in UE5 — Solo Developer
+Ein Solo-Entwickler hat Diablo 2 als Ego-Shooter in Unreal Engine 5 nachgebaut. Technisch beeindruckend, zeigt Potenzial von UE5 für radikale Genre-Mashups.
+- 📎 [80.lv](https://80.lv/articles/solo-developer-recreates-diablo-2-as-first-person-game-in-ue5)
+
+---
+
+## 🔧 Game Engine Updates
+
+### 🟢 Godot 4.6.2 RC 1 released (09.03.2026)
+Maintenance Release für Godot 4.6.x. Bugfixes, Stabilität. Parallel läuft **Godot 4.7 dev 2** (03.03.2026) — "Let us cook!" 🔥
+- 📎 [4.6.2 RC1](https://godotengine.org/article/release-candidate-godot-4-6-2-rc-1/) | [4.7 dev2](https://godotengine.org/article/dev-snapshot-godot-4-7-dev-2/)
+- 💡 **MMC läuft auf Godot** — kein Update-Druck, 4.6.x ist stabil genug
+
+### 🎨 GodotCon Amsterdam 2026 — 23./24. April
+Call for Speakers + Sponsors offen. Amsterdam könnte interessant sein für Community-Kontakte.
+- 📎 [GodotCon 2026](https://godotengine.org/article/godotcon-2026/)
+
+### ❌ Quixel Mixer: Offiziell eingestellt
+Epic hat Quixel Mixer discontinued. Nutzer migrieren zu Substance 3D Painter / Blender.
+- 📎 [80.lv](https://80.lv/articles/quixel-mixer-officially-discontinued)
+
+---
+
+## 🧊 Blender / 3D Pipeline
+
+### 💪 Blender Highlight: Street Fighter Chun-Li Rig Showcase
+Beeindruckendes ultra-expressives Blender-Rig für Chun-Li. Zeigt aktuelle Stärke von Blender im Character-Rigging.
+- 📎 [80.lv](https://80.lv/articles/ultra-expressive-street-fighter-s-chun-li-blender-rig-showcase)
+
+### 🎬 KPop Demon Hunters: Previs & Layout Breakdown
+Making-of zu einem animierten Projekt — zeigt modernes Previs-Workflow in Blender/Houdini.
+- 📎 [80.lv](https://80.lv/articles/see-how-previs-layout-were-done-in-kpop-demon-hunters)
+
+---
+
+## 📌 Für MMC besonders relevant
+
+| News | Warum relevant |
+|------|----------------|
+| Hume TADA TTS | Voice für NPCs / Tutorial-System in MMC |
+| Clair Obscur GOTY | Kleines Team, großer Erfolg — Beweis für unser Modell |
+| Godot 4.6.2 RC | Stabiles Update, prüfen ob Bug-Fixes relevant |
+| AI Ein-Personen-Firmen | Marketing-Framing für MMC als AI-First Studio |
+| Diablo 2 FPS in UE5 | Genre-Mashup als Inspirationsquelle |
+
+---
+
+*Briefing generiert von PRISM 🔮 | Nächstes: 2026-03-16.md*
+`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
