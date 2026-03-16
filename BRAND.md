@@ -1,5 +1,5 @@
 # 🔮 PRISM Hub — Brand Bible
-**Clay Machine Games // Design System v2.0**
+**Clay Machine Games // Design System v2.1**
 *Neon Cyberpunk Edition — mit vollständiger Effekt-Dokumentation*
 
 ---
@@ -15,6 +15,8 @@ PRISM Hub ist das Nervenzentrum von Clay Machine Games — ein internes Ops-Tool
 - **Mono x Display** — Code-Ästhetik trifft Industrial Typography
 - **Motion speaks** — Animationen kommunizieren Zustand
 - **Layered Atmosphere** — 5 übereinanderliegende Schichten erzeugen Tiefe
+- **Visual Hierarchy & Anti-Clutter** — Strikte Texthierarchie + 8-Punkt-Grid-System für konsistente Abstände; Ikonografie basiert auf realen Objekten
+- **Thematic Eras** — UI-Komponenten in architektonische Cyberpunk-Ären unterteilen: *Entropism*, *Kitsch*, *Neo Militarism*, *Neo Kitsch* — ergänzt durch Retro-Futurismus (späte 90er Web-Layouts) für Sub-Seiten
 
 ---
 
@@ -82,6 +84,10 @@ PRISM Hub hat ein vollständiges Theme-System via `data-theme` auf `<html>`. Jed
 
 > **Regel:** Im Ember-Theme → `--accent-ember` für primäre Akzente. Im Neon-Theme → `--neon-cyan`. Niemals hart-coded Farben, immer CSS Tokens.
 
+> **Strikte Kontrastregeln:** Schlechte Kontrastkombinationen (z. B. roter Text auf rotem Panel) sind strengstens verboten. WCAG AA Minimum für alle Textelemente.
+
+> **Dynamic State Feedback:** Nutze semantische Farbzuordnung — Rot = Gefahr/Warnung, Blau = Ruhe/Info, Pink/Magenta = Spielerisch. Setze dynamisches visuelles Feedback ein, z.B. einen roten `box-shadow`-Blur an Bildschirmrändern (`body { box-shadow: inset 0 0 80px rgba(239,68,68,0.15); }`) für kritische Systemwarnungen.
+
 ### 2.4 Glow System
 
 ```css
@@ -121,6 +127,15 @@ backdrop-filter: blur(12px);
 border-radius: 8px;
 ```
 
+> **Formgebung:** Anstelle von simplen `border-radius`-Hacks MUSS die moderne CSS-Eigenschaft `corner-shape` für abgeschrägte (beveled) oder squircle Ecken verwendet werden, um die harte Sci-Fi-Terminal-Ästhetik nativ und performant zu realisieren.
+> ```css
+> /* Sci-Fi Beveled Card */
+> border-radius: 8px;
+> corner-shape: bevel;   /* sobald browser-support vorhanden */
+> /* Fallback: clip-path für ältere Browser */
+> clip-path: polygon(8px 0%, 100% 0%, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0% 100%, 0% 8px);
+> ```
+
 ---
 
 ## 3. Typography
@@ -135,10 +150,12 @@ border-radius: 8px;
 | **Display (Public)** | Orbitron | 400–900 | Public-Seite Hero Text |
 
 ```css
---font-display: 'Barlow Condensed', sans-serif;
---font-sans:    'Inter', system-ui, sans-serif;
---font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+--font-display: 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif;
+--font-sans:    'Inter', 'Segoe UI', system-ui, sans-serif;
+--font-mono:    'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
 ```
+
+> **Strikte Fallback-Stacks:** Immer vollständige Fallback-Chains definieren (wie oben), um typografische Hierarchie bei Font-Ladeverzögerungen zu erhalten. Display-Fonts ohne Fallback sind verboten.
 
 ### 3.2 Type Scale
 
@@ -192,6 +209,16 @@ border-radius: 8px;
 ## 4. Background Effects — Das Atmosphären-System
 
 PRISM Hub nutzt **5 übereinanderliegende Schichten** für die Hintergrundatmosphäre:
+
+> **Accessibility Directive:** `@media (prefers-reduced-motion: reduce)` ist **Pflicht**. Alle driftenden Animationen (25s drift, hex-drift) werden pausiert und auf statisches Noise zurückgefallen.
+> ```css
+> @media (prefers-reduced-motion: reduce) {
+>   body::before, body::after { animation: none; }
+>   #ember-canvas             { display: none; }
+>   *, *::before, *::after    { animation-duration: 0.01ms !important;
+>                               transition-duration: 0.01ms !important; }
+> }
+> ```
 
 ```
 Layer 5 (z: 9998): Scanlines
@@ -475,6 +502,10 @@ Danger:    border rgba(239,68,68,0.4)  text #ef4444
 - Glows sparsam aber bewusst einsetzen
 - Hex Grid + Partikel für lebendige Atmosphäre
 - Scanlines + Noise für subtile CRT-Textur
+- **8-Punkt-Grid-System** für alle Abstände (`8px`, `16px`, `24px`, `32px`, `48px`)
+- **`corner-shape: bevel`** (+ clip-path Fallback) für authentische Sci-Fi-Terminal-Ecken
+- **`@media (prefers-reduced-motion)`** implementieren — immer
+- **Klare Typografie-Hierarchie** mit mindestens 2 unterschiedlichen Schriftgrößen pro UI-Ebene
 
 ### ❌ Don't
 - Weiße oder helle Hintergründe (außer Light Theme)
@@ -484,6 +515,9 @@ Danger:    border rgba(239,68,68,0.4)  text #ef4444
 - Partikel-Canvas auf Mobile (Performance)
 - Serifenschriften
 - Schatten ohne Farbe (nur Glow, kein grauer Box-Shadow)
+- **Identische Schriftgrößen** für Haupt- und Unterkategorien
+- **Schlechte Kontraste** — z. B. roter Text auf rotem Panel (WCAG-konform bleiben)
+- **Font-Stacks ohne Fallback** — niemals nur ein einziges Font-Face angeben
 
 ---
 
@@ -564,5 +598,5 @@ Danger:    border rgba(239,68,68,0.4)  text #ef4444
 
 ---
 
-*PRISM Hub Brand Bible v2.0 — Clay Machine Games — 2026*
-*Erstellt von PRISM 🔮 — aktualisiert mit vollständiger Effekt-Dokumentation*
+*PRISM Hub Brand Bible v2.1 — Clay Machine Games — 2026*
+*Erstellt von PRISM 🔮 — v2.1: 8pt-Grid, Thematic Eras, corner-shape, contrast rules, prefers-reduced-motion*
