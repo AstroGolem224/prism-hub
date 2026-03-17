@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI News // PRISM Hub</title>
+<title>AI News — 2026-03-17 // PRISM Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
@@ -251,27 +251,133 @@ a:hover { color: #66f7ff; text-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
 <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span></button>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMenu()"></div>
 <main class="main">
-    <h1 class="page-title">📰 AI News Archiv</h1>
-    <p class="page-subtitle">// kuratierte ai news // täglich aktualisiert</p>
-    <div class="card"><a href="news/2026-03-17.html"><span style="color:var(--neon-cyan)">2026-03-17</span> — 🔮 PRISM Daily Briefing — 17. März 2026</a></div>
-<div class="card"><a href="news/2026-03-16.html"><span style="color:var(--neon-cyan)">2026-03-16</span> — 🔮 PRISM Daily Briefing — Montag, 16. März 2026</a></div>
-<div class="card"><a href="news/2026-03-15.html"><span style="color:var(--neon-cyan)">2026-03-15</span> — 🔮 PRISM Morgen-Briefing — Sonntag, 15. März 2026</a></div>
-<div class="card"><a href="news/2026-03-14.html"><span style="color:var(--neon-cyan)">2026-03-14</span> — 🔮 PRISM Daily Briefing — 14. März 2026</a></div>
-<div class="card"><a href="news/2026-03-13.html"><span style="color:var(--neon-cyan)">2026-03-13</span> — 🔮 PRISM Daily Briefing — Freitag, 13. März 2026</a></div>
-<div class="card"><a href="news/2026-03-12.html"><span style="color:var(--neon-cyan)">2026-03-12</span> — 🔮 PRISM Daily News — Donnerstag, 12. März 2026</a></div>
-<div class="card"><a href="news/2026-03-11.html"><span style="color:var(--neon-cyan)">2026-03-11</span> — 🔮 PRISM Daily Briefing — Mittwoch, 11. März 2026</a></div>
-<div class="card"><a href="news/2026-03-10.html"><span style="color:var(--neon-cyan)">2026-03-10</span> — 🔮 PRISM Morning Briefing — Dienstag, 10. März 2026</a></div>
-<div class="card"><a href="news/2026-03-09.html"><span style="color:var(--neon-cyan)">2026-03-09</span> — 🔮 PRISM Daily News — Montag, 09. März 2026</a></div>
-<div class="card"><a href="news/2026-03-08.html"><span style="color:var(--neon-cyan)">2026-03-08</span> — Daily News Briefing — 8. März 2026</a></div>
-<div class="card"><a href="news/2026-03-07.html"><span style="color:var(--neon-cyan)">2026-03-07</span> — 📰 AI & Game Dev News — 7. März 2026</a></div>
-<div class="card"><a href="news/2026-03-02.html"><span style="color:var(--neon-cyan)">2026-03-02</span> — 🔮 PRISM Daily News — Montag, 02.03.2026</a></div>
-<div class="card"><a href="news/2026-03-01.html"><span style="color:var(--neon-cyan)">2026-03-01</span> — 📰 PRISM Daily News — 01.03.2026 (Sonntag)</a></div>
-<div class="card"><a href="news/2026-02-28.html"><span style="color:var(--neon-cyan)">2026-02-28</span> — AI News — 28.02.2026</a></div>
-<div class="card"><a href="news/2026-02-27.html"><span style="color:var(--neon-cyan)">2026-02-27</span> — AI News — 27.02.2026</a></div>
-<div class="card"><a href="news/2026-02-24.html"><span style="color:var(--neon-cyan)">2026-02-24</span> — AI News — 24.02.2026</a></div>
-<div class="card"><a href="news/2026-02-23.html"><span style="color:var(--neon-cyan)">2026-02-23</span> — AI News — 23.02.2026</a></div>
-<div class="card"><a href="news/2026-02-22.html"><span style="color:var(--neon-cyan)">2026-02-22</span> — AI News — 22. Februar 2026</a></div>
-</main>
+    <div class="breadcrumb"><a href="index.html">Dashboard</a><span class="sep">//</span><a href="news.html">News</a><span class="sep">//</span>2026-03-17</div>
+    <div class="doc-viewer" id="news-content"></div>
+    <script>
+    document.getElementById('news-content').innerHTML = marked.parse(`# 🔮 PRISM Daily Briefing — 17. März 2026
+
+> Erstellt: 06:00 Uhr | Quellen: The Decoder, Hacker News, Game Developer, 80.lv, Godot Blog
+
+---
+
+## 🤖 AI / LLM / Agenten-Systeme
+
+### Mistral veröffentlicht Leanstral — Open-Source Coding Agent mit formaler Verifikation
+Mistral hat **Leanstral** released — einen Open-Source Coding-Agenten für Lean 4 (Proof Assistant). Besonderheit: Der Agent verifiziert seinen generierten Code formal, statt nur auf Human-Review zu warten. Mit nur 120B-A6B (6B aktive Parameter) schlägt er Claude Sonnet 4.6 auf mathematischen Proof-Benchmarks.
+- **MCP-Support:** Leanstral unterstützt beliebige MCPs via Mistral "vibe", optimiert für \`lean-lsp-mcp\`
+- Lizenz: Apache 2.0 — kostenloser API-Endpoint verfügbar
+- **Relevanz für MMC:** Zeigt Richtung von Coding-Agenten mit eingebautem Verifikations-Layer
+- 🔗 https://mistral.ai/news/leanstral
+
+### OpenAI: Bigger Problem als Modelle — Enterprise-Integration
+OpenAI kämpft weniger mit Modell-Entwicklung, sondern damit, Firmen die KI tatsächlich in Workflows zu integrieren. Neues Joint Venture ($10B) und dedizierter Deployment-Arm gestartet.
+- 🔗 https://the-decoder.com/
+
+### Alibaba "Token Hub" — Qwen-Umbau für Enterprise-Agenten
+Alibaba baut KI-Sparte um in "Alibaba Token Hub" (ATH) unter CEO Eddie Wu. Qwen-Team, DingTalk, Quark-Geräte + Consumer-Apps unter einem Dach. Enterprise-Agent auf Qwen-Basis angekündigt (Taobao/Alipay-Integration geplant).
+- 🔗 https://the-decoder.com/
+
+### Meta × Nebius: $27 Milliarden Cloud-Deal
+Meta hat einen 5-Jahres-Vertrag mit Niederlande-Cloud Nebius abgeschlossen — inkl. erste Vera Rubin (Nvidia-Chips) Großinstallationen. KI-Infrastruktur-Rennen läuft auf Hochtouren.
+
+### China-Chips: Hua Hong auf 7nm-Kurs
+Hua Hong Group (China's 2. größter Chip-Hersteller) entwickelt 7nm-Produktionstechnik — mit Huawei-Kollaboration. Bald zweiter chinesischer Hersteller nach SMIC.
+
+### Lokale Voice Assistants — HN-Trend
+Ausführlicher Community-Thread auf HN: "My Journey to a reliable locally hosted voice assistant" — zeigt wachsendes Interesse an privacy-first, on-device AI (346 Punkte).
+- 🔗 https://community.home-assistant.io/t/my-journey-to-a-reliable-and-enjoyable-locally-hosted-voice-assistant/944860
+
+---
+
+## 🎮 Game Dev News
+
+### GDC Festival of Gaming 2026 — 20.000 Besucher, neue Awards
+Das umbenannte GDC Festival of Gaming zog 20.000 Attendees an. Highlights:
+- **GDCA 2026:** *Clair Obscur: Expedition 33* gewann **5 Awards** (peer-voted) — ein starkes Signal für story-rich Indie-RPGs
+- **IGF Seumas McNally Grand Prize:** *Titanium Court* (Indie darlings sind zurück)
+- *Clair Obscur* + *Dispatch* führen auch BAFTA Game Awards 2026 Nominations an
+- 🔗 https://www.gamedeveloper.com/business/rebranded-gdc-festival-of-gaming-attracts-20-000-attendees
+
+### Lightspeed Studios — Proprietäres Dev-Framework "Rooted in Reality"
+Tencent-Tochter Lightspeed Studios hat ein eigenes proprietäres Development Framework enthüllt, um Spiele zu bauen die in der realen Welt verwurzelt sind. Details noch dünn, aber signalisiert: Big Studios bauen eigene AI-Pipelines.
+- 🔗 https://www.gamedeveloper.com/production/lightspeed-studios-unveils-proprietary-development-framework
+
+### PEGI überarbeitet Bewertungssystem
+PEGI passt Altersfreigaben an für Loot Boxes, Daily Quests und andere Monetarisierungsmechaniken. Relevant für jedes Spiel mit MetaProgression.
+- 🔗 https://www.gamedeveloper.com/business/pegi-revises-its-age-ratings-system
+
+### Steam Page Mastery — GDC Insight
+"Creating a successful Steam page is like ski jumping" — neues GDC-Feature mit konkreten Ratschlägen zur Conversion-Optimierung. **Direkt relevant für MMC Sprint 4 (Steam Page).**
+- 🔗 https://www.gamedeveloper.com/business/creating-a-successful-steam-page-is-like-ski-jumping
+
+### Krafton vs. Unknown Worlds — CEO-Streit
+Krafton verliert Klage, muss rausgeworfenen CEO von Unknown Worlds (Subnautica-Macher) wiedereinsetzen. Drama in der Indie-Publishing-Welt.
+
+### Monkey Island für Commodore 64 — Solo-Dev-Projekt
+Jemand baut Monkey Island komplett neu für C64, von Grund auf. HN liebt es (Retro+Indie-Energie). Link: https://pixeldust.se/monkey-island-project
+
+---
+
+## 🛠 Game Engines
+
+### Godot 4.6.2 RC 1 — Wartungs-Release in Arbeit
+Godot 4.6.2 Release Candidate 1 ist draußen (9. März 2026). Fokus auf Bug-Fixes für den 4.6 Stable-Branch.
+- **Godot 4.7 Dev 2** auch verfügbar (3. März 2026) — aktive Engine-Entwicklung geht zügig voran
+- GodotCon Amsterdam angekündigt: **23-24 April 2026** (Tickets + Call for Speakers offen)
+- 🔗 https://godotengine.org/blog/
+
+### Unreal Engine Blog — 403 nicht erreichbar
+Unreal Engine Blog heute nicht abrufbar (403). Kein News-Update von Epic heute verfügbar.
+
+---
+
+## 🎨 3D / Blender / Pipelines
+
+### Quixel Mixer offiziell eingestellt
+**Quixel Mixer wurde offiziell discontinued** — Epic Games stellt das kostenlose PBR-Texturing-Tool ein. Nutzer müssen auf Alternativen wechseln:
+- Adobe Substance Painter/Designer
+- ArmorPaint (Open Source)
+- Blender's eigene Texture Paint Tools
+- **Relevanz:** Wer für MMC Quixel Mixer genutzt hat, muss umsteigen. ArmorPaint empfehlenswert.
+- 🔗 https://80.lv/articles/quixel-mixer-officially-discontinued
+
+### Solo-Dev: Diablo 2 als First-Person in UE5
+Einer baut Diablo 2 komplett als First-Person-Game in Unreal Engine 5 nach. Technisch beeindruckend, zeigt Potential von UE5 für Genre-Subversionen.
+- 🔗 https://80.lv/articles/solo-developer-recreates-diablo-2-as-first-person-game-in-ue5
+
+### KPop Demon Hunters — Previs & Layout Breakdown
+80.lv zeigt wie Previs & Layout für *KPop Demon Hunters* gemacht wurden — interessant für Cinematic-Pipeline-Referenzen.
+- 🔗 https://80.lv/articles/see-how-previs-layout-were-done-in-kpop-demon-hunters
+
+### Ultra-Expressive Chun-Li Blender Rig
+Showcase eines hochexpressiven Street Fighter Chun-Li Rigs in Blender — relevant für Character-Animation-Referenzen (MMC Characterwork).
+- 🔗 https://80.lv/articles/ultra-expressive-street-fighter-s-chun-li-blender-rig-showcase
+
+### Resident Evil: Requiem — RE Engine Showcase
+Capcom zeigt was ihre RE Engine kann. Visuelle Benchmark für moderne Horror-Aesthetik.
+
+---
+
+## 📈 Markt & Trends
+
+- **Indie-Renaissance:** Clair Obscur und Titanium Court zeigen: Story-rich und experimentelle Indie-Titel dominieren die Awards-Saison 2026
+- **Solo-Dev-Hype:** Zwei prominente Solo-Dev-Projekte auf HN + 80.lv — Community feiert den "One Person Studio" Trend
+- **AI-First Pipelines:** Lightspeed baut eigenes Framework, Mistral bringt MCP-fähige Agents — der Shift zu AI-assistiertem Gamedev beschleunigt sich
+- **PEGI-Verschärfung:** MetaProgression (Coins, Upgrades) könnte höhere Altersfreigabe nach sich ziehen — bei MMC beachten!
+
+---
+
+## 🔮 PRISM Notizen
+
+**Besonders relevant heute:**
+1. Leanstral MCP-Support → könnte als Coding-Agent für Godot-Scripts interessant werden
+2. Steam Page GDC-Artikel → für Sprint 4 lesen!
+3. Quixel Mixer tot → ArmorPaint als Alternative für Textur-Arbeit evaluieren
+
+---
+*Nächstes Briefing: 18.03.2026 06:00 Uhr*
+`);
+    </script></main>
 <script>
 function toggleMenu(){
     document.querySelector('.sidebar').classList.toggle('mobile-open');
